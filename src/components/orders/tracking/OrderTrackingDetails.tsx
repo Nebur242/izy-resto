@@ -1,0 +1,79 @@
+import React from 'react';
+import { Phone, Mail, MapPin, Utensils, Truck } from 'lucide-react';
+import { Order } from '../../../types';
+import { useSettings } from '../../../hooks/useSettings';
+import { formatCurrency } from '../../../utils/currency';
+
+interface OrderTrackingDetailsProps {
+  order: Order;
+}
+
+export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
+  const { settings } = useSettings();
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Customer Details */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <h2 className="text-lg font-semibold mb-4">Détails client</h2>
+        <div className="space-y-3">
+          <p className="flex items-center text-gray-600 dark:text-gray-400">
+            <Phone className="w-4 h-4 mr-2" />
+            {order.customerPhone}
+          </p>
+          {order.customerEmail && (
+            <p className="flex items-center text-gray-600 dark:text-gray-400">
+              <Mail className="w-4 h-4 mr-2" />
+              {order.customerEmail}
+            </p>
+          )}
+          {order.diningOption === 'delivery' && order.customerAddress && (
+            <p className="flex items-center text-gray-600 dark:text-gray-400">
+              <MapPin className="w-4 h-4 mr-2" />
+              {order.customerAddress}
+            </p>
+          )}
+          <div className="flex items-center mt-4">
+            {order.diningOption === 'dine-in' ? (
+              <div className="flex items-center text-blue-600 dark:text-blue-400">
+                <Utensils className="w-4 h-4 mr-2" />
+                <span>Sur place (Table {order.tableNumber})</span>
+              </div>
+            ) : (
+              <div className="flex items-center text-green-600 dark:text-green-400">
+                <Truck className="w-4 h-4 mr-2" />
+                <span>Livraison</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Order Items */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <h2 className="text-lg font-semibold mb-4">Articles commandés</h2>
+        <div className="space-y-3">
+          {order.items.map((item) => (
+            <div key={item.id} className="flex justify-between items-center">
+              <div>
+                <p className="font-medium">{item.name}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {formatCurrency(item.price, settings?.currency)} × {item.quantity}
+                </p>
+              </div>
+              <p className="font-medium">
+                {formatCurrency(item.price * item.quantity, settings?.currency)}
+              </p>
+            </div>
+          ))}
+          <div className="border-t dark:border-gray-700 pt-3 mt-3">
+            <div className="flex justify-between font-bold">
+              <span>Total</span>
+              <span>{formatCurrency(order.total, settings?.currency)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
