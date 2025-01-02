@@ -1,4 +1,4 @@
-import { 
+import {
   collection,
   query,
   where,
@@ -13,11 +13,11 @@ import {
   FirebaseError,
   runTransaction,
   limit,
-  updateDoc
+  updateDoc,
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase/config';
 import { Order, OrderStatus } from '../../types';
-import { paymentService } from '../payments/payment.service';
+// import { paymentService } from '../payments/payment.service';
 import { accountingService } from '../accounting/accounting.service';
 import { stockUpdateService } from '../inventory/stockUpdate.service';
 import { validateOrder } from './validators';
@@ -48,18 +48,20 @@ class OrderService {
           if (!snapshot.metadata.hasPendingWrites) {
             const orders = snapshot.docs.map(doc => ({
               id: doc.id,
-              ...doc.data()
+              ...doc.data(),
             })) as Order[];
             onUpdate(orders);
           }
         },
         (error: FirebaseError) => {
           console.error('Firestore subscription error:', error);
-          onError(new OrderServiceError(
-            'Failed to subscribe to orders',
-            'orders/subscribe-error',
-            error
-          ));
+          onError(
+            new OrderServiceError(
+              'Failed to subscribe to orders',
+              'orders/subscribe-error',
+              error
+            )
+          );
         }
       );
     } catch (error) {
@@ -82,11 +84,15 @@ class OrderService {
       }
 
       if (filters?.dateFrom) {
-        constraints.push(where('createdAt', '>=', Timestamp.fromDate(filters.dateFrom)));
+        constraints.push(
+          where('createdAt', '>=', Timestamp.fromDate(filters.dateFrom))
+        );
       }
 
       if (filters?.dateTo) {
-        constraints.push(where('createdAt', '<=', Timestamp.fromDate(filters.dateTo)));
+        constraints.push(
+          where('createdAt', '<=', Timestamp.fromDate(filters.dateTo))
+        );
       }
 
       constraints.push(orderBy('createdAt', 'desc'));
@@ -96,10 +102,13 @@ class OrderService {
       }
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Order));
+      return snapshot.docs.map(
+        doc =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+          } as Order)
+      );
     } catch (error) {
       console.error('Error fetching orders:', error);
       throw new OrderServiceError(
@@ -114,14 +123,14 @@ class OrderService {
     try {
       const docRef = doc(db, this.collection, orderId);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         return {
           id: docSnap.id,
-          ...docSnap.data()
+          ...docSnap.data(),
         } as Order;
       }
-      
+
       return null;
     } catch (error) {
       console.error('Error fetching order:', error);
@@ -135,11 +144,11 @@ class OrderService {
 
   subscribeToOrder(orderId: string, callback: (order: Order) => void) {
     const docRef = doc(db, this.collection, orderId);
-    return onSnapshot(docRef, (doc) => {
+    return onSnapshot(docRef, doc => {
       if (doc.exists()) {
         callback({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         } as Order);
       }
     });
@@ -151,7 +160,7 @@ class OrderService {
       validateOrder(orderData);
 
       // Format order data
-      const order = formatOrderData(orderData, null);
+      const order = formatOrderData(orderData, orderData.paymentMethod);
 
       const docRef = await addDoc(collection(db, this.collection), order);
       return docRef.id;
@@ -167,10 +176,10 @@ class OrderService {
 
   async updateOrderStatus(orderId: string, status: OrderStatus): Promise<void> {
     try {
-      await runTransaction(db, async (transaction) => {
+      await runTransaction(db, async transaction => {
         const docRef = doc(db, this.collection, orderId);
         const docSnap = await transaction.get(docRef);
-        
+
         if (!docSnap.exists()) {
           throw new OrderServiceError('Order not found', 'orders/not-found');
         }
@@ -196,14 +205,14 @@ class OrderService {
         // Update order status
         transaction.update(docRef, {
           status,
-          updatedAt: Timestamp.now()
+          updatedAt: Timestamp.now(),
         });
 
         // If transitioning to delivered, handle related operations
         if (status === 'delivered' && previousStatus !== 'delivered') {
           // Update stock quantities
           await stockUpdateService.updateStockOnDelivery(order);
-          
+
           // Create accounting transaction
           await accountingService.createOrderTransaction(order);
         }
@@ -221,7 +230,11 @@ class OrderService {
     }
   }
 
-  async updateOrderRating(orderId: string, rating: number, feedback?: string): Promise<void> {
+  async updateOrderRating(
+    orderId: string,
+    rating: number,
+    feedback?: string
+  ): Promise<void> {
     try {
       // Validate rating
       if (rating < 1 || rating > 5) {
@@ -233,13 +246,13 @@ class OrderService {
 
       const docRef = doc(db, this.collection, orderId);
       const docSnap = await getDoc(docRef);
-      
+
       if (!docSnap.exists()) {
         throw new OrderServiceError('Order not found', 'orders/not-found');
       }
 
       const order = docSnap.data() as Order;
-      
+
       if (order.status !== 'delivered' && order.status !== 'cancelled') {
         throw new OrderServiceError(
           'Cannot rate an order that is not delivered or cancelled',
@@ -248,16 +261,19 @@ class OrderService {
       }
 
       if (order.rating) {
-        throw new OrderServiceError('Order has already been rated', 'orders/already-rated');
+        throw new OrderServiceError(
+          'Order has already been rated',
+          'orders/already-rated'
+        );
       }
 
       await updateDoc(docRef, {
         rating: {
           rating,
           feedback: feedback?.trim() || null,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
         },
-        updatedAt: Timestamp.now()
+        updatedAt: Timestamp.now(),
       });
     } catch (error) {
       console.error('Error updating order rating:', error);
@@ -276,13 +292,13 @@ class OrderService {
     try {
       const docRef = doc(db, this.collection, orderId);
       const docSnap = await getDoc(docRef);
-      
+
       if (!docSnap.exists()) {
         throw new OrderServiceError('Order not found', 'orders/not-found');
       }
 
       const order = docSnap.data() as Order;
-      
+
       // Only allow cancellation of pending orders
       if (order.status !== 'pending') {
         throw new OrderServiceError(
@@ -293,7 +309,7 @@ class OrderService {
 
       await updateDoc(docRef, {
         status: 'cancelled',
-        updatedAt: Timestamp.now()
+        updatedAt: Timestamp.now(),
       });
     } catch (error) {
       console.error('Error cancelling order:', error);

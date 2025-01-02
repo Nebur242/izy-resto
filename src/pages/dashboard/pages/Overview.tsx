@@ -15,11 +15,11 @@ import { Laptop } from 'lucide-react';
 export function Overview() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
-  const [dateRange, setDateRange] = useState({ 
-    startDate: new Date(new Date().setDate(1)), // First day of current month
-    endDate: new Date() 
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(new Date().setDate(0)), // First day of current month
+    endDate: new Date(),
   });
-  
+
   const { orders, isLoading } = useOrdersRealtime();
 
   // Filter orders based on date range
@@ -38,19 +38,27 @@ export function Overview() {
   // Calculate analytics
   const analytics = useMemo(() => {
     // Calculate days between start and end date
-    const daysDiff = Math.max(1, Math.ceil(
-      (dateRange.endDate.getTime() - dateRange.startDate.getTime()) / 
-      (1000 * 60 * 60 * 24)
-    ));
+    const daysDiff = Math.max(
+      1,
+      Math.ceil(
+        (dateRange.endDate.getTime() - dateRange.startDate.getTime()) /
+          (1000 * 60 * 60 * 24)
+      )
+    );
 
     // Calculate daily order rate
     const dailyOrderRate = filteredOrders.length / daysDiff;
 
     return {
-      totalRevenue: deliveredOrders.reduce((sum, order) => sum + order.total, 0),
+      totalRevenue: deliveredOrders.reduce(
+        (sum, order) => sum + order.total,
+        0
+      ),
       totalOrders: filteredOrders.length,
-      uniqueCustomers: new Set(filteredOrders.map(order => order.customerEmail || order.customerPhone)).size,
-      dailyOrderRate: Math.round(dailyOrderRate * 10) / 10 // Round to 1 decimal place
+      uniqueCustomers: new Set(
+        filteredOrders.map(order => order.customerEmail || order.customerPhone)
+      ).size,
+      dailyOrderRate: Math.round(dailyOrderRate * 10) / 10, // Round to 1 decimal place
     };
   }, [filteredOrders, deliveredOrders, dateRange]);
 
@@ -62,19 +70,16 @@ export function Overview() {
           <Laptop className="w-12 h-12 mx-auto text-blue-500 mb-4" />
           <h2 className="text-xl font-semibold mb-2">Vue limitée sur mobile</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Pour une meilleure expérience et accéder à toutes les fonctionnalités, veuillez utiliser un écran plus large.
+            Pour une meilleure expérience et accéder à toutes les
+            fonctionnalités, veuillez utiliser un écran plus large.
           </p>
         </div>
-     <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
           <h3 className="text-lg font-semibold mb-4">Commandes Récentes</h3>
-          <PaginatedRecentOrders 
-            orders={filteredOrders} 
-            itemsPerPage={5}
-          />
+          <PaginatedRecentOrders orders={filteredOrders} itemsPerPage={5} />
         </div>
         <AnalyticsGrid {...analytics} />
         <ProductSalesStats orders={filteredOrders} />
-   
       </div>
     );
   }
@@ -88,7 +93,9 @@ export function Overview() {
         <DateFilter
           startDate={dateRange.startDate}
           endDate={dateRange.endDate}
-          onDateChange={(start, end) => setDateRange({ startDate: start, endDate: end })}
+          onDateChange={(start, end) =>
+            setDateRange({ startDate: start, endDate: end })
+          }
         />
       </div>
 
@@ -117,10 +124,12 @@ export function Overview() {
           <h3 className="text-lg font-semibold mb-4">
             {t('orders.status.title')}
           </h3>
-          <AnalyticsChart data={filteredOrders.reduce((acc, order) => {
-            acc[order.status] = (acc[order.status] || 0) + 1;
-            return acc;
-          }, {} as Record<string, number>)} />
+          <AnalyticsChart
+            data={filteredOrders.reduce((acc, order) => {
+              acc[order.status] = (acc[order.status] || 0) + 1;
+              return acc;
+            }, {} as Record<string, number>)}
+          />
         </motion.div>
       </div>
 
@@ -130,9 +139,7 @@ export function Overview() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm"
         >
-          <h3 className="text-lg font-semibold mb-4">
-            {t('orders.recent')}
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">{t('orders.recent')}</h3>
           <PaginatedRecentOrders orders={filteredOrders} itemsPerPage={5} />
         </motion.div>
 
@@ -141,9 +148,7 @@ export function Overview() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm"
         >
-          <h3 className="text-lg font-semibold mb-4">
-            {t('customers.top')}
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">{t('customers.top')}</h3>
           <PaginatedCustomerList orders={filteredOrders} itemsPerPage={5} />
         </motion.div>
       </div>

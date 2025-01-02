@@ -15,25 +15,19 @@ import { accountingService } from '../../../services/accounting/accounting.servi
 import { exportToPng } from '../../../utils/export';
 import toast from 'react-hot-toast';
 
-const tabs = [
-  { id: 'transactions', label: 'Transactions' },
-];
+const tabs = [{ id: 'transactions', label: 'Transactions' }];
 
 export function AccountingManagement() {
   const [activeTab, setActiveTab] = useState('transactions');
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(new Date().setDate(1)), // First day of current month
-    endDate: new Date()
+    startDate: new Date(new Date().setDate(0)), // First day of current month
+    endDate: new Date(),
   });
   const [isFormOpen, setIsFormOpen] = useState(false);
   const statementRef = useRef<HTMLDivElement>(null);
-  
-  const { 
-    transactions,
-    stats,
-    isLoading,
-    refreshData
-  } = useAccounting(dateRange);
+
+  const { transactions, stats, isLoading, refreshData } =
+    useAccounting(dateRange);
 
   const handleDateChange = (start: Date, end: Date) => {
     setDateRange({ startDate: start, endDate: end });
@@ -78,8 +72,10 @@ export function AccountingManagement() {
 
     try {
       // Ensure we have the latest transactions for the selected period
-      const fetchedTransactions = await accountingService.getTransactions(dateRange);
-      
+      const fetchedTransactions = await accountingService.getTransactions(
+        dateRange
+      );
+
       // Update the ref content with fresh data
       const statement = (
         <FinancialStatement
@@ -93,30 +89,26 @@ export function AccountingManagement() {
       root.style.position = 'absolute';
       root.style.left = '-9999px';
       document.body.appendChild(root);
-      
+
       const { createRoot } = await import('react-dom/client');
       const reactRoot = createRoot(root);
       await new Promise<void>(resolve => {
-        reactRoot.render(
-          <div ref={statementRef}>
-            {statement}
-          </div>
-        );
+        reactRoot.render(<div ref={statementRef}>{statement}</div>);
         // Wait for render to complete
         setTimeout(resolve, 100);
       });
 
       // Export to PNG
       await exportToPng(root);
-      
+
       // Cleanup
       document.body.removeChild(root);
       reactRoot.unmount();
-      
+
       toast.success('États financiers exportés avec succès');
     } catch (error) {
       console.error('Error exporting statement:', error);
-      toast.error('Erreur lors de l\'export');
+      toast.error("Erreur lors de l'export");
     }
   };
 
@@ -151,7 +143,7 @@ export function AccountingManagement() {
               </div>
             </div>
 
-            <TransactionList 
+            <TransactionList
               transactions={transactions}
               isLoading={isLoading}
               onUpdate={handleUpdateTransaction}
@@ -165,7 +157,7 @@ export function AccountingManagement() {
   return (
     <div className="space-y-6">
       <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
-      
+
       {renderActiveTab()}
 
       {isFormOpen && (
@@ -177,10 +169,7 @@ export function AccountingManagement() {
 
       <div className="hidden">
         <div ref={statementRef}>
-          <FinancialStatement 
-            transactions={transactions}
-            period={dateRange}
-          />
+          <FinancialStatement transactions={transactions} period={dateRange} />
         </div>
       </div>
     </div>

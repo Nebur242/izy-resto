@@ -1,11 +1,20 @@
 import { PaymentMethod } from '../../types/payment';
 import { PaymentServiceError } from './errors';
 
-export async function validatePaymentMethod(data: Partial<PaymentMethod>): Promise<void> {
+export async function validatePaymentMethod(
+  data: Partial<PaymentMethod>
+): Promise<void> {
   if (!data.name?.trim()) {
     throw new PaymentServiceError(
       'Le nom de la méthode de paiement est requis',
       'payment/invalid-name'
+    );
+  }
+
+  if (data.url && !isValidUrl(data.url)) {
+    throw new PaymentServiceError(
+      'URL du paiement invalide',
+      'payment/invalid-payment-url'
     );
   }
 

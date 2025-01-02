@@ -1,3 +1,6 @@
+import { CartItem } from './cart';
+import { PaymentMethod } from './payment';
+
 export type OrderStatus = 'pending' | 'preparing' | 'delivered' | 'cancelled';
 
 export interface OrderRating {
@@ -17,7 +20,7 @@ export interface Order {
   customerAddress?: string | null;
   tableNumber?: string | null;
   diningOption: 'dine-in' | 'delivery';
-  paymentMethod?: PaymentMethod;
+  paymentMethod: PaymentMethod | null;
   rating?: OrderRating;
   createdAt: any;
   updatedAt: any;

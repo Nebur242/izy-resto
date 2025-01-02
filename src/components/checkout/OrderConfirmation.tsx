@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, ArrowLeft, Phone, Mail, MapPin, CreditCard, Check } from 'lucide-react';
+import {
+  ShoppingBag,
+  ArrowLeft,
+  Phone,
+  Mail,
+  MapPin,
+  CreditCard,
+  Check,
+  ExternalLink,
+} from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useSettings } from '../../hooks/useSettings';
 import { formatCurrency } from '../../utils/currency';
@@ -8,6 +17,7 @@ import { useCart } from '../../context/CartContext';
 import { usePayments } from '../../hooks/usePayments';
 import { QRCodeModal } from './QRCodeModal';
 import { CartItem } from '../../types';
+import { PaymentMethod } from '../../types/payment';
 
 interface OrderConfirmationProps {
   customerData: {
@@ -21,30 +31,97 @@ interface OrderConfirmationProps {
   onConfirm: () => void;
   onBack: () => void;
   showPaymentMethods?: boolean;
+  setSelectedPaymentMethod: React.Dispatch<
+    React.SetStateAction<PaymentMethod | null>
+  >;
 }
 
 export function OrderConfirmation({
   customerData,
   onConfirm,
   onBack,
-  showPaymentMethods = false
+  showPaymentMethods = false,
+  setSelectedPaymentMethod,
 }: OrderConfirmationProps) {
   const { settings } = useSettings();
   const { cart, total } = useCart();
   const { paymentMethods } = usePayments();
-  const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0]?.id || '');
+  const [selectedPayment, setSelectedPayment] = useState(
+    paymentMethods[0]?.id || ''
+  );
   const [showQRCode, setShowQRCode] = useState(false);
   const [hasPaid, setHasPaid] = useState(false);
+  const [hasClickedPaymentLink, setHasClickedPaymentLink] = useState(false);
 
-  const selectedPaymentMethod = paymentMethods.find(method => method.id === selectedPayment);
+  const selectedPaymentMethod = paymentMethods.find(
+    method => method.id === selectedPayment
+  );
+
+  const getPaymentUrl = () => {
+    if (!selectedPaymentMethod?.url) return '';
+    return `${selectedPaymentMethod.url}=${total}`;
+  };
 
   const handleConfirm = () => {
-    // If selected payment method has QR code and user hasn't confirmed payment
+    if (selectedPaymentMethod?.url && !hasPaid) {
+      // Open payment URL in new tab
+      window.open(getPaymentUrl(), '_blank', 'noopener,noreferrer');
+      setHasClickedPaymentLink(true);
+      return;
+    }
+
     if (selectedPaymentMethod?.qrCode && !hasPaid) {
       setShowQRCode(true);
       return;
     }
+
     onConfirm();
+  };
+
+  useEffect(() => {
+    if (selectedPaymentMethod) {
+      setSelectedPaymentMethod(selectedPaymentMethod);
+    }
+  }, [selectedPaymentMethod]);
+
+  // Reset payment state when payment method changes
+  useEffect(() => {
+    setHasPaid(false);
+    setShowQRCode(false);
+    setHasClickedPaymentLink(false);
+  }, [selectedPayment]);
+
+  const renderPaymentButton = () => {
+    if (!selectedPaymentMethod) return null;
+
+    if (hasPaid) {
+      return (
+        <>
+          <Check className="w-4 h-4 mr-2" />
+          Confirmer la commande
+        </>
+      );
+    }
+
+    if (selectedPaymentMethod.url) {
+      return (
+        <>
+          <ExternalLink className="w-4 h-4 mr-2" />
+          {hasPaid ? "J'ai payé" : 'Payer avec Wave'}
+        </>
+      );
+    }
+
+    if (selectedPaymentMethod.qrCode) {
+      return (
+        <>
+          <CreditCard className="w-4 h-4 mr-2" />
+          Scanner pour payer
+        </>
+      );
+    }
+
+    return 'Confirmer la commande';
   };
 
   return (
@@ -85,12 +162,13 @@ export function OrderConfirmation({
                 {customerData.email}
               </p>
             )}
-            {customerData.diningOption === 'delivery' && customerData.address && (
-              <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                <MapPin className="w-4 h-4" />
-                {customerData.address}
-              </p>
-            )}
+            {customerData.diningOption === 'delivery' &&
+              customerData.address && (
+                <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                  <MapPin className="w-4 h-4" />
+                  {customerData.address}
+                </p>
+              )}
           </div>
         </div>
 
@@ -102,7 +180,8 @@ export function OrderConfirmation({
               <div>
                 <p className="font-medium">{item.name}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {formatCurrency(item.price, settings?.currency)} × {item.quantity}
+                  {formatCurrency(item.price, settings?.currency)} ×{' '}
+                  {item.quantity}
                 </p>
               </div>
               <p className="font-medium">
@@ -132,9 +211,10 @@ export function OrderConfirmation({
                 key={method.id}
                 className={`
                   relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all
-                  ${selectedPayment === method.id
-                    ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+                  ${
+                    selectedPayment === method.id
+                      ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                   }
                 `}
               >
@@ -143,7 +223,7 @@ export function OrderConfirmation({
                   name="paymentMethod"
                   value={method.id}
                   checked={selectedPayment === method.id}
-                  onChange={(e) => {
+                  onChange={e => {
                     setSelectedPayment(e.target.value);
                     setHasPaid(false);
                   }}
@@ -171,12 +251,13 @@ export function OrderConfirmation({
                 </div>
 
                 {/* Selection Indicator */}
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                  transition-colors duration-200 ${
-                    selectedPayment === method.id
-                      ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400'
-                      : 'border-gray-300 dark:border-gray-600'
-                  }`}
+                <div
+                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                    transition-colors duration-200 ${
+                      selectedPayment === method.id
+                        ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400'
+                        : 'border-gray-300 dark:border-gray-600'
+                    }`}
                 >
                   <AnimatePresence>
                     {selectedPayment === method.id && (
@@ -191,6 +272,31 @@ export function OrderConfirmation({
                 </div>
               </label>
             ))}
+
+            {/* Payment URL Info */}
+            {selectedPaymentMethod?.url &&
+              hasClickedPaymentLink &&
+              !hasPaid && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-2 border-blue-200 dark:border-blue-800"
+                >
+                  <div className="flex flex-col items-center gap-3">
+                    <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+                      Après avoir effectué le paiement, cliquez sur le bouton
+                      "J'ai payé" ci-dessous
+                    </p>
+                    <Button
+                      onClick={() => setHasPaid(true)}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-colors"
+                    >
+                      <Check className="w-4 h-4 mr-2" />
+                      J'ai payé
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
           </div>
         </div>
       )}
@@ -210,17 +316,7 @@ export function OrderConfirmation({
             disabled:opacity-50 disabled:cursor-not-allowed
           `}
         >
-          {selectedPaymentMethod?.qrCode && !hasPaid ? (
-            <>
-              <CreditCard className="w-4 h-4 mr-2" />
-              Scanner pour payer
-            </>
-          ) : (
-            <>
-              {hasPaid && <Check className="w-4 h-4 mr-2" />}
-              Confirmer la commande
-            </>
-          )}
+          {renderPaymentButton()}
         </Button>
       </div>
 
