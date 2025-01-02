@@ -26,7 +26,7 @@ interface POSCartSidebarProps {
   onUpdateQuantity: (itemId: string, delta: number) => void;
   onRemoveItem: (itemId: string) => void;
   onQuickAmount: (amount: number) => void;
-  onCheckout: () => void;
+  onCheckout: () => Promise<void>;
   isSubmitting: boolean;
 }
 
@@ -48,15 +48,8 @@ export function POSCartSidebar({
 }: POSCartSidebarProps) {
   const handleCheckout = async () => {
     try {
-      await createPosOrder({
-        items: cart,
-        total,
-        tableNumber: tableNumber || undefined,
-        customerInfo,
-      });
-
+      await onCheckout();
       toast.success('Commande créée avec succès');
-      onCheckout();
     } catch (error) {
       console.error('Error creating order:', error);
       if (error instanceof Error) {
