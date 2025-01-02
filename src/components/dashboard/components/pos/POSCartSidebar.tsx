@@ -19,7 +19,7 @@ interface POSCartSidebarProps {
     name?: string;
     phone?: string;
   };
-  setCustomerInfo: (info: { name?: string; phone?: string; }) => void;
+  setCustomerInfo: (info: { name?: string; phone?: string }) => void;
   amountPaid: number;
   setAmountPaid: (amount: number) => void;
   total: number;
@@ -44,7 +44,7 @@ export function POSCartSidebar({
   onRemoveItem,
   onQuickAmount,
   onCheckout,
-  isSubmitting
+  isSubmitting,
 }: POSCartSidebarProps) {
   const handleCheckout = async () => {
     try {
@@ -52,7 +52,7 @@ export function POSCartSidebar({
         items: cart,
         total,
         tableNumber: tableNumber || undefined,
-        customerInfo
+        customerInfo,
       });
 
       toast.success('Commande créée avec succès');
@@ -89,7 +89,7 @@ export function POSCartSidebar({
           <input
             type="text"
             value={tableNumber}
-            onChange={(e) => setTableNumber(e.target.value)}
+            onChange={e => setTableNumber(e.target.value)}
             className="w-full rounded-lg border dark:border-gray-700 p-2"
             placeholder="Ex: 42"
           />
@@ -116,7 +116,7 @@ export function POSCartSidebar({
       {/* Fixed Bottom Section */}
       <div className="border-t dark:border-gray-700 p-4 space-y-4 bg-white dark:bg-gray-800">
         <OrderSummary items={cart} total={total} />
-        
+
         <PaymentSection
           total={total}
           amountPaid={amountPaid}

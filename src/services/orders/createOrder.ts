@@ -32,7 +32,7 @@ export async function createPosOrder({
       image: item.image,
       categoryId: item.categoryId,
       stockQuantity: item.stockQuantity,
-      selectedVariants: item.selectedVariants
+      selectedVariants: item.selectedVariants,
     })),
     status: 'pending',
     total: Number(total),
@@ -42,7 +42,8 @@ export async function createPosOrder({
     diningOption: 'dine-in',
     tableNumber: tableNumber?.trim() || '',
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
+    paymentMethod: null,
   };
 
   // Create order

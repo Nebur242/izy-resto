@@ -31,20 +31,27 @@ export function POS() {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const filteredItems = items.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || item.categoryId === selectedCategory;
+    const matchesSearch = item.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'all' || item.categoryId === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   const addToCart = (item: MenuItem & { quantity?: number }) => {
     setCart(currentCart => {
-      const existingItem = currentCart.find(cartItem => cartItem.id === item.id);
-      
+      const existingItem = currentCart.find(
+        cartItem => cartItem.id === item.id
+      );
+
       if (existingItem) {
         const newQuantity = existingItem.quantity + (item.quantity || 1);
-        
+
         if (item.stockQuantity && newQuantity > item.stockQuantity) {
-          toast.error(`Stock insuffisant. Maximum disponible: ${item.stockQuantity}`);
+          toast.error(
+            `Stock insuffisant. Maximum disponible: ${item.stockQuantity}`
+          );
           return currentCart;
         }
 
@@ -55,7 +62,7 @@ export function POS() {
         );
         return updatedCart;
       }
-      
+
       if (item.stockQuantity && (item.quantity || 1) > item.stockQuantity) {
         return currentCart;
       }
@@ -68,7 +75,7 @@ export function POS() {
   const updateQuantity = (itemId: string, delta: number) => {
     setCart(currentCart => {
       const item = currentCart.find(i => i.id === itemId);
-      
+
       if (!item) return currentCart;
 
       const newQuantity = item.quantity + delta;
@@ -102,7 +109,7 @@ export function POS() {
 
     try {
       setIsSubmitting(true);
-      const orderData = {
+      const orderData: Omit<Order, 'id'> = {
         items: cart,
         status: 'pending',
         total,
@@ -112,12 +119,13 @@ export function POS() {
         diningOption: 'dine-in',
         tableNumber,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        paymentMethod: null,
       };
 
       const orderId = await orderService.createOrder(orderData);
       const createdOrder = await orderService.getOrderById(orderId);
-      
+
       if (createdOrder) {
         setCompletedOrder(createdOrder);
         setCart([]);
@@ -143,7 +151,7 @@ export function POS() {
             activeCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
           />
-          
+
           <POSMenuGrid
             items={filteredItems}
             onAddToCart={addToCart}

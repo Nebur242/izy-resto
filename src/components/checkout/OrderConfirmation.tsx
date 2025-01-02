@@ -92,9 +92,8 @@ export function OrderConfirmation({
   }, [selectedPayment]);
 
   const renderPaymentButton = () => {
-    if (!selectedPaymentMethod) return null;
-
-    if (hasPaid) {
+    // For dine-in, always show "Confirmer la commande"
+    if (customerData.diningOption === 'dine-in') {
       return (
         <>
           <Check className="w-4 h-4 mr-2" />
@@ -103,15 +102,33 @@ export function OrderConfirmation({
       );
     }
 
-    if (selectedPaymentMethod.url) {
+    // For delivery
+    if (!selectedPaymentMethod) return 'Confirmer la commande';
+
+    // If paid or using cash on delivery
+    if (
+      hasPaid ||
+      selectedPaymentMethod.name.toLowerCase() === 'paiement à la livraison'
+    ) {
       return (
         <>
-          <ExternalLink className="w-4 h-4 mr-2" />
-          {hasPaid ? "J'ai payé" : 'Payer avec Wave'}
+          <Check className="w-4 h-4 mr-2" />
+          Confirmer la commande
         </>
       );
     }
 
+    // For Wave payment
+    if (selectedPaymentMethod.url) {
+      return (
+        <>
+          <ExternalLink className="w-4 h-4 mr-2" />
+          Payer avec Wave
+        </>
+      );
+    }
+
+    // For QR code payment
     if (selectedPaymentMethod.qrCode) {
       return (
         <>
@@ -123,7 +140,6 @@ export function OrderConfirmation({
 
     return 'Confirmer la commande';
   };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
