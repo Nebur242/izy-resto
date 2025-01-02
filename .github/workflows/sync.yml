@@ -1,0 +1,39 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the forked repository
+      - name: Checkout fork
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.ACCOUNT_TOKEN }}
+
+      # Configure Git
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Add upstream remote
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/Nebur2020/izy-resto.git
+          git fetch upstream
+
+      # Merge upstream changes into the main branch
+      - name: Merge changes
+        run: |
+          git checkout main
+          git merge upstream/main --allow-unrelated-histories || true
+
+      # Push changes back to the forked repository
+      - name: Push changes
+        run: |
+          git push origin main
