@@ -11,8 +11,8 @@ import { OrderReceipt } from '../pages/OrderReceipt';
 import { LoadingScreen } from '../components/ui/LoadingScreen';
 import { useSettings } from '../hooks/useSettings';
 import { AuthGuard } from '../components/auth/AuthGuard';
-import PaymentFailure from '../pages/paytech/Failed';
-import PaymentSuccess from '../pages/paytech/success';
+import PaymentFailure from '../pages/paytech/FailedPage';
+import PaymentSuccess from '../pages/paytech/SuccessPage';
 
 // Lazy load the Dashboard component
 const Dashboard = React.lazy(() =>
