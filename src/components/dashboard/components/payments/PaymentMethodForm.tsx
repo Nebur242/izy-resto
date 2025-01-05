@@ -123,11 +123,6 @@ export function PaymentMethodForm({
                 type="text"
                 {...register('name', {
                   required: 'Le nom est requis',
-                  validate: {
-                    notDefault: value =>
-                      value.toLowerCase() !== 'paiement à la livraison' ||
-                      'Ce nom est réservé pour la méthode par défaut',
-                  },
                 })}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
