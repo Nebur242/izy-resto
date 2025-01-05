@@ -1,15 +1,21 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { LandingModern, LandingMinimal, LandingGrid } from '../components/landing';
+import {
+  LandingModern,
+  LandingMinimal,
+  LandingGrid,
+} from '../components/landing';
 import { LoginPage } from '../pages/auth/LoginPage';
 import OrderTracking from '../pages/OrderTracking'; // Updated import
 import { OrderReceipt } from '../pages/OrderReceipt';
 import { LoadingScreen } from '../components/ui/LoadingScreen';
 import { useSettings } from '../hooks/useSettings';
 import { AuthGuard } from '../components/auth/AuthGuard';
+import PaymentFailure from '../pages/paytech/Failed';
+import PaymentSuccess from '../pages/paytech/success';
 
 // Lazy load the Dashboard component
-const Dashboard = React.lazy(() => 
+const Dashboard = React.lazy(() =>
   import('../pages/dashboard/Dashboard')
     .then(module => ({ default: module.default }))
     .catch(error => {
@@ -39,27 +45,29 @@ export function AppRoutes() {
       <Route path="/" element={getLandingComponent()} />
       <Route path="/order/:orderId" element={<OrderTracking />} />
       <Route path="/receipt" element={<OrderReceipt />} />
-      
+      <Route path="/paytech/success" element={<PaymentSuccess />} />
+      <Route path="/paytech/failed" element={<PaymentFailure />} />
+
       {/* Auth Routes */}
-      <Route 
-        path="/login" 
+      <Route
+        path="/login"
         element={
           <AuthGuard requireAuth={false}>
             <LoginPage />
           </AuthGuard>
-        } 
+        }
       />
 
       {/* Protected Routes */}
-      <Route 
-        path="/dashboard/*" 
+      <Route
+        path="/dashboard/*"
         element={
           <AuthGuard>
             <Suspense fallback={<LoadingScreen isLoading={true} />}>
               <Dashboard />
             </Suspense>
           </AuthGuard>
-        } 
+        }
       />
 
       {/* Catch-all redirect */}

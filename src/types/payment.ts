@@ -4,6 +4,8 @@ export interface PaymentMethod {
   qrCode?: string;
   isDefault?: boolean;
   url?: string;
+  apiKey?: string;
+  apiSecret?: string;
   active: boolean;
   createdAt: string;
   updatedAt: string;

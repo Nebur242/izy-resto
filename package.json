@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/qrcode": "^1.5.5",
+    "axios": "^1.7.9",
     "date-fns": "^2.30.0",
     "firebase": "^10.7.1",
     "framer-motion": "^10.16.16",
@@ -24,7 +25,8 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.49.2",
     "react-hot-toast": "^2.4.1",
-    "react-router-dom": "^6.21.0"
+    "react-router-dom": "^6.21.0",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.5",

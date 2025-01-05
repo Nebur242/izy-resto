@@ -1,14 +1,21 @@
 import { FirestoreService } from '../base/firestore.service';
 import { PaymentMethod } from '../../types/payment';
-import { collection, query, getDocs, where, doc, runTransaction } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  getDocs,
+  where,
+  doc,
+  runTransaction,
+} from 'firebase/firestore';
 import { db } from '../../lib/firebase/config';
 import { PaymentServiceError } from './errors';
 import { validatePaymentMethod } from './validators';
 import { initializeDefaultPaymentMethod } from './initialize';
-import { 
-  checkForExistingMethod, 
+import {
+  checkForExistingMethod,
   checkForExistingDefault,
-  formatPaymentData 
+  formatPaymentData,
 } from './utils';
 
 const DEFAULT_PAYMENT_NAME = 'Paiement à la livraison';
@@ -27,11 +34,14 @@ class PaymentService extends FirestoreService<PaymentMethod> {
         where('active', '==', true)
       );
       const snapshot = await getDocs(q);
-      
-      const methods = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as PaymentMethod));
+
+      const methods = snapshot.docs.map(
+        doc =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+          } as PaymentMethod)
+      );
 
       // If no methods exist, initialize default and retry
       if (methods.length === 0) {
@@ -59,7 +69,7 @@ class PaymentService extends FirestoreService<PaymentMethod> {
       // Validate payment method data
       await validatePaymentMethod(data);
 
-      return await runTransaction(db, async (transaction) => {
+      return await runTransaction(db, async transaction => {
         // Check for existing method with same name
         const exists = await checkForExistingMethod(data.name);
         if (exists) {
@@ -102,7 +112,7 @@ class PaymentService extends FirestoreService<PaymentMethod> {
 
   async update(id: string, data: Partial<PaymentMethod>): Promise<void> {
     try {
-      await runTransaction(db, async (transaction) => {
+      await runTransaction(db, async transaction => {
         const docRef = doc(db, this.collectionName, id);
         const docSnap = await transaction.get(docRef);
 
@@ -115,12 +125,12 @@ class PaymentService extends FirestoreService<PaymentMethod> {
 
         // Prevent modifying default payment method
         const currentMethod = docSnap.data() as PaymentMethod;
-        if (currentMethod.name === DEFAULT_PAYMENT_NAME) {
-          throw new PaymentServiceError(
-            'La méthode de paiement par défaut ne peut pas être modifiée',
-            'payment/modify-default'
-          );
-        }
+        // if (currentMethod.name === DEFAULT_PAYMENT_NAME) {
+        //   throw new PaymentServiceError(
+        //     'La méthode de paiement par défaut ne peut pas être modifiée',
+        //     'payment/modify-default'
+        //   );
+        // }
 
         // Check for name uniqueness if name is being updated
         if (data.name && data.name !== currentMethod.name) {
@@ -135,7 +145,7 @@ class PaymentService extends FirestoreService<PaymentMethod> {
 
         const updateData = {
           ...data,
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
 
         transaction.update(docRef, updateData);
@@ -154,7 +164,7 @@ class PaymentService extends FirestoreService<PaymentMethod> {
 
   async delete(id: string): Promise<void> {
     try {
-      await runTransaction(db, async (transaction) => {
+      await runTransaction(db, async transaction => {
         const docRef = doc(db, this.collectionName, id);
         const docSnap = await transaction.get(docRef);
 
@@ -177,7 +187,7 @@ class PaymentService extends FirestoreService<PaymentMethod> {
         // Soft delete by setting active to false
         transaction.update(docRef, {
           active: false,
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         });
       });
     } catch (error) {

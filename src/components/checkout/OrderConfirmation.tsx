@@ -9,6 +9,7 @@ import {
   CreditCard,
   Check,
   ExternalLink,
+  X,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useSettings } from '../../hooks/useSettings';
@@ -18,6 +19,8 @@ import { usePayments } from '../../hooks/usePayments';
 import { QRCodeModal } from './QRCodeModal';
 import { CartItem } from '../../types';
 import { PaymentMethod } from '../../types/payment';
+import { usePaytech } from '../../hooks/usePaytech';
+import { getOrderByRef } from '../../services/payments/paytech.service';
 
 interface OrderConfirmationProps {
   customerData: {
@@ -119,13 +122,18 @@ export function OrderConfirmation({
     }
 
     // For Wave payment
-    if (selectedPaymentMethod.url) {
+    if (selectedPaymentMethod.name.toLowerCase() === 'wave') {
       return (
         <>
           <ExternalLink className="w-4 h-4 mr-2" />
           Payer avec Wave
         </>
       );
+    }
+
+    // For Wave payment
+    if (selectedPaymentMethod.name.toLowerCase() === 'paytech') {
+      return <>Payer avec paytech</>;
     }
 
     // For QR code payment
@@ -140,6 +148,7 @@ export function OrderConfirmation({
 
     return 'Confirmer la commande';
   };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -323,17 +332,30 @@ export function OrderConfirmation({
           <ArrowLeft className="w-4 h-4 mr-2" />
           Retour
         </Button>
-        <Button
-          onClick={handleConfirm}
-          disabled={showPaymentMethods && !selectedPayment}
-          className={`
+        {selectedPaymentMethod?.name.toLowerCase() !== 'paytech' && (
+          <Button
+            onClick={handleConfirm}
+            disabled={showPaymentMethods && !selectedPayment}
+            className={`
             bg-gradient-to-r from-blue-600 to-indigo-600
             hover:from-blue-700 hover:to-indigo-700
             disabled:opacity-50 disabled:cursor-not-allowed
           `}
-        >
-          {renderPaymentButton()}
-        </Button>
+          >
+            {renderPaymentButton()}
+          </Button>
+        )}
+        {selectedPaymentMethod?.name.toLowerCase() === 'paytech' && (
+          <PayTechPaymentButton
+            onConfirm={onConfirm}
+            total={total}
+            cart={cart}
+            paymentMethod={{
+              apiKey: `${selectedPaymentMethod.apiKey}`,
+              apiSecret: `${selectedPaymentMethod.apiSecret}`,
+            }}
+          />
+        )}
       </div>
 
       {/* QR Code Modal */}
@@ -351,3 +373,104 @@ export function OrderConfirmation({
     </motion.div>
   );
 }
+
+const PayTechModal = ({
+  onClose,
+  iframeUrl,
+}: {
+  onClose: () => void;
+  iframeUrl: string;
+}) => {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        onClick={e => e.stopPropagation()}
+        className="relative w-full max-w-2xl aspect-square bg-white dark:bg-gray-800 rounded-2xl overflow-hidden min-h-[600px]"
+      >
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 z-10 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-lg"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <iframe src={iframeUrl} width={`100%`} height={'100%'}></iframe>
+      </motion.div>
+    </div>
+  );
+};
+
+const PayTechPaymentButton = ({
+  total,
+  paymentMethod,
+  cart,
+  onConfirm,
+}: // setHasPaid,
+{
+  paymentMethod: {
+    apiKey: string;
+    apiSecret: string;
+  };
+  total: number;
+  cart: CartItem[];
+  onConfirm: () => void;
+}) => {
+  const { isPaying, paymentSucceeded, paymentResponse, requestPayment, ref } =
+    usePaytech({
+      paymentMethod,
+      total,
+      cart,
+      onConfirm,
+    });
+
+  const [isClosed, setIsClosed] = useState(true);
+
+  const handleClose = async () => {
+    if (ref) {
+      const order = await getOrderByRef(ref);
+
+      if (order && order.status === 'sale_complete') {
+        console.log('confirm');
+        onConfirm();
+      }
+    }
+
+    setIsClosed(false);
+  };
+
+  return (
+    <>
+      <AnimatePresence>
+        {isClosed && paymentSucceeded && paymentResponse?.redirect_url && (
+          <PayTechModal
+            onClose={handleClose}
+            iframeUrl={paymentResponse?.redirect_url}
+          />
+        )}
+      </AnimatePresence>
+      <Button
+        disabled={isPaying}
+        onClick={
+          paymentSucceeded
+            ? () => {
+                setIsClosed(true);
+              }
+            : requestPayment
+        }
+        className={`
+    bg-gradient-to-r from-blue-600 to-indigo-600
+    hover:from-blue-700 hover:to-indigo-700
+    disabled:opacity-50 disabled:cursor-not-allowed
+  `}
+      >
+        Payer avec PayTech
+      </Button>
+    </>
+  );
+};

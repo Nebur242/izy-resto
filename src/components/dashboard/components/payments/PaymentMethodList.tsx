@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2, Trash2, QrCode } from 'lucide-react';
 import { PaymentMethod } from '../../../../types/payment';
@@ -15,7 +14,7 @@ export function PaymentMethodList({
   methods,
   isLoading,
   onEdit,
-  onDelete
+  onDelete,
 }: PaymentMethodListProps) {
   if (isLoading) {
     return (
@@ -33,7 +32,7 @@ export function PaymentMethodList({
   return (
     <div className="space-y-4">
       <AnimatePresence mode="popLayout">
-        {methods.map((method) => (
+        {methods.map(method => (
           <motion.div
             key={method.id}
             layout
@@ -54,7 +53,7 @@ export function PaymentMethodList({
                   <QrCode className="w-8 h-8 text-gray-400" />
                 </div>
               )}
-              
+
               <div>
                 <h3 className="font-medium text-lg">
                   {method.name}
@@ -80,7 +79,7 @@ export function PaymentMethodList({
                 variant="danger"
                 size="sm"
                 onClick={() => onDelete(method.id)}
-                disabled={method.isDefault}
+                disabled={methods.length < 2}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
