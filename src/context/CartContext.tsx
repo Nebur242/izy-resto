@@ -18,15 +18,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addToCart = (item: MenuItem & { quantity?: number }) => {
     setCart(currentCart => {
-      const existingItem = currentCart.find(cartItem => cartItem.id === item.id);
-      
+      const existingItem = currentCart.find(
+        cartItem => cartItem.id === item.id
+      );
+
       if (existingItem) {
         // Add the new quantity to the existing quantity
         const newQuantity = existingItem.quantity + (item.quantity || 1);
-        
+
         // Check if we have enough stock
         if (item.stockQuantity && newQuantity > item.stockQuantity) {
-          toast.error(`Stock insuffisant. Maximum disponible: ${item.stockQuantity}`);
+          toast.error(
+            `Stock insuffisant. Maximum disponible: ${item.stockQuantity}`
+          );
           return currentCart;
         }
 
@@ -38,10 +42,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // toast.success('Quantité mise à jour');
         return updatedCart;
       }
-      
+
       // Check initial stock for new item
       if (item.stockQuantity && (item.quantity || 1) > item.stockQuantity) {
-        toast.error(`Stock insuffisant. Maximum disponible: ${item.stockQuantity}`);
+        toast.error(
+          `Stock insuffisant. Maximum disponible: ${item.stockQuantity}`
+        );
         return currentCart;
       }
 
@@ -59,12 +65,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const updateQuantity = (itemId: string, quantity: number) => {
     setCart(currentCart => {
       const item = currentCart.find(i => i.id === itemId);
-      
+
       if (!item) return currentCart;
 
       // Check stock limit
       if (item.stockQuantity && quantity > item.stockQuantity) {
-        toast.error(`Stock insuffisant. Maximum disponible: ${item.stockQuantity}`);
+        toast.error(
+          `Stock insuffisant. Maximum disponible: ${item.stockQuantity}`
+        );
         return currentCart;
       }
 
@@ -86,14 +94,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ 
-      cart, 
-      addToCart, 
-      removeFromCart, 
-      updateQuantity, 
-      clearCart, 
-      total 
-    }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        total,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

@@ -5,6 +5,7 @@ export interface RestaurantSettings {
   name: string;
   description: string;
   coverImage: string;
+  email?: string;
   currency: 'USD' | 'EUR' | 'XOF';
   openingHours: {
     [key: string]: { open: string; close: string; closed: boolean };
@@ -23,7 +24,7 @@ export function useSettings() {
     try {
       setIsLoading(true);
       const data = await settingsService.getSettings();
-      setSettings(data as RestaurantSettings);
+      setSettings(data);
     } catch (error) {
       console.error('Error loading settings:', error);
     } finally {

@@ -21,6 +21,7 @@ import { CartItem } from '../../types';
 import { PaymentMethod } from '../../types/payment';
 import { usePaytech } from '../../hooks/usePaytech';
 import { getOrderByRef } from '../../services/payments/paytech.service';
+import { StripePayment } from './StripePayment';
 
 interface OrderConfirmationProps {
   customerData: {
@@ -131,9 +132,14 @@ export function OrderConfirmation({
       );
     }
 
-    // For Wave payment
+    // For Paytech payment
     if (selectedPaymentMethod.name.toLowerCase() === 'paytech') {
       return <>Payer avec paytech</>;
+    }
+
+    // For Stripe payment
+    if (selectedPaymentMethod.name.toLowerCase() === 'stripe') {
+      return <>Payer avec Stripe</>;
     }
 
     // For QR code payment
@@ -332,7 +338,9 @@ export function OrderConfirmation({
           <ArrowLeft className="w-4 h-4 mr-2" />
           Retour
         </Button>
-        {selectedPaymentMethod?.name.toLowerCase() !== 'paytech' && (
+        {!['paytech', 'stripe'].includes(
+          selectedPaymentMethod?.name.toLowerCase() || ''
+        ) && (
           <Button
             onClick={handleConfirm}
             disabled={showPaymentMethods && !selectedPayment}
@@ -345,17 +353,29 @@ export function OrderConfirmation({
             {renderPaymentButton()}
           </Button>
         )}
-        {selectedPaymentMethod?.name.toLowerCase() === 'paytech' && (
-          <PayTechPaymentButton
-            onConfirm={onConfirm}
-            total={total}
-            cart={cart}
-            paymentMethod={{
-              apiKey: `${selectedPaymentMethod.apiKey}`,
-              apiSecret: `${selectedPaymentMethod.apiSecret}`,
-            }}
-          />
-        )}
+        {selectedPaymentMethod?.name.toLowerCase() === 'stripe' &&
+          settings?.currency && (
+            <StripePayment
+              apiKey={selectedPaymentMethod.apiKey!}
+              apiSecret={selectedPaymentMethod.apiSecret!}
+              amount={total}
+              currency={settings.currency.toLowerCase()}
+              onConfirm={onConfirm}
+            />
+          )}
+        {selectedPaymentMethod?.name.toLowerCase() === 'paytech' &&
+          settings?.currency && (
+            <PayTechPaymentButton
+              onConfirm={onConfirm}
+              total={total}
+              cart={cart}
+              paymentMethod={{
+                apiKey: `${selectedPaymentMethod.apiKey}`,
+                apiSecret: `${selectedPaymentMethod.apiSecret}`,
+              }}
+              currency={settings.currency}
+            />
+          )}
       </div>
 
       {/* QR Code Modal */}
@@ -411,6 +431,7 @@ const PayTechPaymentButton = ({
   paymentMethod,
   cart,
   onConfirm,
+  currency,
 }: // setHasPaid,
 {
   paymentMethod: {
@@ -419,6 +440,7 @@ const PayTechPaymentButton = ({
   };
   total: number;
   cart: CartItem[];
+  currency: string;
   onConfirm: () => void;
 }) => {
   const { isPaying, paymentSucceeded, paymentResponse, requestPayment, ref } =
@@ -427,6 +449,7 @@ const PayTechPaymentButton = ({
       total,
       cart,
       onConfirm,
+      currency,
     });
 
   const [isClosed, setIsClosed] = useState(true);

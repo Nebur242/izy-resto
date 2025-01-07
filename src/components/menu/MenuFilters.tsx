@@ -8,7 +8,10 @@ interface MenuFiltersProps {
   onCategoryChange: (category: string) => void;
 }
 
-export function MenuFilters({ activeCategory, onCategoryChange }: MenuFiltersProps) {
+export function MenuFilters({
+  activeCategory,
+  onCategoryChange,
+}: MenuFiltersProps) {
   const { categories, isLoading } = useCategories();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -20,15 +23,15 @@ export function MenuFilters({ activeCategory, onCategoryChange }: MenuFiltersPro
       const container = scrollContainerRef.current;
       if (container) {
         const overflow = container.scrollWidth > container.clientWidth;
-        
+
         // Set overflow state, ensuring it only shows when we have more than 2 categories
         const shouldShowHint = overflow && categories.length > 2;
         setIsOverflowing(shouldShowHint);
-        
+
         // Show hint only if overflowing
         if (shouldShowHint) {
           setShowScrollHint(true);
-          
+
           // Hide hint after 10 seconds
           const timeoutId = setTimeout(() => {
             setShowScrollHint(false);
@@ -42,7 +45,7 @@ export function MenuFilters({ activeCategory, onCategoryChange }: MenuFiltersPro
     // Check immediately and on resize
     checkOverflow();
     const resizeObserver = new ResizeObserver(checkOverflow);
-    
+
     if (scrollContainerRef.current) {
       resizeObserver.observe(scrollContainerRef.current);
     }
@@ -62,7 +65,7 @@ export function MenuFilters({ activeCategory, onCategoryChange }: MenuFiltersPro
       <div className="flex h-20 items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
           className="relative h-12 w-12"
         >
           <div className="absolute inset-0 rounded-full border-2 border-gray-200 dark:border-gray-700" />
@@ -77,7 +80,7 @@ export function MenuFilters({ activeCategory, onCategoryChange }: MenuFiltersPro
       {/* Scroll hint positioned above the container */}
       <AnimatePresence>
         {showScrollHint && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -113,17 +116,19 @@ export function MenuFilters({ activeCategory, onCategoryChange }: MenuFiltersPro
               relative min-w-fit snap-start flex items-center gap-2 
               rounded-full px-4 py-2 text-sm font-medium 
               transition-all hover:shadow-md
-              ${activeCategory === 'all' 
-                ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white' 
-                : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}
+              ${
+                activeCategory === 'all'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white'
+                  : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+              }
             `}
           >
             <UtensilsCrossed className="h-4 w-4" />
-            <span>Tous les plats</span>
+            <span>Menu principal</span>
           </button>
 
           {/* Dynamic Categories */}
-          {categories.map((category) => (
+          {categories.map(category => (
             <button
               key={category.id}
               onClick={() => onCategoryChange(category.id)}
@@ -131,9 +136,11 @@ export function MenuFilters({ activeCategory, onCategoryChange }: MenuFiltersPro
                 relative min-w-fit snap-start flex items-center 
                 rounded-full px-4 py-2 text-sm font-medium 
                 transition-all hover:shadow-md
-                ${activeCategory === category.id 
-                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white' 
-                  : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'}
+                ${
+                  activeCategory === category.id
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white'
+                    : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+                }
               `}
             >
               <span>{category.name}</span>

@@ -6,6 +6,8 @@ export interface SocialMediaProfile {
   active: boolean;
 }
 
+export type Currency = 'USD' | 'EUR' | 'CAD' | 'MAD' | 'XOF' | 'XAF' | 'CDF';
+
 export interface SEOSettings {
   title: string;
   favicon: string;
@@ -19,11 +21,12 @@ export interface SEOSettings {
 export interface RestaurantSettings {
   name: string;
   description: string;
+  email: string;
   logo: string;
   logoWidth?: number;
   logoHeight?: number;
   coverImage: string;
-  currency: 'USD' | 'EUR' | 'XOF';
+  currency: Currency;
   defaultTheme: 'light' | 'dark'; // Add defaultTheme
   openingHours: {
     [key: string]: {

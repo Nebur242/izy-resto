@@ -16,9 +16,10 @@ interface PaymentMethodFormProps {
 const paymentType: Record<string, PaymentMethodType> = {
   Wave: 'Wave',
   PayTech: 'PayTech',
+  Stripe: 'Stripe',
 };
 
-type PaymentMethodType = 'Wave' | 'PayTech' | 'Autres';
+type PaymentMethodType = 'Wave' | 'PayTech' | 'Stripe' | 'Autres';
 
 export function PaymentMethodForm({
   method,
@@ -54,6 +55,10 @@ export function PaymentMethodForm({
 
     if (methodType === 'PayTech') {
       return setValue('name', 'PayTech');
+    }
+
+    if (methodType === 'Stripe') {
+      return setValue('name', 'Stripe');
     }
   }, [methodType, setValue]);
 
@@ -108,8 +113,9 @@ export function PaymentMethodForm({
               onChange={e => setMethodType(e.target.value as PaymentMethodType)}
               className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
             >
-              <option value="Wave">Wave</option>
               <option value="PayTech">PayTech</option>
+              <option value="Stripe">Stripe</option>
+              <option value="Wave">Wave</option>
               <option value="Autres">Autres</option>
             </select>
           </div>
@@ -192,6 +198,47 @@ export function PaymentMethodForm({
                 {errors.apiSecret && (
                   <p className="mt-1 text-sm text-red-500">
                     {errors.apiSecret.message}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+
+          {methodType === 'Stripe' && (
+            <>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  PUBLIC KEY
+                </label>
+                <input
+                  type="text"
+                  {...register('apiKey', {
+                    required: 'API key obligatoire',
+                  })}
+                  className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+                  placeholder="pk_test_VePHdqKTYQjKNInc7u56JBrQ"
+                />
+                {errors.apiKey && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.apiKey.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  SECRET KEY
+                </label>
+                <input
+                  type="text"
+                  {...register('apiSecret', {
+                    required: 'API key obligatoire',
+                  })}
+                  className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+                  placeholder="sk_test_VePHdqKTYQjKNInc7u56JBrQ"
+                />
+                {errors.apiKey && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.apiKey.message}
                   </p>
                 )}
               </div>

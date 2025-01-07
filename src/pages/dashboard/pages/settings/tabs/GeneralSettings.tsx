@@ -6,13 +6,14 @@ import { RestaurantSettings } from '../../../../../types';
 import { SocialMediaSettings } from './SocialMediaSettings';
 
 export function GeneralSettings() {
-  const { register, watch, setValue, formState } = useFormContext<RestaurantSettings>();
+  const { register, watch, setValue, formState } =
+    useFormContext<RestaurantSettings>();
 
   // Mark form as dirty when images change
   const handleImageChange = (field: 'logo' | 'coverImage', value: string) => {
-    setValue(field, value, { 
+    setValue(field, value, {
       shouldDirty: true,
-      shouldTouch: true
+      shouldTouch: true,
     });
   };
 
@@ -49,25 +50,32 @@ export function GeneralSettings() {
           </div>
 
           <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
+              type="text"
+              {...register('email')}
+              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+            />
+          </div>
+
+          <div>
             <LogoUploader
               value={watch('logo')}
-              onChange={(url) => handleImageChange('logo', url)}
+              onChange={url => handleImageChange('logo', url)}
             />
           </div>
 
           <div>
             <LogoUploader
               value={watch('coverImage')}
-              onChange={(url) => handleImageChange('coverImage', url)}
+              onChange={url => handleImageChange('coverImage', url)}
               label="Image de Couverture"
               description="Format recommandé: JPG ou PNG en haute résolution (1920x1080px minimum)"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Devise
-            </label>
+            <label className="block text-sm font-medium mb-1">Devise</label>
             <select
               {...register('currency')}
               className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"

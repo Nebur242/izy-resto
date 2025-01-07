@@ -11,6 +11,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^3.1.1",
+    "@stripe/stripe-js": "^5.4.0",
     "@types/qrcode": "^1.5.5",
     "axios": "^1.7.9",
     "date-fns": "^2.30.0",

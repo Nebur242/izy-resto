@@ -1,9 +1,11 @@
+import { Currency } from '../../types';
+
 export interface RestaurantSettings {
   name: string;
   description: string;
   logo: string;
   coverImage: string;
-  currency: 'USD' | 'EUR' | 'XOF';
+  currency: Currency;
   openingHours: {
     [key: string]: {
       open: string;

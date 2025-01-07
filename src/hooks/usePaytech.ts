@@ -12,9 +12,8 @@ export const usePaytech = ({
   total,
   cart,
   onConfirm,
-}: //   commandRef,
-{
-  //   commandRef: string;
+  currency,
+}: {
   paymentMethod: {
     apiKey: string;
     apiSecret: string;
@@ -22,6 +21,7 @@ export const usePaytech = ({
   total: number;
   cart: CartItem[];
   onConfirm: () => void;
+  currency: string;
 }) => {
   const [isPaying, setIsPaying] = useState(false);
   const [paymentSucceeded, setPaymentSucceeded] = useState(false);
@@ -51,7 +51,7 @@ export const usePaytech = ({
       const data = {
         item_name: cart.map(item => item.name).join(' - '),
         item_price: total,
-        currency: 'XOF',
+        currency,
         ref_command: commandRef,
         command_name: 'Paiement de la commande',
         env: 'prod',

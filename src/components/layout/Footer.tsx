@@ -1,5 +1,12 @@
-import React from 'react';
-import { Facebook, Instagram, Twitter, MapPin, Phone, Mail, Youtube } from 'lucide-react';
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  MapPin,
+  Phone,
+  Mail,
+  Youtube,
+} from 'lucide-react';
 import { Container } from '../ui/Container';
 import { useSettings } from '../../hooks/useSettings';
 import { SocialMediaProfile } from '../../types/settings';
@@ -13,7 +20,7 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
     facebook: Facebook,
     instagram: Instagram,
     twitter: Twitter,
-    youtube:Youtube
+    youtube: Youtube,
   };
 
   const Icon = icons[profile.platform];
@@ -34,11 +41,12 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
 
 export function Footer() {
   const { settings } = useSettings();
-  
+
   // Filter only active social media profiles
-  const activeSocialProfiles = settings?.socialMedia?.filter(profile => 
-    profile.active && profile.url.trim()
-  ) || [];
+  const activeSocialProfiles =
+    settings?.socialMedia?.filter(
+      profile => profile.active && profile.url.trim()
+    ) || [];
 
   return (
     <footer className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-8">
@@ -49,10 +57,10 @@ export function Footer() {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
               {settings?.name || 'Restaurant'}
             </h3>
-            
+
             {activeSocialProfiles.length > 0 && (
               <div className="flex justify-center md:justify-start gap-4 mb-4">
-                {activeSocialProfiles.map((profile) => (
+                {activeSocialProfiles.map(profile => (
                   <SocialMediaIcon key={profile.platform} profile={profile} />
                 ))}
               </div>
@@ -73,10 +81,12 @@ export function Footer() {
                 <span>{settings.phone}</span>
               </p>
             )}
-            <p className="flex items-center justify-center md:justify-end gap-2 text-sm text-gray-600 dark:text-gray-400">
-              <Mail className="w-4 h-4 flex-shrink-0" />
-              <span>contact@restaurant.com</span>
-            </p>
+            {settings?.email && (
+              <p className="flex items-center justify-center md:justify-end gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <Mail className="w-4 h-4 flex-shrink-0" />
+                <span>{settings?.email}</span>
+              </p>
+            )}
           </div>
         </div>
       </Container>
