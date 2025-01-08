@@ -17,33 +17,36 @@ export function OrderStats({ stats }: OrderStatsProps) {
       title: 'Total Commandes',
       value: stats.total,
       icon: ShoppingBag,
-      color: 'blue'
+      color: 'blue',
     },
     {
       title: 'En Attente',
       value: stats.pending,
       icon: Clock,
-      color: 'yellow'
+      color: 'yellow',
     },
     {
       title: 'En Préparation',
       value: stats.preparing,
       icon: AlertCircle,
-      color: 'purple'
+      color: 'purple',
     },
     {
       title: 'Livrées',
       value: stats.delivered,
       icon: CheckCircle,
-      color: 'green'
-    }
+      color: 'green',
+    },
   ];
 
   const colors = {
     blue: 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400',
-    yellow: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-400',
-    purple: 'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400',
-    green: 'bg-green-50 text-green-600 dark:bg-green-900/50 dark:text-green-400'
+    yellow:
+      'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-400',
+    purple:
+      'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400',
+    green:
+      'bg-green-50 text-green-600 dark:bg-green-900/50 dark:text-green-400',
   };
 
   return (

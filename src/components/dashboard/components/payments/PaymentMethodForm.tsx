@@ -17,9 +17,15 @@ const paymentType: Record<string, PaymentMethodType> = {
   Wave: 'Wave',
   PayTech: 'PayTech',
   Stripe: 'Stripe',
+  'Paiement à la livraison': 'Paiement à la livraison',
 };
 
-type PaymentMethodType = 'Wave' | 'PayTech' | 'Stripe' | 'Autres';
+type PaymentMethodType =
+  | 'Wave'
+  | 'PayTech'
+  | 'Stripe'
+  | 'Paiement à la livraison'
+  | 'Autres';
 
 export function PaymentMethodForm({
   method,
@@ -59,6 +65,10 @@ export function PaymentMethodForm({
 
     if (methodType === 'Stripe') {
       return setValue('name', 'Stripe');
+    }
+
+    if (methodType === 'Paiement à la livraison') {
+      return setValue('name', 'Paiement à la livraison');
     }
   }, [methodType, setValue]);
 
@@ -113,12 +123,17 @@ export function PaymentMethodForm({
               onChange={e => setMethodType(e.target.value as PaymentMethodType)}
               className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
             >
+              <option value="Paiement à la livraison">
+                Paiement à la livraison
+              </option>
               <option value="PayTech">PayTech</option>
               <option value="Stripe">Stripe</option>
               <option value="Wave">Wave</option>
               <option value="Autres">Autres</option>
             </select>
           </div>
+
+          {methodType === 'Paiement à la livraison' && <></>}
 
           {methodType === 'Autres' && (
             <div>

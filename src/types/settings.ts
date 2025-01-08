@@ -1,7 +1,14 @@
 import { HeaderStyle, LandingTemplate } from './theme';
 
 export interface SocialMediaProfile {
-  platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'youtube';
+  platform:
+    | 'facebook'
+    | 'instagram'
+    | 'twitter'
+    | 'linkedin'
+    | 'youtube'
+    | 'tiktok'
+    | 'whatsapp';
   url: string;
   active: boolean;
 }
@@ -41,4 +48,5 @@ export interface RestaurantSettings {
   activeHeader: HeaderStyle;
   socialMedia: SocialMediaProfile[];
   seo: SEOSettings;
+  canDeliver: boolean;
 }

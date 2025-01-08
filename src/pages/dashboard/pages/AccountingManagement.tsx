@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Tabs } from '../../../components/ui/Tabs';
 import { AccountingOverview } from '../../../components/dashboard/components/accounting/AccountingOverview';
 import { TransactionList } from '../../../components/dashboard/components/accounting/TransactionList';
@@ -14,10 +14,13 @@ import { FinancialStatement } from '../../../components/dashboard/components/acc
 import { accountingService } from '../../../services/accounting/accounting.service';
 import { exportToPng } from '../../../utils/export';
 import toast from 'react-hot-toast';
+import { useSettings } from '../../../hooks';
 
 const tabs = [{ id: 'transactions', label: 'Transactions' }];
 
 export function AccountingManagement() {
+  const { settings, isLoading: settingsLoading } = useSettings();
+
   const [activeTab, setActiveTab] = useState('transactions');
   const [dateRange, setDateRange] = useState({
     startDate: new Date(new Date().setDate(0)), // First day of current month
@@ -68,7 +71,7 @@ export function AccountingManagement() {
   };
 
   const handleExport = async () => {
-    if (!statementRef.current) return;
+    if (!statementRef.current || !settings) return;
 
     try {
       // Ensure we have the latest transactions for the selected period
@@ -76,11 +79,14 @@ export function AccountingManagement() {
         dateRange
       );
 
+      console.log(fetchedTransactions);
+
       // Update the ref content with fresh data
       const statement = (
         <FinancialStatement
           transactions={fetchedTransactions}
           period={dateRange}
+          settings={settings as any}
         />
       );
 
@@ -136,7 +142,11 @@ export function AccountingManagement() {
                   <Plus className="w-4 h-4 mr-2" />
                   Ajouter une Transaction
                 </Button>
-                <Button variant="secondary" onClick={handleExport}>
+                <Button
+                  disabled={settingsLoading && !settings}
+                  variant="secondary"
+                  onClick={handleExport}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Télécharger les États financiers
                 </Button>
@@ -167,11 +177,17 @@ export function AccountingManagement() {
         />
       )}
 
-      <div className="hidden">
-        <div ref={statementRef}>
-          <FinancialStatement transactions={transactions} period={dateRange} />
+      {settings && (
+        <div className="hidden">
+          <div ref={statementRef}>
+            <FinancialStatement
+              transactions={transactions}
+              period={dateRange}
+              settings={settings as any}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

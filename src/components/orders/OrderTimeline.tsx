@@ -9,7 +9,11 @@ interface OrderTimelineProps {
   updatedAt: string;
 }
 
-export function OrderTimeline({ status, createdAt, updatedAt }: OrderTimelineProps) {
+export function OrderTimeline({
+  status,
+  createdAt,
+  updatedAt,
+}: OrderTimelineProps) {
   const statuses: OrderStatus[] = ['pending', 'preparing', 'delivered'];
   const currentIndex = statuses.indexOf(status);
 
@@ -17,7 +21,7 @@ export function OrderTimeline({ status, createdAt, updatedAt }: OrderTimelinePro
   const statusLabels: { [key in OrderStatus]: string } = {
     pending: 'En attente',
     preparing: 'En préparation',
-    delivered: 'Livré'
+    delivered: 'Livraison',
   };
 
   return (
@@ -25,7 +29,7 @@ export function OrderTimeline({ status, createdAt, updatedAt }: OrderTimelinePro
       <div className="relative">
         {/* Timeline Line */}
         <div className="absolute left-1/2 transform -translate-x-1/2 top-2.5 h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
-        
+
         {/* Status Indicators */}
         <div className="relative flex justify-between">
           {statuses.map((s, index) => {
@@ -45,12 +49,12 @@ export function OrderTimeline({ status, createdAt, updatedAt }: OrderTimelinePro
                     isActive ? 'ring-4 ring-blue-100 dark:ring-blue-900' : ''
                   }`}
                 />
-                
+
                 {/* Status Label */}
                 <span className="mt-2 text-sm text-center">
                   {statusLabels[s]}
                 </span>
-                
+
                 {/* Timestamp */}
                 {index === 0 && (
                   <span className="text-xs text-gray-500 mt-1">

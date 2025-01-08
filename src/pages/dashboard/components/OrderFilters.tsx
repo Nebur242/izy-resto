@@ -10,25 +10,25 @@ interface OrderFiltersProps {
   onDateRangeChange: (range: { from?: Date; to?: Date }) => void;
 }
 
-export function OrderFilters({ 
-  currentFilter, 
+export function OrderFilters({
+  currentFilter,
   onFilterChange,
   dateRange,
-  onDateRangeChange 
+  onDateRangeChange,
 }: OrderFiltersProps) {
   const filters: Array<{ value: OrderStatus | 'all'; label: string }> = [
     { value: 'all', label: 'Toutes les commandes' },
     { value: 'pending', label: 'En Attente' },
     { value: 'preparing', label: 'En Préparation' },
     { value: 'ready', label: 'Prêt' },
-    { value: 'delivered', label: 'Livré' },
-    { value: 'cancelled', label: 'Annulé' }
+    { value: 'delivered', label: 'Livraison' },
+    { value: 'cancelled', label: 'Annulé' },
   ];
 
   const presets = [
     { label: 'Ce Jour', days: 0 },
     { label: '7 Derniers Jours', days: 7 },
-    { label: '30 Derniers Jours', days: 30 }
+    { label: '30 Derniers Jours', days: 30 },
   ];
 
   const handleDatePreset = (days: number) => {
@@ -74,11 +74,7 @@ export function OrderFilters({
           </Button>
         ))}
         {(dateRange.from || dateRange.to) && (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={clearDateRange}
-          >
+          <Button variant="secondary" size="sm" onClick={clearDateRange}>
             Réinitialiser le filter
           </Button>
         )}

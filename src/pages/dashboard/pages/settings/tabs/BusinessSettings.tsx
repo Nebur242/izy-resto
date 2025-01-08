@@ -1,12 +1,21 @@
-import React from 'react';
-import { Clock, Globe } from 'lucide-react';
+import { Clock, Globe, Truck } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';
 
 export function BusinessSettings() {
-  const { register, watch } = useFormContext<RestaurantSettings>();
+  const { register, watch, setValue } = useFormContext<RestaurantSettings>();
 
-  const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const canDeliver = watch('canDeliver');
+
+  const days = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  ];
   const dayNames = {
     monday: 'Lundi',
     tuesday: 'Mardi',
@@ -14,7 +23,11 @@ export function BusinessSettings() {
     thursday: 'Jeudi',
     friday: 'Vendredi',
     saturday: 'Samedi',
-    sunday: 'Dimanche'
+    sunday: 'Dimanche',
+  };
+
+  const handleActivateDelivery = () => {
+    setValue('canDeliver', !canDeliver);
   };
 
   return (
@@ -55,9 +68,11 @@ export function BusinessSettings() {
         </div>
 
         <div className="space-y-4">
-          {days.map((day) => (
+          {days.map(day => (
             <div key={day} className="flex items-center space-x-4">
-              <span className="w-32">{dayNames[day as keyof typeof dayNames]}</span>
+              <span className="w-32">
+                {dayNames[day as keyof typeof dayNames]}
+              </span>
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -84,6 +99,21 @@ export function BusinessSettings() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <h2 className="text-xl font-semibold">Activation de la livraison</h2>
+        </div>
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            {...register(`canDeliver` as const)}
+            className="rounded border-gray-300 dark:border-gray-600"
+          />
+          <span>{canDeliver ? 'Actif' : 'Inactif'}</span>
+        </label>
       </section>
     </div>
   );

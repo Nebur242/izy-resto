@@ -1,14 +1,18 @@
 import { Currency } from '../types';
 
-export function formatCurrency(amount: number | string | null | undefined, currency?: Currency): string {
+export function formatCurrency(
+  amount: number | string | null | undefined,
+  currency?: Currency
+): string {
   // Handle null/undefined
   if (amount === null || amount === undefined) {
     return '0';
   }
 
   // Convert string to number if needed
-  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-  
+  const numericAmount =
+    typeof amount === 'string' ? parseFloat(amount) : amount;
+
   // Validate the amount is a number
   if (isNaN(numericAmount)) {
     console.error('Invalid amount provided to formatCurrency:', amount);
@@ -21,7 +25,9 @@ export function formatCurrency(amount: number | string | null | undefined, curre
     case 'XOF':
       return `${Math.round(numericAmount).toLocaleString()} FCFA`;
     default:
-      return `$${numericAmount.toFixed(2)}`;
+      return currency
+        ? `${Math.round(numericAmount).toLocaleString()} ${currency}`
+        : `${Math.round(numericAmount).toLocaleString()} FCFA`;
   }
 }
 

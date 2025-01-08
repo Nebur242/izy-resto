@@ -4,6 +4,7 @@ import { LogoUploader } from '../../../../../components/settings/LogoUploader';
 import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';
 import { SocialMediaSettings } from './SocialMediaSettings';
+import { allCurrencies } from '../../../../../constants/defaultSettings';
 
 export function GeneralSettings() {
   const { register, watch, setValue, formState } =
@@ -16,6 +17,9 @@ export function GeneralSettings() {
       shouldTouch: true,
     });
   };
+
+  const currency = watch('currency');
+  const currencyObject = allCurrencies.find(cur => cur.value === currency);
 
   return (
     <div className="space-y-8">
@@ -80,10 +84,28 @@ export function GeneralSettings() {
               {...register('currency')}
               className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
             >
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="XOF">XOF (FCFA)</option>
+              {allCurrencies.map(currency => (
+                <option value={currency.value}>{currency.label}</option>
+              ))}
             </select>
+            {currencyObject?.infos && (
+              <div
+                className="flex mt-4 items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800"
+                role="alert"
+              >
+                <svg
+                  className="flex-shrink-0 inline w-4 h-4 me-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                </svg>
+                <span className="sr-only">Info</span>
+                <div>{currencyObject.infos}</div>
+              </div>
+            )}
           </div>
         </div>
       </section>

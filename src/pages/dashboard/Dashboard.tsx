@@ -1,5 +1,3 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from './DashboardLayout';
 import { useStaffCheck } from '../../hooks/useStaffCheck';
 import { usePageLoading } from '../../hooks/usePageLoading';
@@ -11,6 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 export default function Dashboard() {
   const { logout } = useAuth();
   const { isStaff, staffData, isLoading: staffLoading } = useStaffCheck();
+
   const { isLoading: pageLoading } = usePageLoading();
 
   if (pageLoading || staffLoading) {

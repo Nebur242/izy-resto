@@ -3,13 +3,12 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { useCart } from '../../context/CartContext';
-// import { useSettings } from '../../hooks/useSettings';
-// import { usePayments } from '../../hooks/usePayments';
 import { orderService } from '../../services/orders/order.service';
 import toast from 'react-hot-toast';
 import { Utensils, Truck, AlertCircle } from 'lucide-react';
 import { OrderConfirmation } from './OrderConfirmation';
 import { PaymentMethod } from '../../types/payment';
+import { useSettings } from '../../hooks';
 
 interface CheckoutFormData {
   name?: string;
@@ -29,7 +28,7 @@ type CheckoutStep = 'form' | 'confirmation';
 export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   const navigate = useNavigate();
   const { cart, total, clearCart } = useCart();
-  // const { settings } = useSettings();
+  const { settings } = useSettings();
   // const { paymentMethods } = usePayments();
   const [diningOption, setDiningOption] = useState<DiningOption>('delivery');
   const [step, setStep] = useState<CheckoutStep>('form');
@@ -136,10 +135,11 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
     <div className="space-y-6">
       {/* Dining Options */}
       <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={() => setDiningOption('delivery')}
-          className={`
+        {settings?.canDeliver && (
+          <button
+            type="button"
+            onClick={() => setDiningOption('delivery')}
+            className={`
            p-4 rounded-xl border-2 transition-all duration-200
            flex flex-col items-center gap-2 relative overflow-hidden
            ${
@@ -148,19 +148,20 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
                : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
            }
          `}
-        >
-          {diningOption === 'delivery' && (
-            <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-400/10" />
-          )}
-          <Truck
-            className={`w-6 h-6 ${
-              diningOption === 'delivery'
-                ? 'text-blue-500 dark:text-blue-400'
-                : 'text-gray-500 dark:text-gray-400'
-            }`}
-          />
-          <span className="font-medium text-sm">Livraison</span>
-        </button>
+          >
+            {diningOption === 'delivery' && (
+              <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-400/10" />
+            )}
+            <Truck
+              className={`w-6 h-6 ${
+                diningOption === 'delivery'
+                  ? 'text-blue-500 dark:text-blue-400'
+                  : 'text-gray-500 dark:text-gray-400'
+              }`}
+            />
+            <span className="font-medium text-sm">Livraison</span>
+          </button>
+        )}
 
         <button
           type="button"

@@ -13,24 +13,28 @@ interface VariantManagerProps {
   onChange: (variants: MenuItemVariantPrice[]) => void;
 }
 
-export function VariantManager({ variants, value, onChange }: VariantManagerProps) {
-const handleAddCombination = (e: React.MouseEvent) => {
-  e.preventDefault();
-  e.stopPropagation();
-  
-  const newCombination = variants.map(v => {
-    const unusedValue = v.values.find(val => 
-      !value.some(combo => combo.variantCombination.includes(`${v.name}: ${val}`))
-    );
-    return `${v.name}: ${unusedValue || ''}`;
-  });
+export function VariantManager({
+  variants,
+  value,
+  onChange,
+}: VariantManagerProps) {
+  const handleAddCombination = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-  onChange([...value, {
-    variantCombination: newCombination,
-    price: 0,
-    image: ''
-  }]);
-};
+    const newCombination: string[] = [];
+
+    onChange(
+      [
+        ...value,
+        {
+          variantCombination: newCombination,
+          price: 0,
+          image: '',
+        },
+      ].filter(Boolean)
+    );
+  };
 
   const handleRemoveCombination = (index: number, e?: React.MouseEvent) => {
     // Prevent form submission
@@ -43,20 +47,10 @@ const handleAddCombination = (e: React.MouseEvent) => {
 
   const handleCombinationChange = (index: number, combination: string[]) => {
     // Check if combination already exists in other variants
-    const exists = value.some((v, i) => 
-      i !== index && // Skip current variant
-      JSON.stringify([...v.variantCombination].sort()) === JSON.stringify([...combination].sort())
-    );
-
-    if (exists) {
-      toast.error('Cette combinaison existe déjà');
-      return;
-    }
-
     const newVariants = [...value];
     newVariants[index] = {
       ...newVariants[index],
-      variantCombination: combination
+      variantCombination: combination,
     };
     onChange(newVariants);
   };
@@ -72,7 +66,7 @@ const handleAddCombination = (e: React.MouseEvent) => {
             Gérez les différentes combinaisons de variantes et leurs prix
           </p>
         </div>
-        <Button 
+        <Button
           type="button" // Add type="button"
           onClick={handleAddCombination}
         >
@@ -109,7 +103,7 @@ const handleAddCombination = (e: React.MouseEvent) => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{
                   layout: { duration: 0.2 },
-                  opacity: { duration: 0.2 }
+                  opacity: { duration: 0.2 },
                 }}
               >
                 <VariantCombination
@@ -117,18 +111,20 @@ const handleAddCombination = (e: React.MouseEvent) => {
                   combination={variantPrice.variantCombination}
                   price={variantPrice.price}
                   image={variantPrice.image}
-                  onCombinationChange={(combination) => handleCombinationChange(index, combination)}
-                  onPriceChange={(price) => {
+                  onCombinationChange={combination =>
+                    handleCombinationChange(index, combination)
+                  }
+                  onPriceChange={price => {
                     const newVariants = [...value];
                     newVariants[index] = { ...newVariants[index], price };
                     onChange(newVariants);
                   }}
-                  onImageChange={(url) => {
+                  onImageChange={url => {
                     const newVariants = [...value];
                     newVariants[index] = { ...newVariants[index], image: url };
                     onChange(newVariants);
                   }}
-                  onRemove={(e) => handleRemoveCombination(index, e)}
+                  onRemove={e => handleRemoveCombination(index, e)}
                 />
               </motion.div>
             ))}

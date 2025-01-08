@@ -6,10 +6,11 @@ export interface RestaurantSettings {
   description: string;
   coverImage: string;
   email?: string;
-  currency: 'USD' | 'EUR' | 'XOF';
+  currency: 'USD' | 'EUR' | 'CAD' | 'MAD' | 'XOF' | 'XAF' | 'CDF';
   openingHours: {
     [key: string]: { open: string; close: string; closed: boolean };
   };
+  canDeliver: boolean;
 }
 
 export function useSettings() {

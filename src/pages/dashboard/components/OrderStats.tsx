@@ -17,14 +17,14 @@ export function OrderStats({ stats }: OrderStatsProps) {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const item = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
+    show: { opacity: 1, y: 0 },
   };
 
   return (
@@ -56,7 +56,7 @@ export function OrderStats({ stats }: OrderStatsProps) {
         variants={item}
       />
       <StatCard
-        title="Livré"
+        title="Livraison"
         value={stats.delivered}
         icon={CheckCircle}
         color="green"
@@ -74,12 +74,21 @@ interface StatCardProps {
   variants?: any;
 }
 
-function StatCard({ title, value, icon: Icon, color, variants }: StatCardProps) {
+function StatCard({
+  title,
+  value,
+  icon: Icon,
+  color,
+  variants,
+}: StatCardProps) {
   const colors = {
     blue: 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400',
-    yellow: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-400',
-    purple: 'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400',
-    green: 'bg-green-50 text-green-600 dark:bg-green-900/50 dark:text-green-400'
+    yellow:
+      'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-400',
+    purple:
+      'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400',
+    green:
+      'bg-green-50 text-green-600 dark:bg-green-900/50 dark:text-green-400',
   };
 
   return (

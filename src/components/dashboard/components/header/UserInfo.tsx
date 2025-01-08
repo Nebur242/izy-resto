@@ -1,11 +1,10 @@
-import React from 'react';
 import { User } from 'lucide-react';
 import { useAuth } from '../../../../context/AuthContext';
 import { useStaffCheck } from '../../../../hooks/useStaffCheck';
 
 export function UserInfo() {
   const { user } = useAuth();
-  const { isStaff } = useStaffCheck();
+  const { isStaff, staffData } = useStaffCheck();
 
   if (!user) return null;
 
@@ -16,7 +15,7 @@ export function UserInfo() {
         <span className="text-gray-600 dark:text-gray-300">{user.email}</span>
         <span className="mx-2 text-gray-400">|</span>
         <span className="text-blue-600 dark:text-blue-400 font-medium capitalize">
-          {isStaff ? 'Staff' : 'Admin'}
+          {isStaff && staffData?.role !== 'admin' ? 'Staff' : 'Admin'}
         </span>
       </div>
     </div>

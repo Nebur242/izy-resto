@@ -1,15 +1,31 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Share2, Facebook, Instagram, Twitter, Linkedin, Youtube, Plus, X } from 'lucide-react';
+import {
+  Share2,
+  Facebook,
+  Instagram,
+  Twitter,
+  Linkedin,
+  Youtube,
+  Plus,
+  X,
+  Hash,
+  MessageCircle,
+} from 'lucide-react';
 import { Button } from '../../../../../components/ui/Button';
-import { RestaurantSettings, SocialMediaProfile } from '../../../../../types/settings';
+import {
+  RestaurantSettings,
+  SocialMediaProfile,
+} from '../../../../../types/settings';
 
 const PLATFORMS = [
+  { id: 'whatsapp', name: 'Whatsapp', icon: MessageCircle },
   { id: 'facebook', name: 'Facebook', icon: Facebook },
   { id: 'instagram', name: 'Instagram', icon: Instagram },
   { id: 'twitter', name: 'Twitter', icon: Twitter },
   { id: 'linkedin', name: 'LinkedIn', icon: Linkedin },
   { id: 'youtube', name: 'YouTube', icon: Youtube },
+  { id: 'tiktok', name: 'Tiktok', icon: Hash },
 ];
 
 export function SocialMediaSettings() {
@@ -18,21 +34,27 @@ export function SocialMediaSettings() {
 
   const handleAddProfile = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent form submission
-    setValue('socialMedia', [
-      ...socialMedia,
-      { platform: 'facebook', url: '', active: true }
-    ], { shouldDirty: true });
+    setValue(
+      'socialMedia',
+      [...socialMedia, { platform: 'whatsapp', url: '', active: true }],
+      { shouldDirty: true }
+    );
   };
 
   const handleRemoveProfile = (e: React.MouseEvent, index: number) => {
     e.preventDefault(); // Prevent form submission
-    setValue('socialMedia', 
+    setValue(
+      'socialMedia',
       socialMedia.filter((_, i) => i !== index),
       { shouldDirty: true }
     );
   };
 
-  const handleUpdateProfile = (e: React.MouseEvent | React.ChangeEvent, index: number, updates: Partial<SocialMediaProfile>) => {
+  const handleUpdateProfile = (
+    e: React.MouseEvent | React.ChangeEvent,
+    index: number,
+    updates: Partial<SocialMediaProfile>
+  ) => {
     e.preventDefault(); // Prevent form submission
     const updatedProfiles = [...socialMedia];
     updatedProfiles[index] = { ...updatedProfiles[index], ...updates };
@@ -66,9 +88,12 @@ export function SocialMediaSettings() {
                 {/* Platform Selection */}
                 <select
                   value={profile.platform}
-                  onChange={(e) => handleUpdateProfile(e, index, { 
-                    platform: e.target.value as SocialMediaProfile['platform'] 
-                  })}
+                  onChange={e =>
+                    handleUpdateProfile(e, index, {
+                      platform: e.target
+                        .value as SocialMediaProfile['platform'],
+                    })
+                  }
                   className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
                 >
                   {PLATFORMS.map(platform => (
@@ -84,10 +109,16 @@ export function SocialMediaSettings() {
                     <Icon className="w-4 h-4 text-gray-400" />
                   </div>
                   <input
-                    type="url"
+                    type={profile.platform === 'whatsapp' ? 'text' : 'url'}
                     value={profile.url}
-                    onChange={(e) => handleUpdateProfile(e, index, { url: e.target.value })}
-                    placeholder={`https://${profile.platform}.com/...`}
+                    onChange={e =>
+                      handleUpdateProfile(e, index, { url: e.target.value })
+                    }
+                    placeholder={
+                      profile.platform === 'whatsapp'
+                        ? 'Numéro de téléphone'
+                        : `https://${profile.platform}.com/...`
+                    }
                     className="w-full pl-10 rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
                   />
                 </div>
@@ -98,7 +129,9 @@ export function SocialMediaSettings() {
                     type="button"
                     variant={profile.active ? 'primary' : 'secondary'}
                     size="sm"
-                    onClick={(e) => handleUpdateProfile(e, index, { active: !profile.active })}
+                    onClick={e =>
+                      handleUpdateProfile(e, index, { active: !profile.active })
+                    }
                   >
                     {profile.active ? 'Actif' : 'Inactif'}
                   </Button>
@@ -106,7 +139,7 @@ export function SocialMediaSettings() {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={(e) => handleRemoveProfile(e, index)}
+                    onClick={e => handleRemoveProfile(e, index)}
                     className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     <X className="w-4 h-4" />

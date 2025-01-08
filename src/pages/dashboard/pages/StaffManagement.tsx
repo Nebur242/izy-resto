@@ -9,7 +9,8 @@ import { StaffMember } from '../../../types/staff';
 import toast from 'react-hot-toast';
 
 export function StaffManagement() {
-  const { staff, isLoading, createStaff, updateStaff, deleteStaff } = useStaff();
+  const { staff, isLoading, createStaff, updateStaff, deleteStaff } =
+    useStaff();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
@@ -30,7 +31,7 @@ export function StaffManagement() {
 
   const handleEdit = async (data: any) => {
     if (!editingStaff) return;
-    
+
     try {
       await updateStaff(editingStaff.id, data);
       setEditingStaff(null);
@@ -71,17 +72,19 @@ export function StaffManagement() {
         </Button>
       </div>
 
-      <StaffList 
-        staff={staff} 
-        isLoading={isLoading} 
-        onEdit={(member) => {
+      <StaffList
+        staff={staff}
+        isLoading={isLoading}
+        onEdit={member => {
           setEditingStaff(member);
           setIsFormOpen(true);
         }}
-        onDelete={(member) => setDeleteConfirmation({ 
-          isOpen: true, 
-          member 
-        })}
+        onDelete={member =>
+          setDeleteConfirmation({
+            isOpen: true,
+            member,
+          })
+        }
       />
 
       {isFormOpen && (

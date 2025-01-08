@@ -12,7 +12,10 @@ interface OrderConfirmationModalProps {
   onClose: () => void;
 }
 
-export function OrderConfirmationModal({ order, onClose }: OrderConfirmationModalProps) {
+export function OrderConfirmationModal({
+  order,
+  onClose,
+}: OrderConfirmationModalProps) {
   const { settings } = useSettings();
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
@@ -20,7 +23,8 @@ export function OrderConfirmationModal({ order, onClose }: OrderConfirmationModa
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
-      await generateReceiptPDF(order, settings);
+      const pdf = await generateReceiptPDF(order, settings);
+      pdf.save(`commande-${order.id.slice(0, 8)}.pdf`);
       toast.success('Ticket téléchargé');
     } catch (error) {
       console.error('Error downloading receipt:', error);
@@ -33,11 +37,13 @@ export function OrderConfirmationModal({ order, onClose }: OrderConfirmationModa
   const handlePrint = async () => {
     try {
       setIsPrinting(true);
-      await generateReceiptPDF(order, settings);
-      toast.success('Ticket envoyé à l\'impression');
+      const pdf = await generateReceiptPDF(order, settings);
+      pdf.autoPrint();
+      window.open(pdf.output('bloburl'));
+      toast.success("Ticket envoyé à l'impression");
     } catch (error) {
       console.error('Error printing receipt:', error);
-      toast.error('Erreur lors de l\'impression');
+      toast.error("Erreur lors de l'impression");
     } finally {
       setIsPrinting(false);
     }
@@ -59,9 +65,7 @@ export function OrderConfirmationModal({ order, onClose }: OrderConfirmationModa
 
         {/* Message */}
         <div className="text-center mb-8">
-          <h3 className="text-xl font-semibold mb-2">
-            Commande confirmée !
-          </h3>
+          <h3 className="text-xl font-semibold mb-2">Commande confirmée !</h3>
           <p className="text-gray-600 dark:text-gray-400">
             La commande #{order.id.slice(0, 8)} a été enregistrée avec succès.
           </p>
@@ -74,7 +78,7 @@ export function OrderConfirmationModal({ order, onClose }: OrderConfirmationModa
             disabled={isPrinting}
             className="w-full flex items-center justify-center gap-2"
           >
-            <Printer className="w-4 h-4" />
+            <Printer className="w-4 h-4 mr-1" />
             {isPrinting ? 'Impression...' : 'Imprimer le ticket'}
           </Button>
 
@@ -84,15 +88,11 @@ export function OrderConfirmationModal({ order, onClose }: OrderConfirmationModa
             disabled={isDownloading}
             className="w-full flex items-center justify-center gap-2"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 mr-1" />
             {isDownloading ? 'Téléchargement...' : 'Télécharger le ticket'}
           </Button>
 
-          <Button
-            variant="ghost"
-            onClick={onClose}
-            className="w-full"
-          >
+          <Button variant="ghost" onClick={onClose} className="w-full">
             Fermer
           </Button>
         </div>

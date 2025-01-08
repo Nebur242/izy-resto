@@ -6,6 +6,8 @@ import {
   Phone,
   Mail,
   Youtube,
+  Hash,
+  MessageCircle,
 } from 'lucide-react';
 import { Container } from '../ui/Container';
 import { useSettings } from '../../hooks/useSettings';
@@ -21,6 +23,8 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
     instagram: Instagram,
     twitter: Twitter,
     youtube: Youtube,
+    tiktok: Hash,
+    whatsapp: MessageCircle,
   };
 
   const Icon = icons[profile.platform];
@@ -28,7 +32,11 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
 
   return (
     <a
-      href={profile.url}
+      href={
+        profile.platform === 'whatsapp'
+          ? `https://wa.me/${profile.url}`.replace(/\+/g, '')
+          : profile.url
+      }
       target="_blank"
       rel="noopener noreferrer"
       className="text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
