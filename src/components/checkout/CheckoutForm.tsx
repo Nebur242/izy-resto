@@ -28,9 +28,10 @@ type CheckoutStep = 'form' | 'confirmation';
 export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   const navigate = useNavigate();
   const { cart, total, clearCart } = useCart();
-  const { settings, isLoading } = useSettings();
+  const { settings } = useSettings();
   // const { paymentMethods } = usePayments();
-  const [diningOption, setDiningOption] = useState<DiningOption>('delivery');
+  const [diningOption, setDiningOption] = useState<DiningOption | null>(null);
+
   const [step, setStep] = useState<CheckoutStep>('form');
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -114,6 +115,17 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
     }
   };
 
+  useEffect(() => {
+    if (settings) {
+      setDiningOption(settings.canDeliver ? 'delivery' : 'dine-in');
+    }
+  }, [settings]);
+
+  if (diningOption === null) {
+    // Render a fallback or nothing while initializing
+    return null;
+  }
+
   const formData = watch();
 
   if (step === 'confirmation') {
@@ -131,13 +143,13 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
     );
   }
 
-  useEffect(() => {
-    if (settings?.canDeliver) {
-      setDiningOption('delivery');
-    }
-  }, [settings?.canDeliver]);
+  // useEffect(() => {
+  //   if (settings?.canDeliver) {
+  //     setDiningOption('delivery');
+  //   }
+  // }, [settings?.canDeliver]);
 
-  if (isLoading) return null;
+  // if (isLoading) return null;
 
   return (
     <div className="space-y-6">
