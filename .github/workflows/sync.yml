@@ -13,6 +13,7 @@ jobs:
       - name: Checkout fork
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0 # Fetch all history and tags
           token: ${{ secrets.ACCOUNT_TOKEN }}
 
       # Step 2: Configure Git
@@ -43,19 +44,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCOUNT_TOKEN }}
         run: |
-          git fetch upstream --tags
+          git fetch upstream --tags -f
           git push origin --tags
 
-      # Step 7: Create or update releases
-      - name: Create or update releases
+      # Step 7: Create release from latest tag
+      - name: Get latest tag and create release
         env:
           GITHUB_TOKEN: ${{ secrets.ACCOUNT_TOKEN }}
         run: |
-          for tag in $(git tag); do
-            # Check if the release already exists
-            release_exists=$(gh release view "$tag" >/dev/null 2>&1 && echo "yes" || echo "no")
-            if [ "$release_exists" = "no" ]; then
-              # Create the release
-              gh release create "$tag" --title "Release $tag" --notes "Automatically synced from upstream."
+          # Get the latest tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ ! -z "$LATEST_TAG" ]; then
+            # Check if release exists for latest tag
+            if ! gh release view "$LATEST_TAG" &>/dev/null; then
+              # Create release for latest tag
+              gh release create "$LATEST_TAG" \
+                --title "Release $LATEST_TAG" \
+                --notes "Automatically synced from upstream." \
+                --target main
             fi
-          done
+          fi
