@@ -15,6 +15,10 @@ on:
       envData:
         description: 'JSON data for environment variables'
         required: true
+      version:
+        description: 'Git version (branch or tag)'
+        required: false
+        default: 'main'
 
 jobs:
   deploy:
@@ -23,6 +27,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.version }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
