@@ -46,7 +46,6 @@ export function MenuManagement() {
   const handleSave = async (item: Omit<MenuItem, 'id'>) => {
     try {
       if (editingItem) {
-        console.log(item);
         await menuService.update(editingItem.id, item);
         setItems(prevItems =>
           prevItems.map(i =>
@@ -66,7 +65,6 @@ export function MenuManagement() {
   };
 
   const handleEdit = (item: MenuItem) => {
-    console.log(item);
     setEditingItem(item);
     setIsFormOpen(true);
   };

@@ -252,7 +252,10 @@ export function OrderConfirmation({
                 method =>
                   currencyObject?.acceptedPaymentMethods.includes(
                     method.name as any
-                  ) || method.name === 'Paiement à la livraison'
+                  ) ||
+                  !['paytech', 'cinetpay', 'wave', 'stripe'].includes(
+                    method.name?.toLowerCase()
+                  )
               )
               .map(method => (
                 <label

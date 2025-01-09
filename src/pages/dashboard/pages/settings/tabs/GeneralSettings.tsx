@@ -1,4 +1,4 @@
-import { Building2, Share2 } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 import { LogoUploader } from '../../../../../components/settings/LogoUploader';
 import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';
@@ -6,8 +6,7 @@ import { SocialMediaSettings } from './SocialMediaSettings';
 import { allCurrencies } from '../../../../../constants/defaultSettings';
 
 export function GeneralSettings() {
-  const { register, watch, setValue, formState } =
-    useFormContext<RestaurantSettings>();
+  const { register, watch, setValue } = useFormContext<RestaurantSettings>();
 
   // Mark form as dirty when images change
   const handleImageChange = (field: 'logo' | 'coverImage', value: string) => {

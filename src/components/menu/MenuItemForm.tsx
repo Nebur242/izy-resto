@@ -86,7 +86,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    console.log(value);
     setSelectedCategory(value);
     setValue('categoryId', value, { shouldDirty: true });
     // Reset variant prices if category changes

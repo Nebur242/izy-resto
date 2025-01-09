@@ -42,7 +42,7 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
 };
 
 const defaultCurrencyInfo =
-  'Cette devise ne permet que le paimenent à la livraison ou surplace';
+  "Cette devise n'est pas encore supportée par les système de paiement: Wave, Paytech, CinetPay, Stripe";
 
 type AllCurrency = {
   label: string;

@@ -5,9 +5,7 @@ import { X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { RestaurantSettings } from '../../types';
 import axios from 'axios';
-import { getOrderByRef } from '../../services/payments/paytech.service';
 import toast from 'react-hot-toast';
-import { useMutationObserver } from '../../hooks/useMutationObserver';
 
 const CinetPayPaymentModal = ({
   onClose,
@@ -17,12 +15,6 @@ const CinetPayPaymentModal = ({
   iframeUrl?: string;
 }) => {
   const mutationRef = useRef(null);
-
-  const handleMutation = () => {
-    console.log('observed');
-  };
-
-  useMutationObserver(mutationRef, handleMutation);
 
   return (
     <div
@@ -70,7 +62,6 @@ export const CinetPayPayment = ({
   amount: number;
   onConfirm: () => void;
 }) => {
-  console.log(amount);
   const [isClosed, setIsClosed] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   //   const [error, setError] = useState('');
