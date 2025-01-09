@@ -45,3 +45,17 @@ jobs:
         run: |
           git fetch upstream --tags
           git push origin --tags
+
+      # Step 7: Create or update releases
+      - name: Create or update releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCOUNT_TOKEN }}
+        run: |
+          for tag in $(git tag); do
+            # Check if the release already exists
+            release_exists=$(gh release view "$tag" >/dev/null 2>&1 && echo "yes" || echo "no")
+            if [ "$release_exists" = "no" ]; then
+              # Create the release
+              gh release create "$tag" --title "Release $tag" --notes "Automatically synced from upstream."
+            fi
+          done
