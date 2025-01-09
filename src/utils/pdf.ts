@@ -19,18 +19,26 @@ export async function generateReceiptPDF(
 
     // Add receipt content
     receiptDiv.innerHTML = `
+
+    ${
+      settings.logo
+        ? `<div style="display: flex; justify-content: center;"> 
+            <img src="${settings.logo}" width="${settings.logoWidth}px" height="${settings.logoHeight}px" />     
+          </div>`
+        : ''
+    }
       <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #000; padding: 20px;">
-        <h1 style="text-align: center; font-size: 24px; margin-bottom: 20px;">
+        <h1 style="text-align: center; font-size: 24px; margin-bottom: 20px; color: #000">
           ${settings?.name || 'Restaurant'}
         </h1>
         <div style="text-align: center; margin-bottom: 20px;">
-          <p>Commande #${order.id.slice(0, 8)}</p>
-          <p>${formatDate(order.createdAt)}</p>
+          <p style="color: #000">Commande #${order.id.slice(0, 8)}</p>
+          <p style="color: #000">${formatDate(order.createdAt)}</p>
         </div>
         <div style="margin-bottom: 20px;">
           <h2 style="font-size: 18px; margin-bottom: 10px;">Détails Client</h2>
-          <p>${order.customerName}</p>
-          <p>${order.customerPhone}</p>
+          <p style="color: #000">${order.customerName}</p>
+          <p style="color: #000">${order.customerPhone}</p>
           ${order.customerAddress ? `<p>${order.customerAddress}</p>` : ''}
         </div>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
@@ -67,9 +75,17 @@ export async function generateReceiptPDF(
           </tr>
         </table>
         <div style="text-align: center; font-size: 14px;">
-          <p>Merci de votre confiance !</p>
-          ${settings?.address ? `<p>${settings.address}</p>` : ''}
-          ${settings?.phone ? `<p>${settings.phone}</p>` : ''}
+          <p style="color: #000">Merci de votre confiance !</p>
+          ${
+            settings?.address
+              ? `<p style="color: #000">${settings.address}</p>`
+              : ''
+          }
+          ${
+            settings?.phone
+              ? `<p style="color: #000">${settings.phone}</p>`
+              : ''
+          }
         </div>
       </div>
     `;

@@ -22,6 +22,8 @@ import { PaymentMethod } from '../../types/payment';
 import { usePaytech } from '../../hooks/usePaytech';
 import { getOrderByRef } from '../../services/payments/paytech.service';
 import { StripePayment } from './StripePayment';
+import { getCurrencyObject } from '../../constants/defaultSettings';
+import { CinetPayPayment } from './CinetPayPayment';
 
 interface OrderConfirmationProps {
   customerData: {
@@ -65,6 +67,10 @@ export function OrderConfirmation({
     if (!selectedPaymentMethod?.url) return '';
     return `${selectedPaymentMethod.url}=${total}`;
   };
+
+  const currencyObject = settings
+    ? getCurrencyObject(settings.currency!)
+    : null;
 
   const handleConfirm = () => {
     if (selectedPaymentMethod?.url && !hasPaid) {
@@ -140,6 +146,10 @@ export function OrderConfirmation({
     // For Stripe payment
     if (selectedPaymentMethod.name.toLowerCase() === 'stripe') {
       return <>Payer avec Stripe</>;
+    }
+
+    if (selectedPaymentMethod.name.toLowerCase() === 'cinetpay') {
+      return <>Payer avec CinetPay</>;
     }
 
     // For QR code payment
@@ -237,10 +247,17 @@ export function OrderConfirmation({
             Mode de paiement
           </h3>
           <div className="space-y-3">
-            {paymentMethods.map(method => (
-              <label
-                key={method.id}
-                className={`
+            {paymentMethods
+              .filter(
+                method =>
+                  currencyObject?.acceptedPaymentMethods.includes(
+                    method.name as any
+                  ) || method.name === 'Paiement à la livraison'
+              )
+              .map(method => (
+                <label
+                  key={method.id}
+                  className={`
                   relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all
                   ${
                     selectedPayment === method.id
@@ -248,64 +265,65 @@ export function OrderConfirmation({
                       : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                   }
                 `}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value={method.id}
-                  checked={selectedPayment === method.id}
-                  onChange={e => {
-                    setSelectedPayment(e.target.value);
-                    setHasPaid(false);
-                  }}
-                  className="sr-only"
-                />
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={method.id}
+                    checked={selectedPayment === method.id}
+                    onChange={e => {
+                      setSelectedPayment(e.target.value);
+                      setHasPaid(false);
+                    }}
+                    className="sr-only"
+                  />
 
-                {/* Payment Method Icon/Image */}
-                {method.qrCode ? (
-                  <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
-                    <img
-                      src={method.qrCode}
-                      alt={method.name}
-                      className="w-full h-full object-contain p-2"
-                    />
+                  {/* Payment Method Icon/Image */}
+                  {method.qrCode ? (
+                    <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+                      <img
+                        src={method.qrCode}
+                        alt={method.name}
+                        className="w-full h-full object-contain p-2"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                      <CreditCard className="w-6 h-6 text-gray-400" />
+                    </div>
+                  )}
+
+                  {/* Method Name */}
+                  <div className="flex-1">
+                    <p className="font-medium">{method.name}</p>
                   </div>
-                ) : (
-                  <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                    <CreditCard className="w-6 h-6 text-gray-400" />
-                  </div>
-                )}
 
-                {/* Method Name */}
-                <div className="flex-1">
-                  <p className="font-medium">{method.name}</p>
-                </div>
-
-                {/* Selection Indicator */}
-                <div
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                  {/* Selection Indicator */}
+                  <div
+                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
                     transition-colors duration-200 ${
                       selectedPayment === method.id
                         ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400'
                         : 'border-gray-300 dark:border-gray-600'
                     }`}
-                >
-                  <AnimatePresence>
-                    {selectedPayment === method.id && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        className="w-2.5 h-2.5 rounded-full bg-white"
-                      />
-                    )}
-                  </AnimatePresence>
-                </div>
-              </label>
-            ))}
+                  >
+                    <AnimatePresence>
+                      {selectedPayment === method.id && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          className="w-2.5 h-2.5 rounded-full bg-white"
+                        />
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </label>
+              ))}
 
             {/* Payment URL Info */}
-            {selectedPaymentMethod?.url &&
+            {(selectedPaymentMethod?.url ||
+              selectedPaymentMethod?.name.toLowerCase() === 'cinetpay') &&
               hasClickedPaymentLink &&
               !hasPaid && (
                 <motion.div
@@ -338,9 +356,10 @@ export function OrderConfirmation({
           <ArrowLeft className="w-4 h-4 mr-2" />
           Retour
         </Button>
-        {!['paytech', 'stripe'].includes(
+        {(!['paytech', 'stripe', 'cinetpay'].includes(
           selectedPaymentMethod?.name.toLowerCase() || ''
-        ) && (
+        ) ||
+          hasPaid) && (
           <Button
             onClick={handleConfirm}
             disabled={showPaymentMethods && !selectedPayment}
@@ -353,6 +372,23 @@ export function OrderConfirmation({
             {renderPaymentButton()}
           </Button>
         )}
+
+        {selectedPaymentMethod?.name.toLowerCase() === 'cinetpay' &&
+          !hasPaid &&
+          settings?.currency && (
+            <CinetPayPayment
+              onConfirm={() => {
+                setHasClickedPaymentLink(true);
+              }}
+              paymentMethod={{
+                apiKey: `${selectedPaymentMethod.apiKey}`,
+                apiSecret: `${selectedPaymentMethod.apiSecret}`,
+              }}
+              settings={settings as any}
+              amount={total}
+            />
+          )}
+
         {selectedPaymentMethod?.name.toLowerCase() === 'stripe' &&
           settings?.currency && (
             <StripePayment

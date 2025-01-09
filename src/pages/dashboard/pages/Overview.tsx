@@ -121,9 +121,7 @@ export function Overview() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm"
         >
-          <h3 className="text-lg font-semibold mb-4">
-            {t('orders.status.title')}
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">État des commandes</h3>
           <AnalyticsChart
             data={filteredOrders.reduce((acc, order) => {
               acc[order.status] = (acc[order.status] || 0) + 1;

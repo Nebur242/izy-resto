@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui';
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { AlertCircle, AlertTriangle, X } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   CardElement,
@@ -80,6 +80,9 @@ const PaymentModal = ({
 
         if (error) {
           console.error('Payment Confirmation Error:', error.message);
+          setErrorMessage(
+            error.message || 'Une erreur de paiemeent est survenu'
+          );
           throw new Error('Error');
         } else {
           console.log('Payment Successful!');
@@ -126,7 +129,20 @@ const PaymentModal = ({
             {loading ? 'Paiement en cours...' : 'Payer maintenant'}
           </Button>
           {/* Show error message to your customers */}
-          {errorMessage && <div>{errorMessage}</div>}
+          {errorMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/20"
+            >
+              <div className="flex items-center gap-3">
+                <AlertCircle className="h-5 w-5 text-red-500" />
+                <h3 className="font-medium text-red-800 dark:text-red-400">
+                  {errorMessage}
+                </h3>
+              </div>
+            </motion.div>
+          )}
         </form>
       </motion.div>
     </div>

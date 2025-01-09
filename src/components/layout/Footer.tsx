@@ -34,7 +34,9 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
     <a
       href={
         profile.platform === 'whatsapp'
-          ? `https://wa.me/${profile.url}`.replace(/\+/g, '')
+          ? `https://wa.me/${profile.url}`
+              .replace(/\+/g, '')
+              .replace(/\s+/g, '')
           : profile.url
       }
       target="_blank"

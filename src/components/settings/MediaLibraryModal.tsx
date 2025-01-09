@@ -17,18 +17,18 @@ interface MediaLibraryModalProps {
   onUpload: (file: File) => Promise<string>;
 }
 
-export function MediaLibraryModal({ 
-  onSelect, 
+export function MediaLibraryModal({
+  onSelect,
   onClose,
   files,
-  onUpload
+  onUpload,
 }: MediaLibraryModalProps) {
   const [isGridView, setIsGridView] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredFiles = files.filter(file => 
+  const filteredFiles = files.filter(file =>
     file.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -80,7 +80,7 @@ export function MediaLibraryModal({
               type="text"
               placeholder="Rechercher..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="w-full rounded-lg border pl-10 pr-4 py-2 dark:border-gray-700 dark:bg-gray-800"
             />
           </div>
@@ -92,34 +92,24 @@ export function MediaLibraryModal({
             >
               <Grid className="h-4 w-4" />
             </Button>
-            <Button
+            {/* <Button
               variant={!isGridView ? 'primary' : 'secondary'}
               size="sm"
               onClick={() => setIsGridView(false)}
             >
               <List className="h-4 w-4" />
-            </Button>
-
+            </Button> */}
           </div>
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
-          {isGridView ? (
-            <MediaGrid 
-              files={paginatedFiles}
-              isLoading={false}
-              onDelete={() => {}}
-              onSelect={onSelect}
-            />
-          ) : (
-            <MediaList
-              files={paginatedFiles}
-              isLoading={false}
-              onDelete={() => {}}
-              onSelect={onSelect}
-            />
-          )}
+          <MediaGrid
+            files={paginatedFiles}
+            isLoading={false}
+            onDelete={() => {}}
+            onSelect={onSelect}
+          />
         </div>
 
         {/* Pagination */}

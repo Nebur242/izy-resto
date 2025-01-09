@@ -1,7 +1,14 @@
 import { FirestoreService } from '../base/firestore.service';
 import { MenuItem, MenuItemWithVariants } from '../../types';
 import type { MenuFilters } from './types';
-import { collection, query, where, getDocs, doc, runTransaction } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  runTransaction,
+} from 'firebase/firestore';
 import { db } from '../../lib/firebase/config';
 import { MenuServiceError } from './errors';
 import { validateMenuItemExists } from './validators';
@@ -27,7 +34,7 @@ class MenuService extends FirestoreService<MenuItem> {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       })) as MenuItem[];
     } catch (error) {
       throw new MenuServiceError(
@@ -40,11 +47,11 @@ class MenuService extends FirestoreService<MenuItem> {
 
   async update(id: string, data: Partial<MenuItemWithVariants>): Promise<void> {
     try {
-      await runTransaction(db, async (transaction) => {
+      await runTransaction(db, async transaction => {
         // Get current item state
         const docRef = doc(db, this.collectionName, id);
         const docSnap = await transaction.get(docRef);
-        
+
         if (!docSnap.exists()) {
           throw new MenuServiceError('Menu item not found', 'menu/not-found');
         }
@@ -54,7 +61,7 @@ class MenuService extends FirestoreService<MenuItem> {
         // Validate variant combinations if updating them
         if (data.variantPrices) {
           // Check for duplicate combinations
-          const combinations = data.variantPrices.map(vp => 
+          const combinations = data.variantPrices.map(vp =>
             [...vp.variantCombination].sort().join('|')
           );
           const uniqueCombinations = new Set(combinations);
@@ -68,16 +75,20 @@ class MenuService extends FirestoreService<MenuItem> {
 
           // Format variant prices
           data.variantPrices = data.variantPrices.map(vp => ({
-            variantCombination: [...vp.variantCombination].sort(),
+            variantCombination: [...vp.variantCombination]
+              .filter(item => {
+                return !!item && !item.includes('null');
+              })
+              .sort(),
             price: Number(vp.price),
-            image: vp.image || null
+            image: vp.image || null,
           }));
         }
 
         // Update the document
         const updateData = {
           ...data,
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
 
         transaction.update(docRef, updateData);
@@ -86,7 +97,7 @@ class MenuService extends FirestoreService<MenuItem> {
       if (error instanceof MenuServiceError) {
         throw error;
       }
-      
+
       throw new MenuServiceError(
         'Failed to update menu item',
         'menu/update-error',
@@ -99,7 +110,7 @@ class MenuService extends FirestoreService<MenuItem> {
     try {
       // Validate variant combinations if present
       if (data.variantPrices) {
-        const combinations = data.variantPrices.map(vp => 
+        const combinations = data.variantPrices.map(vp =>
           [...vp.variantCombination].sort().join('|')
         );
         const uniqueCombinations = new Set(combinations);
@@ -113,9 +124,11 @@ class MenuService extends FirestoreService<MenuItem> {
 
         // Format variant prices
         data.variantPrices = data.variantPrices.map(vp => ({
-          variantCombination: [...vp.variantCombination].sort(),
+          variantCombination: [...vp.variantCombination].sort().filter(item => {
+            return !!item && !item.includes('null');
+          }),
           price: Number(vp.price),
-          image: vp.image || null
+          image: vp.image || null,
         }));
       }
 
@@ -123,7 +136,7 @@ class MenuService extends FirestoreService<MenuItem> {
         ...data,
         price: Number(data.price),
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
 
       const docRef = await super.create(createData);

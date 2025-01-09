@@ -19,7 +19,7 @@ export function MediaGrid({
   onDelete,
   onSelect,
   selectedFiles = new Set(), // Provide default empty Set
-  onToggleSelect
+  onToggleSelect,
 }: MediaGridProps) {
   if (isLoading) {
     return (
@@ -42,9 +42,7 @@ export function MediaGrid({
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <ImageIcon className="w-12 h-12 text-gray-400 dark:text-gray-600 mb-4" />
-        <p className="text-gray-500 dark:text-gray-400">
-          Aucun fichier trouvé
-        </p>
+        <p className="text-gray-500 dark:text-gray-400">Aucun fichier trouvé</p>
       </div>
     );
   }
@@ -52,7 +50,7 @@ export function MediaGrid({
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
       <AnimatePresence mode="popLayout">
-        {files.map((file) => (
+        {files.map(file => (
           <motion.div
             key={file.id}
             layout
@@ -64,11 +62,15 @@ export function MediaGrid({
               group relative aspect-square bg-gradient-to-br from-gray-100 to-gray-200 
               dark:from-gray-800 dark:to-gray-700 rounded-lg overflow-hidden shadow-sm 
               hover:shadow-md transition-all duration-200 cursor-pointer
-              ${selectedFiles.has(file.id) ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''}
+              ${
+                selectedFiles.has(file.id)
+                  ? 'ring-2 ring-blue-500 dark:ring-blue-400'
+                  : ''
+              }
             `}
           >
             {/* Selection Indicator */}
-            <div className={`
+            {/* <div className={`
               absolute top-3 left-3 z-20 w-6 h-6 rounded-full border-2 
               transition-colors duration-200 flex items-center justify-center
               ${selectedFiles.has(file.id)
@@ -79,7 +81,7 @@ export function MediaGrid({
               {selectedFiles.has(file.id) && (
                 <Check className="w-4 h-4 text-white" />
               )}
-            </div>
+            </div> */}
 
             {/* Image */}
             <img
@@ -104,7 +106,7 @@ export function MediaGrid({
                       <Button
                         variant="secondary"
                         size="sm"
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           onSelect(file.url);
                         }}
@@ -116,7 +118,7 @@ export function MediaGrid({
                       <Button
                         variant="secondary"
                         size="sm"
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           window.open(file.url, '_blank');
                         }}
@@ -128,7 +130,7 @@ export function MediaGrid({
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         onDelete(file.id);
                       }}

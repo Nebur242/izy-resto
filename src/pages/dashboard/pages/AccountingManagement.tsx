@@ -79,8 +79,6 @@ export function AccountingManagement() {
         dateRange
       );
 
-      console.log(fetchedTransactions);
-
       // Update the ref content with fresh data
       const statement = (
         <FinancialStatement

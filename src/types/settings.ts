@@ -13,7 +13,15 @@ export interface SocialMediaProfile {
   active: boolean;
 }
 
-export type Currency = 'USD' | 'EUR' | 'CAD' | 'MAD' | 'XOF' | 'XAF' | 'CDF';
+export type Currency =
+  | 'USD'
+  | 'EUR'
+  | 'CAD'
+  | 'MAD'
+  | 'XOF'
+  | 'XAF'
+  | 'CDF'
+  | 'UM';
 
 export interface SEOSettings {
   title: string;

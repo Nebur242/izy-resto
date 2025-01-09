@@ -12,7 +12,15 @@ export function AnalyticsChart({ data }: AnalyticsChartProps) {
     preparing: 'bg-blue-500',
     ready: 'bg-green-500',
     delivered: 'bg-purple-500',
-    cancelled: 'bg-red-500'
+    cancelled: 'bg-red-500',
+  };
+
+  const wording: Record<string, string> = {
+    pending: 'En attente',
+    preparing: 'En cours de préparation',
+    ready: 'Prêt',
+    delivered: 'Livré',
+    cancelled: 'annulé',
   };
 
   return (
@@ -20,7 +28,7 @@ export function AnalyticsChart({ data }: AnalyticsChartProps) {
       {Object.entries(data).map(([key, value]) => (
         <div key={key} className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="capitalize">{key}</span>
+            <span className="capitalize">{wording[`${key}`]}</span>
             <span className="font-medium">{value}</span>
           </div>
           <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">

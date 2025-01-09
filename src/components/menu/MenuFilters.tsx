@@ -85,7 +85,7 @@ export function MenuFilters({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="absolute -top-8 right-6 flex items-center text-gray-500 dark:text-gray-400 text-xs z-10"
+            className="absolute -top-5 right-6 flex items-center text-gray-500 dark:text-gray-400 text-xs z-10"
           >
             <span className="mr-1">Délifer pour voir les catégories</span>
             <ChevronRight className="w-3 h-3" />

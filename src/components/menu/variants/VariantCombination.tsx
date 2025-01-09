@@ -24,15 +24,20 @@ export function VariantCombination({
   onCombinationChange,
   onPriceChange,
   onImageChange,
-  onRemove
+  onRemove,
 }: VariantCombinationProps) {
   const { settings } = useSettings();
 
-  const getVariantType = (variantStr: string) => variantStr?.split(': ')[0] || '';
-  const getVariantValue = (variantStr: string) => variantStr?.split(': ')[1] || '';
-
   const handleImageChange = (url: string) => {
     onImageChange(url);
+  };
+
+  const getVariantValue2 = (variant: Variant, combination: string[]) => {
+    const currCombination = combination
+      .filter(Boolean)
+      .find(comb => comb.includes(variant.name));
+    if (!currCombination) return '';
+    return currCombination.split(': ')[1] || '';
   };
 
   return (
@@ -44,19 +49,25 @@ export function VariantCombination({
             {variants.map((variant, idx) => (
               <div key={variant.id} className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">{variant.name}</label>
+                  <label className="block text-sm font-medium mb-1">
+                    {variant.name}
+                  </label>
                   <select
                     className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
-                    value={getVariantValue(combination[idx] || '')}
-                    onChange={(e) => {
+                    value={getVariantValue2(variant, combination)}
+                    onChange={e => {
                       const newCombination = [...combination];
-                      newCombination[idx] = `${variant.name}: ${e.target.value}`;
+                      newCombination[
+                        idx
+                      ] = `${variant.name}: ${e.target.value}`;
                       onCombinationChange(newCombination);
                     }}
                   >
-                    <option value="">Sélectionner une valeur</option>
+                    <option value="null">Sélectionner une valeur</option>
                     {variant.values.map(value => (
-                      <option key={value} value={value}>{value}</option>
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -72,7 +83,7 @@ export function VariantCombination({
               step={settings?.currency === 'XOF' ? '1' : '0.01'}
               className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               value={price}
-              onChange={(e) => onPriceChange(parseFloat(e.target.value))}
+              onChange={e => onPriceChange(parseFloat(e.target.value))}
             />
           </div>
 
@@ -91,7 +102,7 @@ export function VariantCombination({
           type="button" // Add type="button"
           variant="danger"
           size="sm"
-          onClick={(e) => onRemove(e)}
+          onClick={e => onRemove(e)}
           className="ml-4"
         >
           <X className="w-4 h-4" />

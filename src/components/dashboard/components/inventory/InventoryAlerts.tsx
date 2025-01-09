@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, AlertCircle } from 'lucide-react';
 import { InventoryItem } from '../../../../types/inventory';
@@ -9,15 +8,17 @@ interface InventoryAlertsProps {
 
 export function InventoryAlerts({ items }: InventoryAlertsProps) {
   const lowStockItems = items.filter(item => {
-    const stockDifference = item.quantity - item.minQuantity;
-    return stockDifference >= 0 && stockDifference < 10;
+    return item.quantity <= item.minQuantity;
+    // return stockDifference >= 0;
   });
 
   const expiringItems = items.filter(item => {
     if (!item.expiryDate) return false;
     const expiryDate = new Date(item.expiryDate);
     const today = new Date();
-    const daysUntilExpiry = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const daysUntilExpiry = Math.ceil(
+      (expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
     return daysUntilExpiry <= 7 && daysUntilExpiry > 0;
   });
 
@@ -46,8 +47,12 @@ export function InventoryAlerts({ items }: InventoryAlertsProps) {
           </div>
           <div className="mt-2 space-y-1">
             {lowStockItems.map(item => (
-              <p key={item.id} className="text-sm text-amber-700 dark:text-amber-300">
-                {item.name}: {item.quantity} {item.unit} (Min: {item.minQuantity})
+              <p
+                key={item.id}
+                className="text-sm text-amber-700 dark:text-amber-300"
+              >
+                {item.name}: {item.quantity} {item.unit} (Min:{' '}
+                {item.minQuantity})
               </p>
             ))}
           </div>
@@ -69,8 +74,12 @@ export function InventoryAlerts({ items }: InventoryAlertsProps) {
           </div>
           <div className="mt-2 space-y-1">
             {expiredItems.map(item => (
-              <p key={item.id} className="text-sm text-red-700 dark:text-red-300">
-                {item.name} - Expiré le {new Date(item.expiryDate!).toLocaleDateString()}
+              <p
+                key={item.id}
+                className="text-sm text-red-700 dark:text-red-300"
+              >
+                {item.name} - Expiré le{' '}
+                {new Date(item.expiryDate!).toLocaleDateString()}
               </p>
             ))}
           </div>
@@ -91,8 +100,12 @@ export function InventoryAlerts({ items }: InventoryAlertsProps) {
           </div>
           <div className="mt-2 space-y-1">
             {expiringItems.map(item => (
-              <p key={item.id} className="text-sm text-blue-700 dark:text-blue-300">
-                {item.name} - Expire le {new Date(item.expiryDate!).toLocaleDateString()}
+              <p
+                key={item.id}
+                className="text-sm text-blue-700 dark:text-blue-300"
+              >
+                {item.name} - Expire le{' '}
+                {new Date(item.expiryDate!).toLocaleDateString()}
               </p>
             ))}
           </div>

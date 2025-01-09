@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
@@ -28,7 +28,7 @@ type CheckoutStep = 'form' | 'confirmation';
 export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   const navigate = useNavigate();
   const { cart, total, clearCart } = useCart();
-  const { settings } = useSettings();
+  const { settings, isLoading } = useSettings();
   // const { paymentMethods } = usePayments();
   const [diningOption, setDiningOption] = useState<DiningOption>('delivery');
   const [step, setStep] = useState<CheckoutStep>('form');
@@ -130,6 +130,14 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
       />
     );
   }
+
+  useEffect(() => {
+    if (settings?.canDeliver) {
+      setDiningOption('delivery');
+    }
+  }, [settings?.canDeliver]);
+
+  if (isLoading) return null;
 
   return (
     <div className="space-y-6">

@@ -5,6 +5,7 @@ import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks/useSettings';
 import { CartItem } from './CartItem';
 import { CheckoutForm } from '../checkout/CheckoutForm';
+import { formatCurrency } from '../../utils/currency';
 
 export function Cart() {
   const { t } = useTranslation();
@@ -49,11 +50,9 @@ export function Cart() {
             className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity"
             onClick={() => setIsOpen(false)}
           />
-            
+
           {/* Cart Sidebar */}
-          <div
-            className="fixed inset-y-0 right-0 w-full md:w-96 bg-gray-50 dark:bg-gray-800 shadow-xl z-50 flex flex-col transition-transform duration-300 py-5"
-          >
+          <div className="fixed inset-y-0 right-0 w-full md:w-96 bg-gray-50 dark:bg-gray-800 shadow-xl z-50 flex flex-col transition-transform duration-300 py-5">
             {/* Header */}
             <div className="p-4 border-b dark:border-gray-700 bg-white dark:bg-gray-800">
               <div className="flex justify-between items-center">
@@ -69,7 +68,7 @@ export function Cart() {
                 </button>
               </div>
             </div>
-              
+
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {isCheckingOut ? (
@@ -81,19 +80,19 @@ export function Cart() {
                   onCancel={() => setIsCheckingOut(false)}
                 />
               ) : (
-                cart.map((item) => (
-                  <CartItem key={item.id} item={item} />
-                ))
+                cart.map(item => <CartItem key={item.id} item={item} />)
               )}
             </div>
-              
+
             {/* Footer */}
             {!isCheckingOut && cart.length > 0 && (
               <div className="p-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-gray-600 dark:text-gray-300">Total Panier</span>
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Total Panier
+                  </span>
                   <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                    {formatPrice(total)}
+                    {formatCurrency(total, settings?.currency)}
                   </span>
                 </div>
                 <button

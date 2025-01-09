@@ -17,6 +17,7 @@ const paymentType: Record<string, PaymentMethodType> = {
   Wave: 'Wave',
   PayTech: 'PayTech',
   Stripe: 'Stripe',
+  CinetPay: 'CinetPay',
   'Paiement à la livraison': 'Paiement à la livraison',
 };
 
@@ -25,6 +26,7 @@ type PaymentMethodType =
   | 'PayTech'
   | 'Stripe'
   | 'Paiement à la livraison'
+  | 'CinetPay'
   | 'Autres';
 
 export function PaymentMethodForm({
@@ -65,6 +67,10 @@ export function PaymentMethodForm({
 
     if (methodType === 'Stripe') {
       return setValue('name', 'Stripe');
+    }
+
+    if (methodType === 'CinetPay') {
+      return setValue('name', 'CinetPay');
     }
 
     if (methodType === 'Paiement à la livraison') {
@@ -126,6 +132,7 @@ export function PaymentMethodForm({
               <option value="Paiement à la livraison">
                 Paiement à la livraison
               </option>
+              <option value="CinetPay">CinetPay</option>
               <option value="PayTech">PayTech</option>
               <option value="Stripe">Stripe</option>
               <option value="Wave">Wave</option>
@@ -250,6 +257,48 @@ export function PaymentMethodForm({
                   })}
                   className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
                   placeholder="sk_test_VePHdqKTYQjKNInc7u56JBrQ"
+                />
+                {errors.apiKey && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.apiKey.message}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+
+          {methodType === 'CinetPay' && (
+            <>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  SITE ID
+                </label>
+                <input
+                  type="text"
+                  {...register('apiSecret', {
+                    required: 'Le lien Wave est requis',
+                  })}
+                  className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+                  placeholder="96bc36c11560f2151c4b43eee310cefabc2e9e9000f7e315c3ca3d279e3f98ac"
+                />
+                {errors.apiSecret && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.apiSecret.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  SECRET KEY
+                </label>
+                <input
+                  type="text"
+                  {...register('apiKey', {
+                    required: 'API key obligatoire',
+                  })}
+                  className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+                  placeholder="1afac858d4fa5ec74e3e3734c3829793eb6bd5f4602c84ac4a5069369812915e"
                 />
                 {errors.apiKey && (
                   <p className="mt-1 text-sm text-red-500">

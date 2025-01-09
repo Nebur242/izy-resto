@@ -22,8 +22,14 @@ export function formatCurrency(
   switch (currency) {
     case 'EUR':
       return `€${numericAmount.toFixed(2)}`;
+    case 'USD':
+      return `$${numericAmount.toFixed(2)}`;
     case 'XOF':
       return `${Math.round(numericAmount).toLocaleString()} FCFA`;
+    case 'MAD':
+      return `${Math.round(numericAmount).toLocaleString()} DH`;
+    case 'UM':
+      return `${Math.round(numericAmount).toLocaleString()} MRU`;
     default:
       return currency
         ? `${Math.round(numericAmount).toLocaleString()} ${currency}`

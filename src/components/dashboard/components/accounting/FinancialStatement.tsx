@@ -41,7 +41,7 @@ export function FinancialStatement({
           </div>
           <div className="text-right">
             <Building className="w-12 h-12 text-black mx-auto mb-2" />
-            <p className="text-sm text-black">
+            <p className="text-sm text-black" style={{ color: '#000' }}>
               Période: {formatDate(period.startDate.toISOString())} -{' '}
               {formatDate(period.endDate.toISOString())}
             </p>
@@ -115,30 +115,52 @@ export function FinancialStatement({
         <div className="bg-blue-50 rounded-lg p-6 shadow-sm">
           <div className="flex items-center mb-3">
             <TrendingDown className="w-6 h-6 text-red-500 mr-3" />
-            <p className="text-sm font-medium text-black">Total Débit</p>
+            <p
+              className="text-sm font-medium text-black"
+              style={{ color: '#000' }}
+            >
+              Total Débit
+            </p>
           </div>
-          <p className="text-2xl font-bold text-black">
+          <p
+            className="text-2xl font-bold text-black"
+            style={{ color: '#000' }}
+          >
             {formatCurrency(totals.debit, currency)}
           </p>
         </div>
         <div className="bg-blue-50 rounded-lg p-6 shadow-sm">
           <div className="flex items-center mb-3">
             <TrendingUp className="w-6 h-6 text-green-500 mr-3" />
-            <p className="text-sm font-medium text-black">Total Crédit</p>
+            <p
+              className="text-sm font-medium text-black"
+              style={{ color: '#000' }}
+            >
+              Total Crédit
+            </p>
           </div>
-          <p className="text-2xl font-bold text-black">
+          <p
+            className="text-2xl font-bold text-black"
+            style={{ color: '#000' }}
+          >
             {formatCurrency(totals.credit, currency)}
           </p>
         </div>
         <div className="bg-blue-50 rounded-lg p-6 shadow-sm">
           <div className="flex items-center mb-3">
             <FileText className="w-6 h-6 text-blue-500 mr-3" />
-            <p className="text-sm font-medium text-black">Solde Net</p>
+            <p
+              className="text-sm font-medium text-black"
+              style={{ color: '#000' }}
+            >
+              Solde Net
+            </p>
           </div>
           <p
             className={`text-2xl font-bold ${
               totals.net >= 0 ? 'text-green-600' : 'text-red-600'
             }`}
+            style={{ color: '#000' }}
           >
             {formatCurrency(totals.net, currency)}
           </p>
@@ -149,18 +171,21 @@ export function FinancialStatement({
       <div className="border-t border-gray-300 pt-6 text-center">
         <div className="flex justify-between items-center">
           <div className="text-left">
-            <p className="text-sm font-medium text-black">
+            <p
+              className="text-sm font-medium text-black"
+              style={{ color: '#000' }}
+            >
               {settings?.name || 'Restaurant'}
             </p>
-            <p className="text-xs text-black">
+            <p className="text-xs text-black" style={{ color: '#000' }}>
               {settings?.address || 'Adresse non disponible'}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-black">
+            <p className="text-sm text-black" style={{ color: '#000' }}>
               Document généré le {new Date().toLocaleDateString()}
             </p>
-            <p className="text-xs text-black">
+            <p className="text-xs text-black" style={{ color: '#000' }}>
               Tous droits réservés © {new Date().getFullYear()}
             </p>
           </div>

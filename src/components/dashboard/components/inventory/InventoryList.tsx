@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import { InventoryItem } from '../../../../types/inventory';
 import { Button } from '../../../ui/Button';
+import { formatCurrency } from '../../../../utils/currency';
 import { formatDate } from '../../../../utils/date';
 import { useSettings } from '../../../../hooks/useSettings';
-import { formatCurrency } from '../../../../utils/currency';
 import { Pagination } from '../../../ui/Pagination';
-
-const ITEMS_PER_PAGE = 8;
 
 interface InventoryListProps {
   items: InventoryItem[];
@@ -16,15 +14,21 @@ interface InventoryListProps {
   onDelete: (id: string) => void;
 }
 
-export function InventoryList({ items, isLoading, onEdit, onDelete }: InventoryListProps) {
+const ITEMS_PER_PAGE = 9;
+
+export function InventoryList({
+  items,
+  isLoading,
+  onEdit,
+  onDelete,
+}: InventoryListProps) {
   const { settings } = useSettings();
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Calculate pagination
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
-  const paginatedItems = items.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   if (isLoading) {
     return (
@@ -54,17 +58,18 @@ export function InventoryList({ items, isLoading, onEdit, onDelete }: InventoryL
             </tr>
           </thead>
           <tbody>
-            {paginatedItems.map((item) => {
-              const numericPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
-              
+            {paginatedItems.map(item => {
+              const isLowStock = item.quantity <= item.minQuantity;
+              const numericPrice =
+                typeof item.price === 'string'
+                  ? parseFloat(item.price)
+                  : item.price;
+
               return (
-                <tr
-                  key={item.id}
-                  className="border-b dark:border-gray-700"
-                >
+                <tr key={item.id} className="border-b dark:border-gray-700">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      {item.quantity <= item.minQuantity && (
+                      {isLowStock && (
                         <AlertTriangle className="h-5 w-5 text-amber-500" />
                       )}
                       <div>
@@ -83,9 +88,11 @@ export function InventoryList({ items, isLoading, onEdit, onDelete }: InventoryL
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <span className={`font-medium ${
-                      item.quantity <= item.minQuantity ? 'text-red-500' : ''
-                    }`}>
+                    <span
+                      className={`font-medium ${
+                        isLowStock ? 'text-red-500' : ''
+                      }`}
+                    >
                       {item.quantity} {item.unit}
                     </span>
                   </td>

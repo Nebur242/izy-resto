@@ -1,5 +1,9 @@
 import { RestaurantSettings } from '../types/settings';
 
+export const API_URI = window.location.hostname.includes('localhost')
+  ? 'http://localhost:3000/api/v1'
+  : 'https://restaurants-project-backend-solitary-brook-2574.fly.dev/api/v1';
+
 export const DEFAULT_SETTINGS: RestaurantSettings = {
   name: 'Restaurant',
   description: 'Welcome to our restaurant',
@@ -8,7 +12,7 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
   logoHeight: 100,
   coverImage:
     'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
-  currency: 'USD',
+  currency: 'XOF',
   defaultTheme: 'dark',
   openingHours: {
     monday: { open: '11:00', close: '22:00', closed: false },
@@ -22,7 +26,7 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
   address: '123 Restaurant Street',
   phone: '+1 234 567 890',
   activeLanding: 'modern',
-  activeHeader: 'modern',
+  activeHeader: 'classic',
   socialMedia: [],
   seo: {
     title: 'Restaurant',
@@ -44,68 +48,101 @@ type AllCurrency = {
   label: string;
   value: string;
   infos: string;
-  acceptedPaymentMethods: string[];
+  display: string;
+  acceptedPaymentMethods: ('PayTech' | 'Wave' | 'Stripe' | 'CinetPay')[];
 };
 
 export const allCurrencies: AllCurrency[] = [
   {
     label: 'XOF (FCFA)',
     value: 'XOF',
+    display: 'FCFA',
     infos: '',
-    acceptedPaymentMethods: ['PayTech', 'Wave'],
+    acceptedPaymentMethods: ['PayTech', 'Wave', 'CinetPay'],
   },
   {
     label: 'XAF (FCFA)',
     value: 'XAF',
+    display: 'FCFA',
     infos: '',
-    acceptedPaymentMethods: ['PayTech', 'Wave'],
+    acceptedPaymentMethods: ['PayTech', 'CinetPay'],
   },
   {
     label: 'CVE (CVE)',
     value: 'CVE',
+    display: 'CVE',
     infos: '',
     acceptedPaymentMethods: ['PayTech', 'Wave'],
   },
   {
     label: 'MRU (UM)',
     value: 'UM',
-    infos: defaultCurrencyInfo,
-    acceptedPaymentMethods: [],
-  },
-  {
-    label: 'GMD (GMD)',
-    value: 'GMD',
+    display: 'MRU',
     infos: defaultCurrencyInfo,
     acceptedPaymentMethods: [],
   },
   {
     label: 'MAD (DH)',
     value: 'MAD',
+    display: 'DH',
+    infos: '',
+    acceptedPaymentMethods: ['PayTech'],
+  },
+  {
+    label: 'GMD (GMD)',
+    value: 'GMD',
+    display: 'GMD',
     infos: defaultCurrencyInfo,
     acceptedPaymentMethods: [],
+  },
+
+  {
+    label: 'GOUD (HTG)',
+    value: 'HTG',
+    display: 'HTG',
+    infos: defaultCurrencyInfo,
+    acceptedPaymentMethods: [],
+  },
+  {
+    label: 'Franc (GNF)',
+    value: 'GNF',
+    infos: '',
+    display: 'GNF',
+    acceptedPaymentMethods: ['CinetPay'],
+  },
+  {
+    label: 'Franc (CDF)',
+    value: 'CDF',
+    display: 'CDF',
+    infos: defaultCurrencyInfo,
+    acceptedPaymentMethods: ['CinetPay'],
   },
   {
     label: 'USD ($)',
     value: 'USD',
     infos: '',
-    acceptedPaymentMethods: ['Stripe'],
+    display: 'USD',
+    acceptedPaymentMethods: ['Stripe', 'PayTech'],
   },
   {
     label: 'EUR (€)',
     value: 'EUR',
     infos: '',
-    acceptedPaymentMethods: ['Stripe'],
+    display: '€',
+    acceptedPaymentMethods: ['Stripe', 'PayTech'],
   },
   {
     label: 'CAD ($)',
     value: 'CAD',
     infos: '',
-    acceptedPaymentMethods: ['Stripe'],
+    display: '$',
+    acceptedPaymentMethods: ['Stripe', 'PayTech'],
   },
   {
     label: 'GBP (£)',
     value: 'GBP',
     infos: '',
+    display: 'GBP',
     acceptedPaymentMethods: ['Stripe'],
   },
 ];

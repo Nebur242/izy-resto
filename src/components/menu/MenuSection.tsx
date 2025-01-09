@@ -1,20 +1,46 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useMenu } from '../../hooks/useMenu';
 import { MenuItem } from './MenuItem';
 import { MenuFilters } from './MenuFilters';
-import { useFilteredMenu } from '../../hooks/useFilteredMenu';
+import { SearchBar } from './SearchBar';
+import { Pagination } from '../ui/Pagination';
+
+const ITEMS_PER_PAGE = 9;
 
 export function MenuSection() {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const { items, isLoading } = useMenu();
-  const filteredItems = useFilteredMenu(items, activeCategory);
+
+  // Filter items based on both category and search term
+  const filteredItems = items.filter(item => {
+    const matchesCategory =
+      activeCategory === 'all' || item.categoryId === activeCategory;
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+  const paginatedItems = filteredItems.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="space-y-8">
+      <SearchBar onSearch={setSearchTerm} />
+
       <MenuFilters
         activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
+        onCategoryChange={category => {
+          setActiveCategory(category);
+          setCurrentPage(1); // Reset to first page on category change
+        }}
       />
 
       <div className="relative min-h-[50vh]">
@@ -34,28 +60,60 @@ export function MenuSection() {
             initial={false}
             className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {filteredItems.map((item) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <MenuItem item={item} />
-              </motion.div>
-            ))}
+            <AnimatePresence mode="popLayout">
+              {paginatedItems.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    transition: {
+                      duration: 0.3,
+                      delay: index * 0.05, // Stagger effect
+                    },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.9,
+                    transition: { duration: 0.2 },
+                  }}
+                  className="relative"
+                >
+                  <MenuItem item={item} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </motion.div>
         )}
 
         {!isLoading && filteredItems.length === 0 && (
-          <div className="relative flex h-[50vh] items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative flex h-[50vh] items-center justify-center"
+          >
             <p className="text-lg text-gray-500 dark:text-gray-400">
-              Aucun produit trouvé dans cette catégorie
+              Aucun produit trouvé
             </p>
-          </div>
+          </motion.div>
         )}
       </div>
+
+      {totalPages > 1 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex justify-center mt-12"
+        >
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </motion.div>
+      )}
     </div>
   );
 }

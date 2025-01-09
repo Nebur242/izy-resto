@@ -1,4 +1,3 @@
-import React from 'react';
 import { Building2, Share2 } from 'lucide-react';
 import { LogoUploader } from '../../../../../components/settings/LogoUploader';
 import { useFormContext } from 'react-hook-form';

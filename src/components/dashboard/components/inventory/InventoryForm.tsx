@@ -4,6 +4,8 @@ import { X } from 'lucide-react';
 import { Button } from '../../../ui/Button';
 import { InventoryItem } from '../../../../types/inventory';
 import { useSettings } from '../../../../hooks/useSettings';
+import { formatCurrency } from '../../../../utils/currency';
+import { getCurrencyObject } from '../../../../constants/defaultSettings';
 
 interface InventoryFormProps {
   item?: InventoryItem | null;
@@ -13,28 +15,34 @@ interface InventoryFormProps {
 
 export function InventoryForm({ item, onSave, onCancel }: InventoryFormProps) {
   const { settings } = useSettings();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Omit<InventoryItem, 'id'>>({
-    defaultValues: item ? {
-      name: item.name,
-      description: item.description || '',
-      quantity: item.quantity,
-      unit: item.unit,
-      minQuantity: item.minQuantity,
-      category: item.category,
-      price: item.price,
-      supplier: item.supplier || '',
-      expiryDate: item.expiryDate || ''
-    } : {
-      name: '',
-      description: '',
-      quantity: 0,
-      unit: 'unités',
-      minQuantity: 0,
-      category: 'ingredients',
-      price: 0,
-      supplier: '',
-      expiryDate: ''
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<Omit<InventoryItem, 'id'>>({
+    defaultValues: item
+      ? {
+          name: item.name,
+          description: item.description || '',
+          quantity: item.quantity,
+          unit: item.unit,
+          minQuantity: item.minQuantity,
+          category: item.category,
+          price: item.price,
+          supplier: item.supplier || '',
+          expiryDate: item.expiryDate || '',
+        }
+      : {
+          name: '',
+          description: '',
+          quantity: 0,
+          unit: 'unités',
+          minQuantity: 0,
+          category: 'ingredients',
+          price: 0,
+          supplier: '',
+          expiryDate: '',
+        },
   });
 
   return (
@@ -61,21 +69,25 @@ export function InventoryForm({ item, onSave, onCancel }: InventoryFormProps) {
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.name.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Catégorie</label>
+              <label className="block text-sm font-medium mb-1">
+                Catégorie
+              </label>
               <select
                 {...register('category')}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               >
                 <option value="ingredients">Ingrédients</option>
-                <option value="beverages">Boissons</option>
-                <option value="supplies">Fournitures</option>
-                <option value="packaging">Emballages</option>
-                <option value="cleaning">Produits d'entretien</option>
+                <option value="boissons">Boissons</option>
+                <option value="fournitures">Fournitures</option>
+                <option value="emballages">Emballages</option>
+                <option value="nettoyage">Produits d'entretien</option>
               </select>
             </div>
 
@@ -83,14 +95,16 @@ export function InventoryForm({ item, onSave, onCancel }: InventoryFormProps) {
               <label className="block text-sm font-medium mb-1">Quantité</label>
               <input
                 type="number"
-                {...register('quantity', { 
+                {...register('quantity', {
                   required: 'La quantité est requise',
-                  min: { value: 0, message: 'La quantité doit être positive' }
+                  min: { value: 0, message: 'La quantité doit être positive' },
                 })}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.quantity && (
-                <p className="mt-1 text-sm text-red-500">{errors.quantity.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.quantity.message}
+                </p>
               )}
             </div>
 
@@ -111,40 +125,54 @@ export function InventoryForm({ item, onSave, onCancel }: InventoryFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Quantité minimale</label>
+              <label className="block text-sm font-medium mb-1">
+                Quantité minimale
+              </label>
               <input
                 type="number"
-                {...register('minQuantity', { 
+                {...register('minQuantity', {
                   required: 'La quantité minimale est requise',
-                  min: { value: 0, message: 'La quantité minimale doit être positive' }
+                  min: {
+                    value: 0,
+                    message: 'La quantité minimale doit être positive',
+                  },
                 })}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.minQuantity && (
-                <p className="mt-1 text-sm text-red-500">{errors.minQuantity.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.minQuantity.message}
+                </p>
               )}
             </div>
 
             <div>
               <label className="block text-sm font-medium mb-1">
-                Prix unitaire ({settings?.currency})
+                Prix unitaire
+                {settings?.currency
+                  ? ` (${getCurrencyObject(settings?.currency)?.display})`
+                  : ''}
               </label>
               <input
                 type="number"
                 step={settings?.currency === 'XOF' ? '1' : '0.01'}
-                {...register('price', { 
+                {...register('price', {
                   required: 'Le prix est requis',
-                  min: { value: 0, message: 'Le prix doit être positif' }
+                  min: { value: 0, message: 'Le prix doit être positif' },
                 })}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.price && (
-                <p className="mt-1 text-sm text-red-500">{errors.price.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.price.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Fournisseur</label>
+              <label className="block text-sm font-medium mb-1">
+                Fournisseur
+              </label>
               <input
                 type="text"
                 {...register('supplier')}
@@ -153,8 +181,11 @@ export function InventoryForm({ item, onSave, onCancel }: InventoryFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Date d'expiration</label>
+              <label className="block text-sm font-medium mb-1">
+                Date d'expiration
+              </label>
               <input
+                lang="fr"
                 type="date"
                 {...register('expiryDate')}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
@@ -163,7 +194,9 @@ export function InventoryForm({ item, onSave, onCancel }: InventoryFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Description</label>
+            <label className="block text-sm font-medium mb-1">
+              Description
+            </label>
             <textarea
               {...register('description')}
               rows={3}
@@ -176,7 +209,11 @@ export function InventoryForm({ item, onSave, onCancel }: InventoryFormProps) {
               Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Enregistrement...' : item ? 'Mettre à jour' : 'Ajouter'}
+              {isSubmitting
+                ? 'Enregistrement...'
+                : item
+                ? 'Mettre à jour'
+                : 'Ajouter'}
             </Button>
           </div>
         </form>

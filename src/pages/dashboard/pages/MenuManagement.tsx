@@ -46,9 +46,12 @@ export function MenuManagement() {
   const handleSave = async (item: Omit<MenuItem, 'id'>) => {
     try {
       if (editingItem) {
+        console.log(item);
         await menuService.update(editingItem.id, item);
-        setItems(prevItems => 
-          prevItems.map(i => i.id === editingItem.id ? { ...item, id: editingItem.id } : i)
+        setItems(prevItems =>
+          prevItems.map(i =>
+            i.id === editingItem.id ? { ...item, id: editingItem.id } : i
+          )
         );
       } else {
         const id = await menuService.create(item);
@@ -63,6 +66,7 @@ export function MenuManagement() {
   };
 
   const handleEdit = (item: MenuItem) => {
+    console.log(item);
     setEditingItem(item);
     setIsFormOpen(true);
   };
@@ -73,10 +77,12 @@ export function MenuManagement() {
 
   const confirmDelete = async () => {
     if (!deleteConfirmation.itemId) return;
-    
+
     try {
       await menuService.delete(deleteConfirmation.itemId);
-      setItems(prevItems => prevItems.filter(item => item.id !== deleteConfirmation.itemId));
+      setItems(prevItems =>
+        prevItems.filter(item => item.id !== deleteConfirmation.itemId)
+      );
     } catch (error) {
       console.error('Error deleting menu item:', error);
     } finally {
@@ -84,10 +90,12 @@ export function MenuManagement() {
     }
   };
 
-  const filteredItems = items.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || item.categoryId === selectedCategory;
+  const filteredItems = items.filter((item, index) => {
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'all' || item.categoryId === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -97,13 +105,13 @@ export function MenuManagement() {
         <div className="flex-1 w-full md:w-auto">
           <MenuSearchBar value={searchTerm} onChange={setSearchTerm} />
         </div>
-        
+
         <div className="flex items-center space-x-4 w-full md:w-auto">
           <MenuCategoryFilter
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
           />
-          
+
           <Button onClick={() => setIsFormOpen(true)}>
             <Plus className="w-5 h-5 mr-2" />
             Ajouter un Item

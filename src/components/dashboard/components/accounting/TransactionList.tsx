@@ -19,18 +19,19 @@ interface TransactionListProps {
   onDelete: (id: string) => Promise<void>;
 }
 
-export function TransactionList({ 
-  transactions, 
+export function TransactionList({
+  transactions,
   isLoading,
   onUpdate,
-  onDelete 
+  onDelete,
 }: TransactionListProps) {
   const { settings } = useSettings();
   const totalPages = Math.ceil(transactions.length / ITEMS_PER_PAGE);
-  
+
   // Initialize with the last page
   const [currentPage, setCurrentPage] = useState(totalPages || 1);
-  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [editingTransaction, setEditingTransaction] =
+    useState<Transaction | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     isOpen: boolean;
     transactionId?: string;
@@ -69,13 +70,27 @@ export function TransactionList({
           <table className="w-full">
             <thead>
               <tr className="border-b dark:border-gray-700 text-left">
-                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
-                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Source</th>
-                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Description</th>
-                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Référence</th>
-                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">Débit</th>
-                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">Crédit</th>
-                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">Brut</th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  Source
+                </th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  Description
+                </th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  Référence
+                </th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">
+                  Débit
+                </th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">
+                  Crédit
+                </th>
+                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">
+                  Brut
+                </th>
                 <th className="px-6 py-3 text-xs font-medium text-gray-500"></th>
               </tr>
             </thead>
@@ -87,18 +102,16 @@ export function TransactionList({
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    transition={{ 
+                    transition={{
                       duration: 0.2,
-                      delay: index * 0.05
+                      delay: index * 0.05,
                     }}
                     className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                   >
                     <td className="px-6 py-4 text-sm whitespace-nowrap">
                       {formatDate(transaction.date)}
                     </td>
-                    <td className="px-6 py-4 text-sm">
-                      {transaction.source}
-                    </td>
+                    <td className="px-6 py-4 text-sm">{transaction.source}</td>
                     <td className="px-6 py-4 text-sm">
                       {transaction.description}
                     </td>
@@ -108,14 +121,20 @@ export function TransactionList({
                     <td className="px-6 py-4 text-sm text-right">
                       {transaction.debit > 0 && (
                         <span className="text-red-600 dark:text-red-400">
-                          {formatCurrency(transaction.debit, settings?.currency)}
+                          {formatCurrency(
+                            transaction.debit,
+                            settings?.currency
+                          )}
                         </span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-sm text-right">
                       {transaction.credit > 0 && (
                         <span className="text-green-600 dark:text-green-400">
-                          {formatCurrency(transaction.credit, settings?.currency)}
+                          {formatCurrency(
+                            transaction.credit,
+                            settings?.currency
+                          )}
                         </span>
                       )}
                     </td>
@@ -127,18 +146,12 @@ export function TransactionList({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setEditingTransaction(transaction)}
-                          className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setDeleteConfirmation({
-                            isOpen: true,
-                            transactionId: transaction.id
-                          })}
+                          onClick={() =>
+                            setDeleteConfirmation({
+                              isOpen: true,
+                              transactionId: transaction.id,
+                            })
+                          }
                           className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -151,7 +164,10 @@ export function TransactionList({
 
               {paginatedTransactions.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                  <td
+                    colSpan={8}
+                    className="px-6 py-8 text-center text-gray-500 dark:text-gray-400"
+                  >
                     Aucune transaction trouvée
                   </td>
                 </tr>
@@ -175,7 +191,7 @@ export function TransactionList({
       {editingTransaction && (
         <TransactionForm
           transaction={editingTransaction}
-          onSave={async (data) => {
+          onSave={async data => {
             await onUpdate(editingTransaction.id, data);
             setEditingTransaction(null);
           }}

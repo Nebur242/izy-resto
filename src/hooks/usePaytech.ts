@@ -6,6 +6,7 @@ import {
   createPayment,
   getOrderByRef,
 } from '../services/payments/paytech.service';
+import { API_URI } from '../constants/defaultSettings';
 
 export const usePaytech = ({
   paymentMethod,
@@ -55,8 +56,7 @@ export const usePaytech = ({
         ref_command: commandRef,
         command_name: 'Paiement de la commande',
         env: 'prod',
-        ipn_url:
-          'https://restaurants-project-backend-solitary-brook-2574.fly.dev/api/v1/payments/confirm',
+        ipn_url: `${API_URI}/payments/confirm`,
         success_url: `${window.location.origin}/paytech/success`,
         cancel_url: `${window.location.origin}/paytech/failed`,
       };
@@ -81,6 +81,7 @@ export const usePaytech = ({
         data: JSON.stringify(data),
         apiKey: paymentMethod.apiKey,
         apiSecret: paymentMethod.apiSecret,
+        type: 'paytech',
       });
 
       setPaymentSucceeded(true);
