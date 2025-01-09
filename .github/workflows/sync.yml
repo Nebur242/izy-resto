@@ -9,31 +9,39 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the forked repository
+      # Step 1: Checkout the forked repository
       - name: Checkout fork
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.ACCOUNT_TOKEN }}
 
-      # Configure Git
+      # Step 2: Configure Git
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Add upstream remote
+      # Step 3: Add upstream remote
       - name: Add upstream remote
         run: |
           git remote add upstream https://github.com/Nebur2020/izy-resto.git
           git fetch upstream
 
-      # Merge upstream changes into the main branch
+      # Step 4: Merge upstream changes into the main branch
       - name: Merge changes
         run: |
           git checkout main
           git merge upstream/main --allow-unrelated-histories || true
 
-      # Push changes back to the forked repository
+      # Step 5: Push changes back to the forked repository
       - name: Push changes
         run: |
           git push origin main
+
+      # Step 6: Sync tags from upstream
+      - name: Fetch and push tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCOUNT_TOKEN }}
+        run: |
+          git fetch upstream --tags
+          git push origin --tags
