@@ -6,6 +6,7 @@ import { Button } from '../ui/Button';
 import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks/useSettings';
 import { formatCurrency } from '../../utils/currency';
+import { useVariants } from '../../hooks/useVariants';
 
 interface ProductDetailsModalProps {
   item: MenuItemWithVariants | null;
@@ -22,8 +23,11 @@ export function ProductDetailsModal({
   const { addToCart, cart } = useCart();
   const { settings } = useSettings();
   const [selectedVariants, setSelectedVariants] = useState<string[]>([]);
+  const [unselectedRequiredVariantType, setUnselectedRequiredVariantType] =
+    useState<string[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [variantCombinationError, setVariantCombinationError] = useState('');
+  const { variants } = useVariants();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -98,6 +102,8 @@ export function ProductDetailsModal({
   const handleVariantSelect = (variant: string) => {
     const [type] = variant.split(': ');
 
+    setUnselectedRequiredVariantType([]);
+
     setVariantCombinationError('');
 
     setSelectedVariants(prev => {
@@ -120,10 +126,8 @@ export function ProductDetailsModal({
       });
 
       if (validSelection.length < 1) {
-        setVariantCombinationError('Combinaison inexistant...');
+        setVariantCombinationError('Combinaison inexistante...');
       }
-
-      // console.log('validSelection', validSelection);
 
       return validSelection;
     });
@@ -141,8 +145,34 @@ export function ProductDetailsModal({
     return cart.find(item => item.id === variantId);
   };
 
+  const isVariantRequired = (type: string) => {
+    return !!variants.find(v => v.name.toLowerCase() === type.toLowerCase())
+      ?.isRequired;
+  };
+
   const handleAddToCart = () => {
     if (isOutOfStock) return;
+    setUnselectedRequiredVariantType([]);
+    const requiredVariants = variants
+      .filter(v =>
+        Object.keys(variantTypes)
+          .map(v => v.toLowerCase())
+          .includes(v.name.toLowerCase())
+      )
+      .filter(v => Boolean(v.isRequired));
+
+    const unselectedVariants: string[] = requiredVariants
+      .filter(
+        v =>
+          !selectedVariants
+            .map(v1 => v1.toLowerCase())
+            .some(v2 => v2.includes(v.name.toLowerCase()))
+      )
+      .map(v => v.name);
+
+    setUnselectedRequiredVariantType(unselectedVariants);
+
+    if (unselectedVariants.length > 0) return;
 
     const variantValues = getVariantValues();
     const productName = variantValues
@@ -239,7 +269,7 @@ export function ProductDetailsModal({
                 return (
                   <div key={type}>
                     <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
-                      {type}
+                      {type} {isVariantRequired(type) ? '*' : ''}
                     </h3>
                     <div className="flex flex-wrap gap-1 sm:gap-2">
                       {Array.from(values).map(value => {
@@ -335,6 +365,28 @@ export function ProductDetailsModal({
               <span className="sr-only">Info</span>
               <div>{variantCombinationError}</div>
             </div>
+          )}
+
+          {unselectedRequiredVariantType.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-900/20 mb-3"
+            >
+              <div className="flex items-center gap-3">
+                <p className="text-amber-800 dark:text-amber-400 text-sm">
+                  Merci de selectionner au moins un élément parmi ces variantes
+                  obligatoires:{' '}
+                  <span className="font-bold text-amber-800 dark:text-amber-400">
+                    {unselectedRequiredVariantType.map((val, index) =>
+                      index === unselectedRequiredVariantType.length - 1
+                        ? val
+                        : `${val}, `
+                    )}
+                  </span>
+                </p>
+              </div>
+            </motion.div>
           )}
 
           {/* Add to Cart Button */}

@@ -6,6 +6,7 @@ export interface PaymentMethod {
   url?: string;
   apiKey?: string;
   apiSecret?: string;
+  instruction?: string;
   active: boolean;
   createdAt: string;
   updatedAt: string;

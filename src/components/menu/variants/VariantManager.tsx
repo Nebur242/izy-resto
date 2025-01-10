@@ -26,12 +26,12 @@ export function VariantManager({
 
     onChange(
       [
-        ...value,
         {
           variantCombination: newCombination,
           price: 0,
           image: '',
         },
+        ...value,
       ].filter(Boolean)
     );
   };

@@ -22,6 +22,7 @@ export function formatCurrency(
   switch (currency) {
     case 'EUR':
       return `€${numericAmount.toFixed(2)}`;
+    case 'CAD':
     case 'USD':
       return `$${numericAmount.toFixed(2)}`;
     case 'XOF':

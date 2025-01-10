@@ -318,6 +318,17 @@ export function PaymentMethodForm({
             />
           )}
 
+          <textarea
+            {...register('instruction')}
+            rows={5}
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 p-2.5 
+                        bg-white dark:bg-gray-700 
+                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                        dark:text-white
+                        transition-colors"
+            placeholder="Consigne ou instruction à partager pendant le paiement..."
+          ></textarea>
+
           <div className="flex justify-end gap-4 pt-4 border-t dark:border-gray-700">
             <Button type="button" variant="secondary" onClick={onCancel}>
               Annuler

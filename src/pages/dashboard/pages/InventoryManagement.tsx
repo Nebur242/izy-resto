@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Search, Package } from 'lucide-react';
@@ -16,7 +15,7 @@ import toast from 'react-hot-toast';
 
 const tabs = [
   { id: 'inventory', label: 'Inventaire' },
-  { id: 'history', label: 'Historique' }
+  { id: 'history', label: 'Historique' },
 ];
 
 export function InventoryManagement() {
@@ -39,7 +38,7 @@ export function InventoryManagement() {
     totalPages: number;
   }>({
     updates: [],
-    totalPages: 0
+    totalPages: 0,
   });
 
   const { items, isLoading, addItem, updateItem, deleteItem } = useInventory();
@@ -56,12 +55,12 @@ export function InventoryManagement() {
       setIsLoadingHistory(true);
       const { updates, totalCount } = await stockHistoryService.getHistory({
         page: currentPage,
-        pageSize: 10
+        pageSize: 10,
       });
-      
+
       setStockHistory({
         updates,
-        totalPages: Math.ceil(totalCount / 10)
+        totalPages: Math.ceil(totalCount / 10),
       });
     } catch (error) {
       console.error('Error loading stock history:', error);
@@ -86,7 +85,7 @@ export function InventoryManagement() {
 
   const handleDelete = async () => {
     if (!deleteConfirmation.itemId) return;
-    
+
     try {
       setIsDeleting(true);
       await deleteItem(deleteConfirmation.itemId);
@@ -107,7 +106,7 @@ export function InventoryManagement() {
 
         // Update item stock
         await updateItem(update.itemId, {
-          quantity: item.quantity - update.quantity
+          quantity: item.quantity - update.quantity,
         });
 
         // Record in history
@@ -117,12 +116,12 @@ export function InventoryManagement() {
           quantity: update.quantity,
           reason: update.reason,
           cost: update.quantity * item.price,
-          date: new Date().toISOString()
+          date: new Date().toISOString(),
         });
       }
 
       setIsUpdateFormOpen(false);
-      
+
       // Refresh history if we're on that tab
       if (activeTab === 'history') {
         loadStockHistory();
@@ -133,9 +132,11 @@ export function InventoryManagement() {
   };
 
   const filteredItems = items.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'all' || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -155,10 +156,12 @@ export function InventoryManagement() {
           <Button onClick={() => setIsUpdateFormOpen(true)}>
             Mise à jour des stocks
           </Button>
-          <Button onClick={() => {
-            setEditingItem(null);
-            setIsFormOpen(true);
-          }}>
+          <Button
+            onClick={() => {
+              setEditingItem(null);
+              setIsFormOpen(true);
+            }}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Ajouter un Produit
           </Button>
@@ -169,55 +172,53 @@ export function InventoryManagement() {
       <InventoryAlerts items={items} />
 
       {/* Tabs */}
-      <Tabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onChange={setActiveTab}
-      />
+      <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === 'inventory' ? (
         <>
           {/* Filters */}
-<div className="flex flex-col gap-4 sm:flex-row">
-  <div className="relative flex-1">
-    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-    <input
-      type="text"
-      placeholder="Rechercher un produit..."
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className="w-full rounded-lg border border-gray-300 px-12 py-3 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
-    />
-  </div>
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500 dark:text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher un produit..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-12 py-3 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+              />
+            </div>
 
-  <div className="flex gap-2">
-    <select
-      value={selectedCategory}
-      onChange={(e) => setSelectedCategory(e.target.value)}
-      className="rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
-    >
-      <option value="all">Toutes les catégories</option>
-      <option value="ingredients">Ingrédients</option>
-      <option value="beverages">Boissons</option>
-      <option value="supplies">Fournitures</option>
-    </select>
-  </div>
-</div>
+            <div className="flex gap-2">
+              <select
+                value={selectedCategory}
+                onChange={e => setSelectedCategory(e.target.value)}
+                className="rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+              >
+                <option value="all">Toutes les catégories</option>
+                <option value="ingredients">Ingrédients</option>
+                <option value="boissons">Boissons</option>
+                <option value="fournitures">Fournitures</option>
+                <option value="emballages">Emballages</option>
+                <option value="nettoyage">Produits d'entretien</option>
+              </select>
+            </div>
+          </div>
 
           {/* Inventory List */}
           <InventoryList
             items={filteredItems}
             isLoading={isLoading}
-            onEdit={(item) => {
+            onEdit={item => {
               setEditingItem(item);
               setIsFormOpen(true);
             }}
-            onDelete={(id) => {
+            onDelete={id => {
               const item = items.find(i => i.id === id);
-              setDeleteConfirmation({ 
-                isOpen: true, 
+              setDeleteConfirmation({
+                isOpen: true,
                 itemId: id,
-                itemName: item?.name 
+                itemName: item?.name,
               });
             }}
           />

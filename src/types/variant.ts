@@ -4,6 +4,7 @@ export interface Variant {
   type: string;
   values: string[];
   categoryIds: string[];
+  isRequired?: boolean;
   createdAt: string;
   updatedAt: string;
 }

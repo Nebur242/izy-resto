@@ -12,14 +12,26 @@ interface VariantFormProps {
   onCancel: () => void;
 }
 
-export function VariantForm({ variant, categories, onSave, onCancel }: VariantFormProps) {
-  const { register, handleSubmit, watch, setValue, formState: { errors, isDirty } } = useForm({
+export function VariantForm({
+  variant,
+  categories,
+  onSave,
+  onCancel,
+}: VariantFormProps) {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isDirty },
+  } = useForm({
     defaultValues: variant || {
       name: '',
       type: '',
       values: [''],
-      categoryIds: []
-    }
+      categoryIds: [],
+      isRequired: false,
+    },
   });
 
   const values = watch('values');
@@ -30,7 +42,11 @@ export function VariantForm({ variant, categories, onSave, onCancel }: VariantFo
   };
 
   const removeValue = (index: number) => {
-    setValue('values', values.filter((_, i) => i !== index), { shouldDirty: true });
+    setValue(
+      'values',
+      values.filter((_, i) => i !== index),
+      { shouldDirty: true }
+    );
   };
 
   return (
@@ -44,10 +60,12 @@ export function VariantForm({ variant, categories, onSave, onCancel }: VariantFo
               {variant ? 'Modifier la Variante' : 'Nouvelle Variante'}
             </h2>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {variant ? 'Modifier les options de cette variante' : 'Ajouter une nouvelle variante au menu'}
+              {variant
+                ? 'Modifier les options de cette variante'
+                : 'Ajouter une nouvelle variante au menu'}
             </p>
           </div>
-          <button 
+          <button
             onClick={onCancel}
             className="absolute right-4 top-4 p-2 rounded-full text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
@@ -56,7 +74,10 @@ export function VariantForm({ variant, categories, onSave, onCancel }: VariantFo
         </div>
 
         {/* Form Content */}
-        <form onSubmit={handleSubmit(onSave)} className="overflow-y-auto max-h-[calc(90vh-80px)]">
+        <form
+          onSubmit={handleSubmit(onSave)}
+          className="overflow-y-auto max-h-[calc(90vh-80px)]"
+        >
           <div className="p-6 space-y-6">
             {/* Basic Information */}
             <div className="space-y-2">
@@ -78,6 +99,17 @@ export function VariantForm({ variant, categories, onSave, onCancel }: VariantFo
               )}
             </div>
 
+            <div>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  {...register('isRequired')}
+                  className="rounded border-gray-300 dark:border-gray-600"
+                />
+                <span>Obligatoire</span>
+              </label>
+            </div>
+
             {/* Categories Selection */}
             <div className="space-y-3">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -90,21 +122,24 @@ export function VariantForm({ variant, categories, onSave, onCancel }: VariantFo
                     key={category.id}
                     className={`
                       group flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-200
-                      ${selectedCategories?.includes(category.id)
-                        ? 'bg-blue-50 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+                      ${
+                        selectedCategories?.includes(category.id)
+                          ? 'bg-blue-50 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                       }
                     `}
                   >
                     <input
                       type="checkbox"
                       value={category.id}
-                      {...register('categoryIds', { 
-                        required: 'Sélectionnez au moins une catégorie'
+                      {...register('categoryIds', {
+                        required: 'Sélectionnez au moins une catégorie',
                       })}
                       className="rounded-md border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">{category.name}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      {category.name}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -132,13 +167,13 @@ export function VariantForm({ variant, categories, onSave, onCancel }: VariantFo
                   Ajouter
                 </Button>
               </div>
-              
+
               <div className="space-y-2">
                 {values.map((_, index) => (
                   <div key={index} className="flex gap-2">
                     <input
-                      {...register(`values.${index}`, { 
-                        required: 'La valeur est requise'
+                      {...register(`values.${index}`, {
+                        required: 'La valeur est requise',
                       })}
                       className="flex-1 px-4 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow"
                       placeholder={`Option ${index + 1}`}

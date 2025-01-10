@@ -8,7 +8,7 @@ interface InventoryAlertsProps {
 
 export function InventoryAlerts({ items }: InventoryAlertsProps) {
   const lowStockItems = items.filter(item => {
-    return item.quantity <= item.minQuantity;
+    return Number(item.quantity) <= Number(item.minQuantity);
     // return stockDifference >= 0;
   });
 

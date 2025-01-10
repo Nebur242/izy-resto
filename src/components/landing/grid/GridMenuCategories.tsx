@@ -8,8 +8,13 @@ interface GridMenuCategoriesProps {
   onCategoryChange: (category: string) => void;
 }
 
-export function GridMenuCategories({ activeCategory, onCategoryChange }: GridMenuCategoriesProps) {
+export function GridMenuCategories({
+  activeCategory,
+  onCategoryChange,
+}: GridMenuCategoriesProps) {
   const { categories, isLoading } = useCategories();
+
+  console.log('hello');
 
   if (isLoading) {
     return (

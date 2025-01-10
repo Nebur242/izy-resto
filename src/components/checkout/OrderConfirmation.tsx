@@ -10,6 +10,7 @@ import {
   Check,
   ExternalLink,
   X,
+  AlertTriangle,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useSettings } from '../../hooks/useSettings';
@@ -236,6 +237,19 @@ export function OrderConfirmation({
               <span>{formatCurrency(total, settings?.currency)}</span>
             </div>
           </div>
+          {selectedPaymentMethod?.instruction && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-900/20"
+            >
+              <div className="flex items-center gap-3">
+                <p className="text-amber-800 dark:text-amber-400 text-sm">
+                  {selectedPaymentMethod?.instruction}
+                </p>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
 

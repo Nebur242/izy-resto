@@ -243,7 +243,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
                 className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow pr-10
                  ${errors.phone ? 'border-red-500 dark:border-red-500' : ''}
                `}
-                placeholder="+22X XX XXX XX XX"
+                placeholder="Numéro de téléphone"
               />
               {errors.phone && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500">

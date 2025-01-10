@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useMenu } from '../../../hooks/useMenu';
 import { GridMenuItem } from './GridMenuItem';
@@ -12,16 +12,19 @@ export function GridMenuSection() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const { items, isLoading } = useMenu(
-    activeCategory !== 'all' ? activeCategory : undefined
-  );
+  const { items, isLoading } = useMenu();
 
-  // Filter items based on search
-  const filteredItems = items.filter(
-    item =>
+  // console.log(activeCategory);
+
+  // Filter items based on both category and search
+  const filteredItems = items.filter(item => {
+    const matchesCategory =
+      activeCategory === 'all' || item.categoryId === activeCategory;
+    const matchesSearch =
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
