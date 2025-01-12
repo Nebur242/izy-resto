@@ -39,6 +39,7 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
   },
   email: '',
   canDeliver: true,
+  canDineIn: true,
   rateLimits: {
     maxOrders: 2,
     timeWindowHours: 1,

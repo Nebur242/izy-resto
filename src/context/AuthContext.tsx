@@ -26,10 +26,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Subscribe to auth state changes
-    const unsubscribe = authService.onAuthStateChanged(async (user) => {
+    const unsubscribe = authService.onAuthStateChanged(async user => {
+      if (user && user.isAnonymous) {
+        if (window.location.pathname.startsWith('/dashboard')) {
+          navigate('/', { replace: true });
+        }
+        return setLoading(false);
+      }
+
       setUser(user);
       setIsAuthenticated(!!user);
-      
+
       if (user) {
         try {
           const staff = await staffService.getStaffByEmail(user.email!);
@@ -45,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           navigate('/', { replace: true });
         }
       }
-      
+
       setLoading(false);
     });
 
@@ -55,11 +62,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       await authService.login(email, password);
-      
+
       // Get redirect URL from session storage or default to dashboard
       const redirectUrl = sessionStorage.getItem('redirectUrl') || '/dashboard';
       sessionStorage.removeItem('redirectUrl');
-      
+
       navigate(redirectUrl, { replace: true });
       toast.success('Connexion réussie');
     } catch (error: any) {
@@ -72,16 +79,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await authService.logout();
-      
+
       // Clear all session/local storage data
       sessionStorage.clear();
       localStorage.clear();
-      
+
       // Reset states
       setUser(null);
       setStaffData(null);
       setIsAuthenticated(false);
-      
+
       // Redirect to landing page
       navigate('/', { replace: true });
       toast.success('Déconnexion réussie');
@@ -97,14 +104,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     login,
     logout,
-    isAuthenticated
+    isAuthenticated,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

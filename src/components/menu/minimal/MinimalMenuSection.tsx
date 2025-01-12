@@ -17,11 +17,15 @@ export function MinimalMenuSection() {
   );
 
   // Filter items based on search
-  const filteredItems = items.filter(
-    item =>
+  // Filter items based on both category and search
+  const filteredItems = items.filter(item => {
+    const matchesCategory =
+      activeCategory === 'all' || item.categoryId === activeCategory;
+    const matchesSearch =
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
@@ -30,18 +34,18 @@ export function MinimalMenuSection() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
-        {[...Array(4)].map((_, i) => (
-          <div
-            key={i}
-            className="h-24 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse"
-          />
-        ))}
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
+  //       {[...Array(4)].map((_, i) => (
+  //         <div
+  //           key={i}
+  //           className="h-24 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse"
+  //         />
+  //       ))}
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-12">

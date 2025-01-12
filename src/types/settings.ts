@@ -57,6 +57,7 @@ export interface RestaurantSettings {
   socialMedia: SocialMediaProfile[];
   seo: SEOSettings;
   canDeliver: boolean;
+  canDineIn: boolean;
   rateLimits: {
     maxOrders: number;
     timeWindowHours: number;

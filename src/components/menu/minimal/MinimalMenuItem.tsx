@@ -63,10 +63,7 @@ export function MinimalMenuItem({ item }: MinimalMenuItemProps) {
       </motion.div>
 
       {showModal && (
-        <ProductDetailsModal
-          item={item}
-          onClose={() => setShowModal(false)}
-        />
+        <ProductDetailsModal item={item} onClose={() => setShowModal(false)} />
       )}
     </>
   );

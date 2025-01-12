@@ -65,7 +65,9 @@ export function OrderConfirmation({
 
   const getPaymentUrl = () => {
     if (!selectedPaymentMethod?.url) return '';
-    return `${selectedPaymentMethod.url}=${total}`;
+    return selectedPaymentMethod.name?.toLowerCase() === 'wave'
+      ? `${selectedPaymentMethod.url}?amount=${total}`
+      : '#';
   };
 
   const currencyObject = settings

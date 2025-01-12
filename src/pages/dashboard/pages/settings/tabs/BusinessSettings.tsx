@@ -3,9 +3,10 @@ import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';
 
 export function BusinessSettings() {
-  const { register, watch, setValue } = useFormContext<RestaurantSettings>();
+  const { register, watch } = useFormContext<RestaurantSettings>();
 
   const canDeliver = watch('canDeliver');
+  const canDineIn = watch('canDineIn');
 
   const days = [
     'monday',
@@ -24,10 +25,6 @@ export function BusinessSettings() {
     friday: 'Vendredi',
     saturday: 'Samedi',
     sunday: 'Dimanche',
-  };
-
-  const handleActivateDelivery = () => {
-    setValue('canDeliver', !canDeliver);
   };
 
   return (
@@ -109,10 +106,27 @@ export function BusinessSettings() {
         <label className="flex items-center space-x-2">
           <input
             type="checkbox"
-            {...register(`canDeliver` as const)}
+            {...register(`canDeliver`)}
             className="rounded border-gray-300 dark:border-gray-600"
           />
           <span>{canDeliver ? 'Actif' : 'Inactif'}</span>
+        </label>
+      </section>
+
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <h2 className="text-xl font-semibold">
+            Activation du paiement surplace
+          </h2>
+        </div>
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            {...register('canDineIn')}
+            className="rounded border-gray-300 dark:border-gray-600"
+          />
+          <span>{canDineIn ? 'Actif' : 'Inactif'}</span>
         </label>
       </section>
     </div>

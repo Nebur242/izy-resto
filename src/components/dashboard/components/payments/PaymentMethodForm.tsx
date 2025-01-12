@@ -174,10 +174,10 @@ export function PaymentMethodForm({
                       methodType === 'Wave' ? 'Le lien Wave est requis' : false,
                   })}
                   className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
-                  placeholder="https://pay.wave.com/m/xxxxxxxxxxxxxx/c/sn/?amount"
+                  placeholder="https://pay.wave.com/m/xxxxxxxxxxxxxx/c/sn"
                 />
                 <small className="text-red-800 dark:text-red-400">
-                  Coller exactement jusqu'à "amount"
+                  Coller votre lien de paiement wave marchand
                 </small>
                 {errors.url && (
                   <p className="mt-1 text-sm text-red-500">
