@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, ShoppingBag } from 'lucide-react';
 import { useSettings } from '../../../hooks/useSettings';
@@ -13,8 +12,6 @@ interface CustomerListProps {
 
 export function CustomerList({ customers, onViewDetails }: CustomerListProps) {
   const { settings } = useSettings();
-  console.log(customers);
-
   return (
     <div className="grid gap-4">
       {customers.map(customer => (

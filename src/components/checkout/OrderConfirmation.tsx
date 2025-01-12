@@ -339,6 +339,7 @@ export function OrderConfirmation({
 
             {/* Payment URL Info */}
             {(selectedPaymentMethod?.url ||
+              selectedPaymentMethod?.qrCode ||
               selectedPaymentMethod?.name.toLowerCase() === 'cinetpay') &&
               hasClickedPaymentLink &&
               !hasPaid && (
@@ -437,7 +438,8 @@ export function OrderConfirmation({
             qrCode={selectedPaymentMethod.qrCode}
             onClose={() => {
               setShowQRCode(false);
-              setHasPaid(true);
+              setHasClickedPaymentLink(true);
+              setHasPaid(false);
             }}
           />
         )}

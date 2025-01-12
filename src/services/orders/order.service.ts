@@ -10,7 +10,7 @@ import {
   onSnapshot,
   getDoc,
   QuerySnapshot,
-  FirebaseError,
+  FirestoreError,
   runTransaction,
   limit,
   updateDoc,
@@ -54,7 +54,7 @@ class OrderService {
             onUpdate(orders);
           }
         },
-        (error: FirebaseError) => {
+        (error: FirestoreError) => {
           console.error('Firestore subscription error:', error);
           onError(
             new OrderServiceError(
@@ -158,22 +158,18 @@ class OrderService {
   async createOrder(orderData: Omit<Order, 'id'>): Promise<string> {
     try {
       const user = anonymousAuthService.getCurrentUser();
-      if (!user) {
-        throw new OrderServiceError(
-          'User not authenticated',
-          'orders/unauthenticated'
-        );
-      }
 
-      // Check rate limit
-      const { canOrder, reason } = await anonymousAuthService.canPlaceOrder(
-        user.uid
-      );
-      if (!canOrder) {
-        throw new OrderServiceError(
-          reason || 'Rate limit exceeded',
-          'orders/rate-limit'
+      if (user?.isAnonymous) {
+        // Check rate limit
+        const { canOrder, reason } = await anonymousAuthService.canPlaceOrder(
+          user.uid
         );
+        if (!canOrder) {
+          throw new OrderServiceError(
+            reason || 'Rate limit exceeded',
+            'orders/rate-limit'
+          );
+        }
       }
       // Validate order data
       validateOrder(orderData);
@@ -181,7 +177,7 @@ class OrderService {
       // Format order data and add user ID
       const order = {
         ...formatOrderData(orderData, orderData.paymentMethod),
-        anonymousUid: user.uid,
+        anonymousUid: user?.uid || null,
       };
 
       // Format order data

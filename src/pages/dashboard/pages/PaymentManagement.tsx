@@ -19,7 +19,6 @@ export function PaymentManagement() {
   const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(
     null
   );
-  console.log(isLoading);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     isOpen: boolean;
     methodId?: string;

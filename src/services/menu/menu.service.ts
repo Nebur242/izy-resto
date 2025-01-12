@@ -44,7 +44,6 @@ class MenuService extends FirestoreService<MenuItem> {
             ),
           };
         }) as MenuItem[];
-      console.log('getMenuItems', data);
       return data;
     } catch (error) {
       throw new MenuServiceError(
