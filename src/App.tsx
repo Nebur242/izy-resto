@@ -7,6 +7,7 @@ import { ApiProvider } from './context/ApiContext';
 import { useSEO } from './hooks/useSEO';
 import { useEffect } from 'react';
 import { anonymousAuthService } from './services/auth/anonymousAuth.service';
+import { RestaurantClosedModal } from './components/ui/RestaurantClosedModal';
 
 export default function App() {
   // Add SEO hook to update title and favicon
@@ -34,6 +35,7 @@ export default function App() {
           <CartProvider>
             <OrderProvider>
               <AppRoutes />
+              <RestaurantClosedModal />
             </OrderProvider>
           </CartProvider>
         </ApiProvider>

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useTranslation } from '../../../i18n/useTranslation';
+import { useState } from 'react';
 import { Plus, Search, ArrowUpDown, Loader2, LayoutGrid } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../../components/ui/Button';
@@ -11,7 +10,6 @@ import toast from 'react-hot-toast';
 import EmptySection from '../../../components/dashboard/shared/EmptySection';
 
 export function CategoryManagement() {
-  const { t } = useTranslation();
   const { categories, isLoading, addCategory, updateCategory, deleteCategory } =
     useCategories();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -205,7 +203,7 @@ export function CategoryManagement() {
       </div>
 
       {/* Modals */}
-      {isFormOpen && editingCategory && (
+      {isFormOpen && (
         <CategoryForm
           category={editingCategory}
           onSave={handleSave}
