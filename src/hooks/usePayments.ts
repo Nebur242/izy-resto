@@ -28,23 +28,26 @@ export function usePayments() {
     try {
       const id = await paymentService.create(data);
       await loadPaymentMethods();
-      toast.success('Payment method added successfully');
+      toast.success('Mode de paiement ajouté avec succès');
       return id;
     } catch (error) {
       console.error('Error adding payment method:', error);
-      toast.error('Failed to add payment method');
+      toast.error("Impossible d'ajouter un mode de paiement");
       throw error;
     }
   };
 
-  const updatePaymentMethod = async (id: string, data: Partial<PaymentMethod>) => {
+  const updatePaymentMethod = async (
+    id: string,
+    data: Partial<PaymentMethod>
+  ) => {
     try {
       await paymentService.update(id, {
         ...data,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
       await loadPaymentMethods();
-      toast.success('Payment method updated successfully');
+      toast.success('Mode de paiement mis à jour avec succès');
     } catch (error) {
       console.error('Error updating payment method:', error);
       toast.error('Failed to update payment method');
@@ -54,12 +57,12 @@ export function usePayments() {
 
   const deletePaymentMethod = async (id: string) => {
     try {
-      await paymentService.update(id, { 
+      await paymentService.update(id, {
         active: false,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
       await loadPaymentMethods();
-      toast.success('Payment method deleted successfully');
+      toast.success('Le mode de paiement a été supprimé avec succès');
     } catch (error) {
       console.error('Error deleting payment method:', error);
       toast.error('Failed to delete payment method');
@@ -73,6 +76,6 @@ export function usePayments() {
     addPaymentMethod,
     updatePaymentMethod,
     deletePaymentMethod,
-    refreshPaymentMethods: loadPaymentMethods
+    refreshPaymentMethods: loadPaymentMethods,
   };
 }

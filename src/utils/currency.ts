@@ -24,6 +24,7 @@ export function formatCurrency(
       return `€${numericAmount.toFixed(2)}`;
     case 'CAD':
     case 'USD':
+      if (numericAmount < 0) return `-$${Math.abs(numericAmount).toFixed(2)}`;
       return `$${numericAmount.toFixed(2)}`;
     case 'XOF':
       return `${Math.round(numericAmount).toLocaleString()} FCFA`;
@@ -34,7 +35,7 @@ export function formatCurrency(
     default:
       return currency
         ? `${Math.round(numericAmount).toLocaleString()} ${currency}`
-        : `${Math.round(numericAmount).toLocaleString()} FCFA`;
+        : `${Math.round(numericAmount).toLocaleString()}`;
   }
 }
 

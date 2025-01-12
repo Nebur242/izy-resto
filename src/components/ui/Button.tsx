@@ -7,14 +7,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   translationKey?: string;
 }
 
-export function Button({ 
-  variant = 'primary', 
-  size = 'md', 
-  className = '', 
+export function Button({
+  variant = 'primary',
+  size = 'md',
+  className = '',
   children,
   translationKey,
   disabled,
-  ...props 
+  ...props
 }: ButtonProps) {
   const { t } = useTranslation();
 
@@ -25,9 +25,9 @@ export function Button({
     disabled:opacity-50 disabled:cursor-not-allowed
     active:scale-[0.98]
   `;
-  
-const variants = {
- primary: `
+
+  const variants = {
+    primary: `
    bg-gradient-to-r from-blue-100 to-blue-200
    hover:from-blue-300 hover:to-blue-200
    text-white !text-white 
@@ -36,7 +36,7 @@ const variants = {
    dark:from-blue-500 dark:to-blue-400
    dark:hover:from-blue-600 dark:hover:to-blue-500
  `,
- secondary: `
+    secondary: `
    bg-white dark:bg-gray-800
    text-gray-700 dark:text-gray-200
    border border-gray-200 dark:border-gray-700
@@ -44,8 +44,8 @@ const variants = {
    hover:border-gray-300 dark:hover:border-gray-600
    focus:ring-gray-500/50
    shadow-sm text-white !text-white 
- `, 
- danger: `
+ `,
+    danger: `
    bg-gradient-to-r from-red-600 to-red-500
    hover:from-red-700 hover:to-red-600
    text-white !text-white
@@ -54,18 +54,18 @@ const variants = {
    dark:from-red-500 dark:to-red-400 
    dark:hover:from-red-600 dark:hover:to-red-500 text-white !text-white 
  `,
- ghost: `
+    ghost: `
    text-gray-600 hover:text-gray-900
    dark:text-gray-400 dark:hover:text-gray-100
    hover:bg-gray-100 dark:hover:bg-gray-800
    focus:ring-gray-500/50 text-white !text-white 
- `
-};
-  
+ `,
+  };
+
   const sizes = {
     sm: 'text-sm px-3 py-1.5 rounded-lg gap-1.5',
     md: 'text-sm px-4 py-2 rounded-xl gap-2',
-    lg: 'text-base px-6 py-3 rounded-xl gap-2.5'
+    lg: 'text-base px-6 py-3 rounded-xl gap-2.5',
   };
 
   // Add hover overlay effect for gradient buttons
@@ -83,9 +83,7 @@ const variants = {
       {...props}
     >
       {hoverOverlay}
-      <span className="relative flex items-center">
-        {content}
-      </span>
+      <span className="relative flex items-center">{content}</span>
     </button>
   );
 }

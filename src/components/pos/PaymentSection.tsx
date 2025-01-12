@@ -1,8 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
 import { Calculator } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings';
-import { formatCurrency, getCurrencyStep, getQuickAmounts } from '../../utils/currency';
+import { formatCurrency, getCurrencyStep } from '../../utils/currency';
 
 interface PaymentSectionProps {
   total: number;
@@ -11,15 +9,13 @@ interface PaymentSectionProps {
   onQuickAmount: (amount: number) => void;
 }
 
-export function PaymentSection({ 
-  total, 
-  amountPaid, 
+export function PaymentSection({
+  total,
+  amountPaid,
   onAmountPaidChange,
-  onQuickAmount 
 }: PaymentSectionProps) {
   const { settings } = useSettings();
   const change = amountPaid - total;
-  const quickAmounts = getQuickAmounts(settings?.currency);
 
   return (
     <div className="space-y-4">
@@ -33,8 +29,9 @@ export function PaymentSection({
           <label className="block text-sm font-medium mb-1">Montant Reçu</label>
           <input
             type="number"
-            value={amountPaid}
-            onChange={(e) => onAmountPaidChange(parseFloat(e.target.value) || 0)}
+            onChange={e =>
+              onAmountPaidChange(Math.abs(parseFloat(e.target.value)) || 0)
+            }
             className="w-full rounded-lg border dark:border-gray-700 p-2"
             min={0}
             step={getCurrencyStep(settings?.currency)}
@@ -42,27 +39,19 @@ export function PaymentSection({
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Monnaie</label>
-          <div className={`w-full rounded-lg p-2 font-mono text-lg ${
-            change >= 0 ? 'text-green-600' : 'text-red-600'
-          }`}>
-            {formatCurrency(Math.abs(change), settings?.currency)}
+          <div
+            className={`w-full rounded-lg p-2 font-mono text-lg ${
+              change >= 0 ? '!text-green-600' : '!text-red-600'
+            }`}
+          >
+            <span
+              className={`${change >= 0 ? 'text-green-600' : 'text-red-600'}`}
+            >
+              {formatCurrency(change < 0 ? 0 : change, settings?.currency)}
+            </span>
           </div>
         </div>
       </div>
-
-      {/* <div className="flex flex-wrap gap-2">
-        {quickAmounts.map(amount => (
-          <motion.button
-            key={amount}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onQuickAmount(amount)}
-            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
-          >
-            {formatCurrency(amount, settings?.currency)}
-          </motion.button>
-        ))}
-      </div> */}
     </div>
   );
 }

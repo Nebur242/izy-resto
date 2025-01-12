@@ -16,7 +16,7 @@ const MenuItemCard = forwardRef<HTMLDivElement, MenuItemCardProps>(
   ({ item, onEdit, onDelete, currency }, ref) => {
     const isOutOfStock = item.stockQuantity === 0;
     const itemWithVariants = item as MenuItemWithVariants;
-    
+
     // Get price range if item has variants
     const priceRange = React.useMemo(() => {
       if (!itemWithVariants.variantPrices?.length) {
@@ -25,12 +25,12 @@ const MenuItemCard = forwardRef<HTMLDivElement, MenuItemCardProps>(
 
       const prices = [
         item.price,
-        ...itemWithVariants.variantPrices.map(vp => vp.price)
+        ...itemWithVariants.variantPrices.map(vp => vp.price),
       ];
 
       return {
         min: Math.min(...prices),
-        max: Math.max(...prices)
+        max: Math.max(...prices),
       };
     }, [item, itemWithVariants.variantPrices]);
 
@@ -54,18 +54,20 @@ const MenuItemCard = forwardRef<HTMLDivElement, MenuItemCardProps>(
             className="h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          
+
           {/* Stock Status Badge */}
           {isOutOfStock ? (
             <div className="absolute left-4 top-4 rounded-full bg-red-500/90 px-3 py-1.5 text-sm font-medium text-white shadow-lg">
               Rupture de stock
             </div>
-          ) : item.stockQuantity <= 5 && (
-            <div className="absolute left-4 top-4 rounded-full bg-amber-500/90 px-3 py-1.5 text-sm font-medium text-white shadow-lg">
-              Stock faible: {item.stockQuantity}
-            </div>
+          ) : (
+            item.stockQuantity <= 5 && (
+              <div className="absolute left-4 top-4 rounded-full bg-amber-500/90 px-3 py-1.5 text-sm font-medium text-white shadow-lg">
+                Stock faible: {item.stockQuantity}
+              </div>
+            )
           )}
-          
+
           {/* Price Badge */}
           <div className="absolute right-4 top-4 rounded-full bg-white/95 px-4 py-2 text-sm font-bold text-gray-900 shadow-lg backdrop-blur-sm dark:bg-gray-900/95 dark:text-white">
             {hasVariants ? (
@@ -107,18 +109,23 @@ const MenuItemCard = forwardRef<HTMLDivElement, MenuItemCardProps>(
             {/* Variants Badge */}
             {hasVariants && (
               <div className="flex flex-wrap gap-1">
-                {itemWithVariants.variantPrices.slice(0, 2).map((vp, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs
+                {itemWithVariants.variantPrices
+                  .slice(0, 2)
+                  .filter(vp => vp?.variantCombination?.length > 0)
+                  .map((vp, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-xs
                              bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                  >
-                    {vp.variantCombination[0].split(': ')[1]}
-                  </span>
-                ))}
+                    >
+                      {vp.variantCombination[0].split(': ')[1]}
+                    </span>
+                  ))}
                 {itemWithVariants.variantPrices.length > 2 && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs
-                                 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                  <span
+                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs
+                                 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                  >
                     <Plus className="w-3 h-3 mr-1" />
                     {itemWithVariants.variantPrices.length - 2}
                   </span>

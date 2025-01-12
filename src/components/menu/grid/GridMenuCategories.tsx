@@ -1,5 +1,3 @@
-import React from 'react';
-import { motion } from 'framer-motion';
 import { useCategories } from '../../../hooks/useCategories';
 import { Button } from '../../ui/Button';
 
@@ -13,8 +11,6 @@ export function GridMenuCategories({
   onCategoryChange,
 }: GridMenuCategoriesProps) {
   const { categories, isLoading } = useCategories();
-
-  console.log('hello');
 
   if (isLoading) {
     return (

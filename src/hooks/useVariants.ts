@@ -45,11 +45,11 @@ export function useVariants(categoryId?: string) {
     try {
       const id = await variantService.create(variant);
       setVariants(prev => [...prev, { ...variant, id }]);
-      toast.success('Variant added successfully');
+      toast.success('Variante ajoutée avec succès');
       return id;
     } catch (error) {
       console.error('Erreur ajout variant:', error);
-      toast.error('Failed to add variant');
+      toast.error("Impossible d'ajouter une variante");
       throw error;
     }
   };
@@ -57,11 +57,11 @@ export function useVariants(categoryId?: string) {
   const updateVariant = async (id: string, data: Partial<Variant>) => {
     try {
       await variantService.update(id, data);
-      setVariants(prev => prev.map(v => v.id === id ? { ...v, ...data } : v));
-      toast.success('Variant updated successfully');
+      setVariants(prev => prev.map(v => (v.id === id ? { ...v, ...data } : v)));
+      toast.success('Variante mise à jour avec succès');
     } catch (error) {
       console.error('Echec mise à jour variant:', error);
-      toast.error('Failed to update variant');
+      toast.error('Échec de la mise à jour de la variante');
       throw error;
     }
   };
@@ -70,10 +70,10 @@ export function useVariants(categoryId?: string) {
     try {
       await variantService.delete(id);
       setVariants(prev => prev.filter(v => v.id !== id));
-      toast.success('Variant deleted successfully');
+      toast.success('Variante supprimée avec succès');
     } catch (error) {
       console.error('Echec suppression variant:', error);
-      toast.error('Failed to delete variant');
+      toast.error('Impossible de supprimer la variante');
       throw error;
     }
   };
@@ -84,6 +84,6 @@ export function useVariants(categoryId?: string) {
     addVariant,
     updateVariant,
     deleteVariant,
-    refreshVariants: loadAllVariants
+    refreshVariants: loadAllVariants,
   };
 }

@@ -5,10 +5,27 @@ import { CartProvider } from './context/CartContext';
 import { OrderProvider } from './context/OrderContext';
 import { ApiProvider } from './context/ApiContext';
 import { useSEO } from './hooks/useSEO';
+import { useEffect } from 'react';
+import { anonymousAuthService } from './services/auth/anonymousAuth.service';
 
 export default function App() {
   // Add SEO hook to update title and favicon
   useSEO();
+
+  // Initialize anonymous auth
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        if (!anonymousAuthService.getCurrentUser()) {
+          await anonymousAuthService.signInAnonymously();
+        }
+      } catch (error) {
+        console.error('Error initializing anonymous auth:', error);
+      }
+    };
+
+    initializeAuth();
+  }, []);
 
   return (
     <ThemeProvider>

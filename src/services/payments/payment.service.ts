@@ -21,10 +21,10 @@ import {
 const DEFAULT_PAYMENT_NAME = 'Paiement à la livraison';
 
 class PaymentService extends FirestoreService<PaymentMethod> {
+  private defaultMethodInitialized = false;
+
   constructor() {
     super('payment_methods');
-    // Initialize default payment method
-    initializeDefaultPaymentMethod();
   }
 
   async getActivePaymentMethods(): Promise<PaymentMethod[]> {
@@ -43,18 +43,28 @@ class PaymentService extends FirestoreService<PaymentMethod> {
           } as PaymentMethod)
       );
 
-      // If no methods exist, initialize default and retry
-      if (methods.length === 0) {
-        await initializeDefaultPaymentMethod();
-        return this.getActivePaymentMethods();
+      // Initialize default method only once if no methods exist
+      if (methods.length === 0 && !this.defaultMethodInitialized) {
+        this.defaultMethodInitialized = true; // Set flag before initialization
+        try {
+          await initializeDefaultPaymentMethod();
+          // Fetch methods again after initialization
+          const updatedSnapshot = await getDocs(q);
+          const updatedMethods = updatedSnapshot.docs.map(
+            doc =>
+              ({
+                id: doc.id,
+                ...doc.data(),
+              } as PaymentMethod)
+          );
+          return this.sortPaymentMethods(updatedMethods);
+        } catch (error) {
+          console.error('Failed to initialize default payment method:', error);
+          return []; // Return empty array if initialization fails
+        }
       }
 
-      // Sort to ensure default method is first
-      return methods.sort((a, b) => {
-        if (a.isDefault) return -1;
-        if (b.isDefault) return 1;
-        return 0;
-      });
+      return this.sortPaymentMethods(methods);
     } catch (error) {
       throw new PaymentServiceError(
         'Failed to fetch payment methods',
@@ -62,6 +72,14 @@ class PaymentService extends FirestoreService<PaymentMethod> {
         error
       );
     }
+  }
+
+  private sortPaymentMethods(methods: PaymentMethod[]): PaymentMethod[] {
+    return methods.sort((a, b) => {
+      if (a.isDefault) return -1;
+      if (b.isDefault) return 1;
+      return 0;
+    });
   }
 
   async create(data: Omit<PaymentMethod, 'id'>): Promise<string> {
@@ -123,14 +141,7 @@ class PaymentService extends FirestoreService<PaymentMethod> {
           );
         }
 
-        // Prevent modifying default payment method
         const currentMethod = docSnap.data() as PaymentMethod;
-        // if (currentMethod.name === DEFAULT_PAYMENT_NAME) {
-        //   throw new PaymentServiceError(
-        //     'La méthode de paiement par défaut ne peut pas être modifiée',
-        //     'payment/modify-default'
-        //   );
-        // }
 
         // Check for name uniqueness if name is being updated
         if (data.name && data.name !== currentMethod.name) {

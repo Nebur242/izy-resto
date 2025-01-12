@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ShoppingCart, X } from 'lucide-react';
-import { useTranslation } from '../../i18n/useTranslation';
 import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks/useSettings';
 import { CartItem } from './CartItem';
@@ -8,22 +7,10 @@ import { CheckoutForm } from '../checkout/CheckoutForm';
 import { formatCurrency } from '../../utils/currency';
 
 export function Cart() {
-  const { t } = useTranslation();
   const { cart, total } = useCart();
   const { settings } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-
-  const formatPrice = (price: number) => {
-    switch (settings?.currency) {
-      case 'EUR':
-        return `€${price.toFixed(2)}`;
-      case 'XOF':
-        return `${price.toFixed(0)} FCFA`;
-      default:
-        return `$${price.toFixed(2)}`;
-    }
-  };
 
   if (cart.length === 0) {
     return null;

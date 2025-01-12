@@ -8,10 +8,12 @@ import { Category } from '../../../types';
 import { CategoryForm } from '../components/CategoryForm';
 import { ConfirmationModal } from '../../../components/ui/ConfirmationModal';
 import toast from 'react-hot-toast';
+import EmptySection from '../../../components/dashboard/shared/EmptySection';
 
 export function CategoryManagement() {
   const { t } = useTranslation();
-  const { categories, isLoading, addCategory, updateCategory, deleteCategory } = useCategories();
+  const { categories, isLoading, addCategory, updateCategory, deleteCategory } =
+    useCategories();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,7 +50,7 @@ export function CategoryManagement() {
     setDeleteConfirmation({
       isOpen: true,
       categoryId: category.id,
-      categoryName: category.name
+      categoryName: category.name,
     });
   };
 
@@ -66,9 +68,10 @@ export function CategoryManagement() {
   };
 
   const filteredCategories = categories
-    .filter(category => 
-      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    .filter(
+      category =>
+        category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        category.description?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       const orderMultiplier = sortOrder === 'asc' ? 1 : -1;
@@ -88,7 +91,7 @@ export function CategoryManagement() {
             Gérez les catégories de votre menu
           </p>
         </div>
-        
+
         <Button
           onClick={() => setIsFormOpen(true)}
           className="relative group px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl shadow-lg hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5"
@@ -107,14 +110,16 @@ export function CategoryManagement() {
               type="text"
               placeholder="Rechercher une catégorie..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500/20 transition-shadow"
             />
             <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
           </div>
           <Button
             variant="secondary"
-            onClick={() => setSortOrder(current => current === 'asc' ? 'desc' : 'asc')}
+            onClick={() =>
+              setSortOrder(current => (current === 'asc' ? 'desc' : 'asc'))
+            }
             className="min-w-[140px]"
           >
             <ArrowUpDown className="w-4 h-4 mr-2" />
@@ -138,15 +143,14 @@ export function CategoryManagement() {
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
             <AnimatePresence mode="popLayout">
               {filteredCategories.length === 0 ? (
-                <div className="p-8 text-center">
-                  <LayoutGrid className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">
-                    Aucune catégorie trouvée
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    {searchTerm ? "Essayez d'autres termes de recherche" : 'Commencez par créer une catégorie'}
-                  </p>
-                </div>
+                <EmptySection
+                  title="Aucune catégorie trouvée"
+                  description={
+                    searchTerm
+                      ? "Essayez d'autres termes de recherche"
+                      : 'Commencez par créer une catégorie'
+                  }
+                />
               ) : (
                 filteredCategories.map((category, index) => (
                   <motion.div

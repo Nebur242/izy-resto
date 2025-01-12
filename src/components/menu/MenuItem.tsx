@@ -90,7 +90,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
                 {item.name}
               </h3>
 
-              <p className="hidden text-sm text-gray-600 line-clamp-2 dark:text-gray-300 md:block">
+              <p className="text-sm text-gray-600 line-clamp-3 dark:text-gray-300">
                 {item.description}
               </p>
 

@@ -12,6 +12,7 @@ import { MenuCategoryFilter } from '../../../components/menu/dashboard/MenuCateg
 import { ConfirmationModal } from '../../../components/ui/ConfirmationModal';
 import { useSettings } from '../../../hooks/useSettings';
 import toast from 'react-hot-toast';
+import EmptySection from '../../../components/dashboard/shared/EmptySection';
 
 export function MenuManagement() {
   const { t } = useTranslation();
@@ -117,7 +118,7 @@ export function MenuManagement() {
         </div>
       </div>
 
-      {isLoading ? (
+      {isLoading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
             <div
@@ -126,7 +127,17 @@ export function MenuManagement() {
             />
           ))}
         </div>
-      ) : (
+      )}
+
+      {!isLoading && filteredItems.length < 1 && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            <EmptySection title="Aucun menu trouvé" />
+          </div>
+        </div>
+      )}
+
+      {!isLoading && filteredItems.length > 0 && (
         <MenuItemList
           items={filteredItems}
           onEdit={handleEdit}

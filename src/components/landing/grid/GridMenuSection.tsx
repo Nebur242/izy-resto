@@ -1,34 +1,38 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useMenu } from '../../../hooks/useMenu';
 import { GridMenuItem } from './GridMenuItem';
 import { GridMenuCategories } from './GridMenuCategories';
 import { Pagination } from '../../ui/Pagination';
 import { SearchBar } from '../../menu/SearchBar';
 
-const ITEMS_PER_PAGE = 12;
-
 export function GridMenuSection() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const { items, isLoading } = useMenu(
+  const { items } = useMenu(
     activeCategory !== 'all' ? activeCategory : undefined
   );
 
   // Filter items based on search
-  const filteredItems = items.filter(
-    item =>
+
+  const ITEMS_PER_PAGE = 9;
+
+  // Filter items based on both category and search term
+  const filteredItems = items.filter(item => {
+    const matchesCategory =
+      activeCategory === 'all' || item.categoryId === activeCategory;
+    const matchesSearch =
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
-  const paginatedItems = filteredItems.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredItems.slice(startIndex, endIndex);
 
   return (
     <div className="space-y-12">
@@ -46,9 +50,31 @@ export function GridMenuSection() {
         layout
         className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"
       >
-        {paginatedItems.map(item => (
-          <GridMenuItem key={item.id} item={item} />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {currentItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                transition: {
+                  duration: 0.3,
+                  delay: index * 0.05,
+                },
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.9,
+                transition: { duration: 0.2 },
+              }}
+              className="relative"
+            >
+              <GridMenuItem item={item} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </motion.div>
 
       {filteredItems.length === 0 ? (

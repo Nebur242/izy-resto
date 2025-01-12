@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui';
-import { useState } from 'react';
-import { AlertCircle, AlertTriangle, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { AlertCircle, X, CreditCard, Lock } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   CardElement,
@@ -10,6 +10,45 @@ import {
   Elements,
 } from '@stripe/react-stripe-js';
 import { processPayment } from '../../services/payments/stripe.service';
+
+const useCardElementStyle = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check initial dark mode
+    setIsDarkMode(document.documentElement.classList.contains('dark'));
+
+    // Create observer for dark mode changes
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        if (mutation.attributeName === 'class') {
+          setIsDarkMode(document.documentElement.classList.contains('dark'));
+        }
+      });
+    });
+
+    // Start observing
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return {
+    style: {
+      base: {
+        fontSize: '16px',
+        color: isDarkMode ? '#ffffff' : '#000000',
+        '::placeholder': {
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.4)',
+        },
+        iconColor: isDarkMode ? '#ffffff' : '#000000',
+      },
+    },
+  };
+};
 
 const PaymentModal = ({
   onClose,
@@ -28,6 +67,7 @@ const PaymentModal = ({
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const cardElementStyle = useCardElementStyle();
 
   const handleSubmit = async (event: any) => {
     try {
@@ -40,7 +80,7 @@ const PaymentModal = ({
 
       const card = elements.getElement(CardElement);
 
-      if (!card) throw new Error('card not extists');
+      if (!card) throw new Error('card not exists');
 
       if (!stripe) {
         throw new Error('Stripe not exist');
@@ -81,11 +121,10 @@ const PaymentModal = ({
         if (error) {
           console.error('Payment Confirmation Error:', error.message);
           setErrorMessage(
-            error.message || 'Une erreur de paiemeent est survenu'
+            error.message || 'Une erreur de paiement est survenue'
           );
           throw new Error('Error');
         } else {
-          console.log('Payment Successful!');
           onClose();
           onConfirm();
           return;
@@ -93,56 +132,90 @@ const PaymentModal = ({
       }
 
       throw new Error('Error');
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      setErrorMessage(error.message || 'Une erreur est survenue');
     } finally {
       setLoading(false);
     }
   };
 
+  const formattedAmount = new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: currency,
+  }).format(amount);
+
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         onClick={e => e.stopPropagation()}
-        className="relative w-full max-w-2xl aspect-square bg-white  rounded-2xl overflow-hidden min-h-[400px] p-8"
+        className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden"
       >
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 z-10 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-lg"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <form onSubmit={handleSubmit} className="mt-10">
-          <CardElement />
-          <Button
-            className="w-full mt-4"
-            type="submit"
-            disabled={!stripe || !elements}
-          >
-            {loading ? 'Paiement en cours...' : 'Payer maintenant'}
-          </Button>
-          {/* Show error message to your customers */}
-          {errorMessage && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/20"
+        <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Paiement sécurisé</h2>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-full hover:bg-white/10 transition-colors"
             >
-              <div className="flex items-center gap-3">
-                <AlertCircle className="h-5 w-5 text-red-500" />
-                <h3 className="font-medium text-red-800 dark:text-red-400">
-                  {errorMessage}
-                </h3>
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <p className="mt-2 text-white/90">
+            Montant à payer: {formattedAmount}
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6">
+          <div className="space-y-6">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2 mb-4">
+                <CreditCard className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                <span className="font-medium text-gray-700 dark:text-gray-300">
+                  Informations de carte
+                </span>
               </div>
-            </motion.div>
-          )}
+              <CardElement options={cardElementStyle} />
+            </div>
+
+            {errorMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-900/20"
+              >
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="h-5 w-5 text-red-500" />
+                  <p className="text-sm font-medium text-red-800 dark:text-red-400">
+                    {errorMessage}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            <div>
+              <Button
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5"
+                type="submit"
+                disabled={!stripe || !elements || loading}
+              >
+                {loading ? (
+                  'Traitement en cours...'
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <Lock className="w-4 h-4" />
+                    Payer {formattedAmount}
+                  </span>
+                )}
+              </Button>
+            </div>
+
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+              Paiement sécurisé via Stripe
+            </p>
+          </div>
         </form>
       </motion.div>
     </div>
@@ -195,14 +268,15 @@ export const StripePayment = ({
 
       <Button
         onClick={() => setIsClosed(false)}
-        className={`
-        bg-gradient-to-r from-blue-600 to-indigo-600
-        hover:from-blue-700 hover:to-indigo-700
-        disabled:opacity-50 disabled:cursor-not-allowed
-        `}
+        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5"
       >
-        Payer avec Stripe
+        <span className="flex items-center gap-2">
+          <CreditCard className="w-4 h-4" />
+          Payer avec Stripe
+        </span>
       </Button>
     </>
   );
 };
+
+export default StripePayment;

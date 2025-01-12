@@ -91,6 +91,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCart([]);
   };
 
+  // useEffect(() => {
+  //   localStorage.setItem(USER_CART, JSON.stringify(cart));
+  // }, [cart]);
+
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (

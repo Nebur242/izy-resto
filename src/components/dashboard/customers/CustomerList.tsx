@@ -13,10 +13,11 @@ interface CustomerListProps {
 
 export function CustomerList({ customers, onViewDetails }: CustomerListProps) {
   const { settings } = useSettings();
+  console.log(customers);
 
   return (
     <div className="grid gap-4">
-      {customers.map((customer) => (
+      {customers.map(customer => (
         <motion.div
           key={customer.id}
           initial={{ opacity: 0, y: 20 }}
@@ -39,24 +40,27 @@ export function CustomerList({ customers, onViewDetails }: CustomerListProps) {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex flex-col sm:items-end gap-2">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-4 h-4 text-blue-500" />
                 <span className="text-sm font-medium">
-                  {customer.orderCount} commande{customer.orderCount > 1 ? 's' : ''}
+                  {customer.orderCount} commande
+                  {customer.orderCount > 1 ? 's' : ''}
                 </span>
               </div>
               <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
                 {formatCurrency(customer.totalSpent, settings?.currency)}
               </p>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => onViewDetails(customer.id)}
-              >
-                Voir détails
-              </Button>
+              {!customer.name?.toLowerCase().includes('table') && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => onViewDetails(customer.id)}
+                >
+                  Voir détails
+                </Button>
+              )}
             </div>
           </div>
         </motion.div>

@@ -3,12 +3,13 @@ import { useLocation, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
-  Download,
+  // Download,
   Star,
-  Share2,
+  // Share2,
   QrCode,
   CheckCircle,
   XCircle,
+  Clipboard,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useOrders } from '../context/OrderContext';
@@ -61,22 +62,33 @@ export function OrderReceipt() {
     }
   };
 
-  const handleShare = async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: `Commande #${order.id.slice(0, 8)}`,
-          text: `Suivez ma commande sur ${
-            settings?.name || 'notre restaurant'
-          }`,
-          url: window.location.href,
-        });
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        toast.success('Lien copié !');
-      }
-    } catch (error) {
-      console.error('Error sharing:', error);
+  // const handleShare = async () => {
+  //   try {
+  //     if (navigator.share) {
+  //       await navigator.share({
+  //         title: `Commande #${order.id.slice(0, 8)}`,
+  //         text: `Suivez ma commande sur ${
+  //           settings?.name || 'notre restaurant'
+  //         }`,
+  //         url: window.location.href,
+  //       });
+  //     } else {
+  //       await navigator.clipboard.writeText(window.location.href);
+  //       toast.success('Lien copié !');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sharing:', error);
+  //   }
+  // };
+
+  const handleCopy = async () => {
+    if (!order?.id) return;
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}/order/${order.id}`
+      );
+    } else {
+      window.open(`${window.location.origin}/order/${order.id}`);
     }
   };
 
@@ -147,8 +159,8 @@ export function OrderReceipt() {
 
           {/* Actions */}
           <div className="p-6 border-t dark:border-gray-700">
-            <div className="grid grid-cols-2 gap-4">
-              <Button
+            <div className="grid grid-cols-1 gap-4">
+              {/* <Button
                 variant="secondary"
                 onClick={handleDownloadReceipt}
                 disabled={isDownloading}
@@ -156,11 +168,11 @@ export function OrderReceipt() {
               >
                 <Download className="w-4 h-4 mr-2" />
                 {isDownloading ? 'Téléchargement...' : 'Télécharger'}
-              </Button>
+              </Button> */}
 
-              <Button onClick={handleShare} className="w-full">
-                <Share2 className="w-4 h-4 mr-2" />
-                Partager
+              <Button onClick={handleCopy} className="w-full">
+                <Clipboard className="w-4 h-4 mr-2" />
+                Cliquer pour copier le lien de suivi de la commande
               </Button>
             </div>
 

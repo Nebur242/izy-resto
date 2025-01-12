@@ -10,7 +10,6 @@ import {
   Check,
   ExternalLink,
   X,
-  AlertTriangle,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useSettings } from '../../hooks/useSettings';
@@ -512,7 +511,6 @@ const PayTechPaymentButton = ({
       const order = await getOrderByRef(ref);
 
       if (order && order.status === 'sale_complete') {
-        console.log('confirm');
         onConfirm();
       }
     }

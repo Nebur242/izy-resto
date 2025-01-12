@@ -41,10 +41,10 @@ export function useMedia() {
     try {
       await mediaService.deleteFile(fileId);
       await loadFiles(); // Reload files after deletion
-      toast.success('File deleted successfully');
+      toast.success('Fichier supprimé avec succès');
     } catch (error) {
       console.error('Delete error:', error);
-      toast.error('Failed to delete file');
+      toast.error('Impossible de supprimer le fichier');
       throw error;
     }
   };
@@ -54,6 +54,6 @@ export function useMedia() {
     isLoading,
     uploadFile,
     deleteFile,
-    refreshFiles: loadFiles
+    refreshFiles: loadFiles,
   };
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { PaymentMethodForm } from '../../../components/dashboard/components/payments/PaymentMethodForm';
@@ -8,9 +8,18 @@ import { usePayments } from '../../../hooks/usePayments';
 import { PaymentMethod } from '../../../types/payment';
 
 export function PaymentManagement() {
-  const { paymentMethods, isLoading, addPaymentMethod, updatePaymentMethod, deletePaymentMethod } = usePayments();
+  const {
+    paymentMethods,
+    isLoading,
+    addPaymentMethod,
+    updatePaymentMethod,
+    deletePaymentMethod,
+  } = usePayments();
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(null);
+  const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(
+    null
+  );
+  console.log(isLoading);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     isOpen: boolean;
     methodId?: string;
@@ -32,7 +41,7 @@ export function PaymentManagement() {
 
   const handleDelete = async () => {
     if (!deleteConfirmation.methodId) return;
-    
+
     try {
       await deletePaymentMethod(deleteConfirmation.methodId);
     } catch (error) {
@@ -60,14 +69,16 @@ export function PaymentManagement() {
       <PaymentMethodList
         methods={paymentMethods}
         isLoading={isLoading}
-        onEdit={(method) => {
+        onEdit={method => {
           setEditingMethod(method);
           setIsFormOpen(true);
         }}
-        onDelete={(methodId) => setDeleteConfirmation({
-          isOpen: true,
-          methodId
-        })}
+        onDelete={methodId =>
+          setDeleteConfirmation({
+            isOpen: true,
+            methodId,
+          })
+        }
       />
 
       {isFormOpen && (

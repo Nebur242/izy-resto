@@ -1,4 +1,3 @@
-import React from 'react';
 import { Truck, Utensils, CreditCard } from 'lucide-react';
 import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
@@ -64,24 +63,33 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
             Articles commandés
           </h2>
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {order.items.map((item) => (
-              <div key={item.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4">
+            {order.items.map(item => (
+              <div
+                key={item.id}
+                className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4"
+              >
                 <div className="mb-2 sm:mb-0">
                   <p className="font-medium text-gray-800 dark:text-white">
                     {item.name}
                   </p>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {formatCurrency(item.price, settings?.currency)} × {item.quantity}
+                    {formatCurrency(item.price, settings?.currency)} ×{' '}
+                    {item.quantity}
                   </p>
                 </div>
                 <p className="font-medium text-gray-800 dark:text-white">
-                  {formatCurrency(item.price * item.quantity, settings?.currency)}
+                  {formatCurrency(
+                    item.price * item.quantity,
+                    settings?.currency
+                  )}
                 </p>
               </div>
             ))}
           </div>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-lg font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">Total</p>
+            <p className="text-lg font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
+              Total
+            </p>
             <p className="text-lg font-semibold text-gray-800 dark:text-white">
               {formatCurrency(order.total, settings?.currency)}
             </p>
@@ -96,10 +104,16 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
             Informations client
           </h2>
           <div className="space-y-2">
-            <p className="text-gray-700 dark:text-gray-200">{order.customerName}</p>
-            <p className="text-gray-700 dark:text-gray-200">{order.customerPhone}</p>
+            <p className="text-gray-700 dark:text-gray-200">
+              {order.customerName}
+            </p>
+            <p className="text-gray-700 dark:text-gray-200">
+              {order.customerPhone}
+            </p>
             {order.customerEmail && (
-              <p className="text-gray-700 dark:text-gray-200">{order.customerEmail}</p>
+              <p className="text-gray-700 dark:text-gray-200">
+                {order.customerEmail}
+              </p>
             )}
             {order.diningOption === 'delivery' && (
               <p className="text-gray-700 dark:text-gray-200 font-medium mt-4">

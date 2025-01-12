@@ -39,6 +39,10 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
   },
   email: '',
   canDeliver: true,
+  rateLimits: {
+    maxOrders: 2,
+    timeWindowHours: 1,
+  },
 };
 
 const defaultCurrencyInfo =
@@ -86,7 +90,7 @@ export const allCurrencies: AllCurrency[] = [
     value: 'MAD',
     display: 'DH',
     infos: '',
-    acceptedPaymentMethods: ['PayTech'],
+    acceptedPaymentMethods: ['PayTech', 'Stripe'],
   },
   {
     label: 'GMD (GMD)',
@@ -143,6 +147,13 @@ export const allCurrencies: AllCurrency[] = [
     value: 'GBP',
     infos: '',
     display: 'GBP',
+    acceptedPaymentMethods: ['Stripe'],
+  },
+  {
+    label: 'RUB (₽)',
+    value: 'RUB',
+    infos: '',
+    display: '₽',
     acceptedPaymentMethods: ['Stripe'],
   },
 ];

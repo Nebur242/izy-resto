@@ -1,4 +1,4 @@
-import { Building2 } from 'lucide-react';
+import { Building2, Shield } from 'lucide-react';
 import { LogoUploader } from '../../../../../components/settings/LogoUploader';
 import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';
@@ -104,6 +104,45 @@ export function GeneralSettings() {
                 <div>{currencyObject.infos}</div>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Shield className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <h2 className="text-xl font-semibold">Limites de commande</h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Nombre maximum de commandes
+            </label>
+            <input
+              type="number"
+              {...register('rateLimits.maxOrders')}
+              min="1"
+              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+            />
+            <p className="mt-1 text-sm text-gray-500">
+              Nombre maximum de commandes par période
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Période (en heures)
+            </label>
+            <input
+              type="number"
+              {...register('rateLimits.timeWindowHours')}
+              min="1"
+              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+            />
+            <p className="mt-1 text-sm text-gray-500">
+              Durée de la période de limitation
+            </p>
           </div>
         </div>
       </section>

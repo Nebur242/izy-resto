@@ -5,10 +5,11 @@ import { Button } from '../ui/Button';
 import { useCart } from '../../context/CartContext';
 import { orderService } from '../../services/orders/order.service';
 import toast from 'react-hot-toast';
-import { Utensils, Truck, AlertCircle } from 'lucide-react';
+import { Utensils, Truck, AlertCircle, X } from 'lucide-react';
 import { OrderConfirmation } from './OrderConfirmation';
 import { PaymentMethod } from '../../types/payment';
 import { useSettings } from '../../hooks';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface CheckoutFormData {
   name?: string;
@@ -33,6 +34,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   const [diningOption, setDiningOption] = useState<DiningOption | null>(null);
 
   const [step, setStep] = useState<CheckoutStep>('form');
+  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethod | null>(null);
@@ -108,8 +110,11 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
 
       const order = await orderService.getOrderById(orderId);
       navigate('/receipt', { state: { order } });
-    } catch (error) {
-      console.error('Error creating order:', error);
+    } catch (error: any) {
+      console.log('Error creating order:', error?.code);
+      if (error?.code?.includes('rate-limit')) {
+        setRateLimitError(error?.message || 'Rate limit atteint...');
+      }
       toast.error('Échec de la commande. Veuillez réessayer.');
       setStep('form');
     }
@@ -142,14 +147,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
       />
     );
   }
-
-  // useEffect(() => {
-  //   if (settings?.canDeliver) {
-  //     setDiningOption('delivery');
-  //   }
-  // }, [settings?.canDeliver]);
-
-  // if (isLoading) return null;
 
   return (
     <div className="space-y-6">
@@ -307,6 +304,30 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             </div>
           )}
         </div>
+
+        <AnimatePresence>
+          {rateLimitError && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="p-4 bg-red-50 dark:bg-red-900/30 border-b border-red-100 dark:border-red-800"
+            >
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <div className="flex-1 text-sm text-red-600 dark:text-red-400">
+                  {rateLimitError}
+                </div>
+                <button
+                  // onClick={() => setRateLimitError(null)}
+                  className="text-red-400 hover:text-red-500 dark:text-red-500 dark:hover:text-red-400"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Actions */}
         <div className="flex justify-end gap-3 pt-2">

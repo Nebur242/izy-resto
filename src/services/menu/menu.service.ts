@@ -11,7 +11,6 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase/config';
 import { MenuServiceError } from './errors';
-import { validateMenuItemExists } from './validators';
 
 class MenuService extends FirestoreService<MenuItem> {
   constructor() {
@@ -32,10 +31,21 @@ class MenuService extends FirestoreService<MenuItem> {
       }
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as MenuItem[];
+      const data = snapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...(doc.data() as Omit<MenuItemWithVariants, 'id'>),
+        }))
+        .map(item => {
+          return {
+            ...item,
+            variantPrices: item?.variantPrices.filter(
+              vp => vp?.variantCombination?.length > 0
+            ),
+          };
+        }) as MenuItem[];
+      console.log('getMenuItems', data);
+      return data;
     } catch (error) {
       throw new MenuServiceError(
         'Failed to fetch menu items',

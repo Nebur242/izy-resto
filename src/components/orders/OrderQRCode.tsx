@@ -20,8 +20,8 @@ export function OrderQRCode({ orderId, size = 200 }: OrderQRCodeProps) {
   const generateQRCode = async () => {
     try {
       setIsLoading(true);
-      const trackingUrl = `${appConfig.baseUrl}/order/${orderId}`;
-      
+      const trackingUrl = `${window.location.origin}/order/${orderId}`;
+
       const qrDataUrl = await QRCode.toDataURL(trackingUrl, {
         width: size,
         margin: 2,
@@ -29,9 +29,9 @@ export function OrderQRCode({ orderId, size = 200 }: OrderQRCodeProps) {
           dark: '#000000',
           light: '#ffffff',
         },
-        errorCorrectionLevel: 'H'
+        errorCorrectionLevel: 'H',
       });
-      
+
       setQrUrl(qrDataUrl);
     } catch (error) {
       console.error('Error generating QR code:', error);
@@ -42,7 +42,10 @@ export function OrderQRCode({ orderId, size = 200 }: OrderQRCodeProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center" style={{ width: size, height: size }}>
+      <div
+        className="flex items-center justify-center"
+        style={{ width: size, height: size }}
+      >
         <QrCode className="w-12 h-12 text-gray-300 animate-pulse" />
       </div>
     );
@@ -54,8 +57,8 @@ export function OrderQRCode({ orderId, size = 200 }: OrderQRCodeProps) {
       animate={{ opacity: 1, scale: 1 }}
       className="bg-white rounded-lg p-4 shadow-lg"
     >
-      <img 
-        src={qrUrl} 
+      <img
+        src={qrUrl}
         alt="QR Code de suivi de commande"
         className="w-full h-full"
       />

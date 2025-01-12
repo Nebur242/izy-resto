@@ -24,6 +24,7 @@ import { validateOrder } from './validators';
 import { formatOrderData } from './formatters';
 import { OrderServiceError } from './errors';
 import type { OrderFilters } from './types';
+import { anonymousAuthService } from '../auth/anonymousAuth.service';
 
 class OrderService {
   private collection = 'orders';
@@ -156,19 +157,42 @@ class OrderService {
 
   async createOrder(orderData: Omit<Order, 'id'>): Promise<string> {
     try {
+      const user = anonymousAuthService.getCurrentUser();
+      if (!user) {
+        throw new OrderServiceError(
+          'User not authenticated',
+          'orders/unauthenticated'
+        );
+      }
+
+      // Check rate limit
+      const { canOrder, reason } = await anonymousAuthService.canPlaceOrder(
+        user.uid
+      );
+      if (!canOrder) {
+        throw new OrderServiceError(
+          reason || 'Rate limit exceeded',
+          'orders/rate-limit'
+        );
+      }
       // Validate order data
       validateOrder(orderData);
 
+      // Format order data and add user ID
+      const order = {
+        ...formatOrderData(orderData, orderData.paymentMethod),
+        anonymousUid: user.uid,
+      };
+
       // Format order data
-      const order = formatOrderData(orderData, orderData.paymentMethod);
 
       const docRef = await addDoc(collection(db, this.collection), order);
       return docRef.id;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating order:', error);
       throw new OrderServiceError(
-        'Failed to create order',
-        'orders/create-error',
+        error?.message ? error?.message : 'Failed to create order',
+        error?.code ? error?.code : 'orders/create-error',
         error
       );
     }

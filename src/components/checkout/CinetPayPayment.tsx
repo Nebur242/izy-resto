@@ -64,19 +64,9 @@ export const CinetPayPayment = ({
 }) => {
   const [isClosed, setIsClosed] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  //   const [error, setError] = useState('');
   const [url, setUrl] = useState('');
-  //   const [ref, setRef] = useState('');
 
   const handleClose = async () => {
-    // if (ref) {
-    //   const order = await getOrderByRef(ref);
-
-    //   if (order && order.status === 'VAL') {
-    //     console.log('confirm');
-    //     return onConfirm();
-    //   }
-    // }
     onConfirm();
     setIsClosed(true);
   };
@@ -85,15 +75,6 @@ export const CinetPayPayment = ({
     try {
       setIsLoading(true);
       const commandRef = uuidv4();
-
-      //   if (ref) {
-      //     const order = await getOrderByRef(ref);
-      //     if (order && order.status === 'VAL') {
-      //       return onConfirm();
-      //     }
-      //   }
-
-      //   setRef(commandRef);
 
       const data = {
         amount,
