@@ -1,12 +1,39 @@
+import { useEffect } from 'react';
 import { Clock, Globe, Truck } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
-import { RestaurantSettings } from '../../../../../types';
+
+const ErrorAlert = ({ message }: { message: string }) => (
+  <div
+    className=" border border-red-400 text-red-700 px-4 py-3 rounded relative"
+    role="alert"
+  >
+    <span className="block sm:inline">{message}</span>
+  </div>
+);
 
 export function BusinessSettings() {
-  const { register, watch } = useFormContext<RestaurantSettings>();
+  const {
+    register,
+    watch,
+    formState: { errors },
+    setError,
+    clearErrors,
+  } = useFormContext();
 
   const canDeliver = watch('canDeliver');
   const canDineIn = watch('canDineIn');
+
+  // Validate that at least one option is selected
+  useEffect(() => {
+    if (!canDeliver && !canDineIn) {
+      setError('serviceOptions', {
+        type: 'custom',
+        message: 'Au moins une option de service doit être activée',
+      });
+    } else {
+      clearErrors('serviceOptions');
+    }
+  }, [canDeliver, canDineIn, setError, clearErrors]);
 
   const days = [
     'monday',
@@ -17,6 +44,7 @@ export function BusinessSettings() {
     'saturday',
     'sunday',
   ];
+
   const dayNames = {
     monday: 'Lundi',
     tuesday: 'Mardi',
@@ -29,6 +57,10 @@ export function BusinessSettings() {
 
   return (
     <div className="space-y-8">
+      {errors.serviceOptions && (
+        <ErrorAlert message={errors.serviceOptions.message} />
+      )}
+
       {/* Contact Information */}
       <section className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
@@ -67,13 +99,11 @@ export function BusinessSettings() {
         <div className="space-y-4">
           {days.map(day => (
             <div key={day} className="flex items-center space-x-4">
-              <span className="w-32">
-                {dayNames[day as keyof typeof dayNames]}
-              </span>
+              <span className="w-32">{dayNames[day]}</span>
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  {...register(`openingHours.${day}.closed` as const)}
+                  {...register(`openingHours.${day}.closed`)}
                   className="rounded border-gray-300 dark:border-gray-600"
                 />
                 <span>Fermé</span>
@@ -82,13 +112,13 @@ export function BusinessSettings() {
                 <>
                   <input
                     type="time"
-                    {...register(`openingHours.${day}.open` as const)}
+                    {...register(`openingHours.${day}.open`)}
                     className="rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
                   />
                   <span>à</span>
                   <input
                     type="time"
-                    {...register(`openingHours.${day}.close` as const)}
+                    {...register(`openingHours.${day}.close`)}
                     className="rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
                   />
                 </>
@@ -98,37 +128,40 @@ export function BusinessSettings() {
         </div>
       </section>
 
-      <section className="space-y-6">
-        <div className="flex items-center gap-3">
-          <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-xl font-semibold">Activation de la livraison</h2>
-        </div>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            {...register(`canDeliver`)}
-            className="rounded border-gray-300 dark:border-gray-600"
-          />
-          <span>{canDeliver ? 'Actif' : 'Inactif'}</span>
-        </label>
-      </section>
+      {/* Service Options */}
+      <div className="space-y-6 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+        <h3 className="font-medium text-lg">Options de Service</h3>
 
-      <section className="space-y-6">
-        <div className="flex items-center gap-3">
-          <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-xl font-semibold">
-            Activation du paiement surplace
-          </h2>
-        </div>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            {...register('canDineIn')}
-            className="rounded border-gray-300 dark:border-gray-600"
-          />
-          <span>{canDineIn ? 'Actif' : 'Inactif'}</span>
-        </label>
-      </section>
+        <section className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                {...register('canDeliver')}
+                className="rounded border-gray-300 dark:border-gray-600"
+              />
+              <span>Livraison {canDeliver ? '(Actif)' : '(Inactif)'}</span>
+            </label>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                {...register('canDineIn')}
+                className="rounded border-gray-300 dark:border-gray-600"
+              />
+              <span>
+                Paiement sur place {canDineIn ? '(Actif)' : '(Inactif)'}
+              </span>
+            </label>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
+
+export default BusinessSettings;

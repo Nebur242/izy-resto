@@ -121,10 +121,20 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   };
 
   useEffect(() => {
-    if (settings) {
-      setDiningOption(settings.canDeliver ? 'delivery' : 'dine-in');
+    if (settings?.canDeliver && !settings.canDineIn) {
+      setDiningOption('delivery');
+    }
+
+    if (settings?.canDineIn && !settings.canDeliver) {
+      setDiningOption('dine-in');
+    }
+
+    if (settings?.canDeliver && settings.canDineIn) {
+      setDiningOption('delivery');
     }
   }, [settings]);
+
+  useEffect(() => {}, [settings]);
 
   if (diningOption === null) {
     // Render a fallback or nothing while initializing
@@ -180,31 +190,33 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
           </button>
         )}
 
-        <button
-          type="button"
-          onClick={() => setDiningOption('dine-in')}
-          className={`
-           p-4 rounded-xl border-2 transition-all duration-200
-           flex flex-col items-center gap-2 relative overflow-hidden
-           ${
-             diningOption === 'dine-in'
-               ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-               : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
-           }
-         `}
-        >
-          {diningOption === 'dine-in' && (
-            <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-400/10" />
-          )}
-          <Utensils
-            className={`w-6 h-6 ${
-              diningOption === 'dine-in'
-                ? 'text-blue-500 dark:text-blue-400'
-                : 'text-gray-500 dark:text-gray-400'
-            }`}
-          />
-          <span className="font-medium text-sm">Sur place</span>
-        </button>
+        {settings?.canDineIn && (
+          <button
+            type="button"
+            onClick={() => setDiningOption('dine-in')}
+            className={`
+             p-4 rounded-xl border-2 transition-all duration-200
+             flex flex-col items-center gap-2 relative overflow-hidden
+             ${
+               diningOption === 'dine-in'
+                 ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
+                 : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+             }
+           `}
+          >
+            {diningOption === 'dine-in' && (
+              <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-400/10" />
+            )}
+            <Utensils
+              className={`w-6 h-6 ${
+                diningOption === 'dine-in'
+                  ? 'text-blue-500 dark:text-blue-400'
+                  : 'text-gray-500 dark:text-gray-400'
+              }`}
+            />
+            <span className="font-medium text-sm">Sur place</span>
+          </button>
+        )}
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

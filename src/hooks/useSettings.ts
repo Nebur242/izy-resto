@@ -11,6 +11,7 @@ export interface RestaurantSettings {
     [key: string]: { open: string; close: string; closed: boolean };
   };
   canDeliver: boolean;
+  canDineIn: boolean;
 }
 
 export function useSettings() {

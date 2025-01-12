@@ -205,7 +205,7 @@ export function CategoryManagement() {
       </div>
 
       {/* Modals */}
-      {isFormOpen && (
+      {isFormOpen && editingCategory && (
         <CategoryForm
           category={editingCategory}
           onSave={handleSave}

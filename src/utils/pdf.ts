@@ -39,7 +39,11 @@ export async function generateReceiptPDF(
           <h2 style="font-size: 18px; margin-bottom: 10px;">Détails Client</h2>
           <p style="color: #000">${order.customerName}</p>
           <p style="color: #000">${order.customerPhone}</p>
-          ${order.customerAddress ? `<p>${order.customerAddress}</p>` : ''}
+          ${
+            order.customerAddress
+              ? `<p style="color: #000">${order.customerAddress}</p>`
+              : ''
+          }
         </div>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
           <tr style="background-color: #f4f4f4;">
