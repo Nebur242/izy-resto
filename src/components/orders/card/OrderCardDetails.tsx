@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertTriangle, CreditCard } from 'lucide-react';
 import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
@@ -60,7 +59,7 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
       {order.preference && (
         <div className="border-t border-current/10 pt-4">
           <h4 className="font-medium mb-2 flex items-center gap-2">
-            <AlertTriangle /> Indications du clients
+            <AlertTriangle /> Indications du client
           </h4>
           <p className="text-sm">{order.preference}</p>
         </div>

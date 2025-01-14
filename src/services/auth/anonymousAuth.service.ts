@@ -3,10 +3,6 @@ import {
   doc,
   getDoc,
   setDoc,
-  collection,
-  query,
-  where,
-  getDocs,
   Timestamp,
   runTransaction,
   increment,
@@ -16,7 +12,6 @@ import { db } from '../../lib/firebase/config';
 class AnonymousAuthService {
   private auth = getAuth();
   private readonly COLLECTION = 'anonymous_users';
-  private readonly ORDERS_COLLECTION = 'orders';
 
   async signInAnonymously() {
     try {
@@ -25,7 +20,7 @@ class AnonymousAuthService {
       return user;
     } catch (error) {
       console.error('Error signing in anonymously:', error);
-      throw error;
+      // throw error;
     }
   }
 
