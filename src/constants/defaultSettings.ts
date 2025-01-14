@@ -4,6 +4,46 @@ export const API_URI = window.location.hostname.includes('localhost')
   ? 'http://localhost:3000/api/v1'
   : 'https://restaurants-project-backend-solitary-brook-2574.fly.dev/api/v1';
 
+export const termsOfService = `
+    <h1>Conditions d'Utilisation</h1>
+
+    <p>Bienvenue sur le site web de notre restaurant. En accédant à ce site ou en utilisant nos services, vous acceptez les conditions d'utilisation suivantes :</p>
+
+    <h2>1. Généralités</h2>
+    <p>Ce site est exploité par [Nom du Restaurant]. Les termes "nous", "notre" et "nos" font référence à [Nom du Restaurant]. En utilisant ce site, vous acceptez nos conditions d'utilisation, y compris toutes les politiques mentionnées ici.</p>
+
+    <h2>2. Utilisation du Site</h2>
+    <ul>
+        <li>Ce site est destiné à un usage personnel et non commercial.</li>
+        <li>Vous vous engagez à ne pas utiliser ce site à des fins illégales ou interdites par ces conditions.</li>
+    </ul>
+
+    <h2>3. Réservations</h2>
+    <ul>
+        <li>Les réservations effectuées via ce site sont soumises à disponibilité.</li>
+        <li>Nous nous réservons le droit d'annuler ou de modifier une réservation si nécessaire.</li>
+    </ul>
+
+    <h2>4. Politique de Confidentialité</h2>
+    <p>Vos informations personnelles seront traitées conformément à notre <a href="#">Politique de Confidentialité</a>.</p>
+
+    <h2>5. Propriété Intellectuelle</h2>
+    <p>Tous les contenus de ce site (textes, images, logos) sont la propriété de [Nom du Restaurant], sauf mention contraire. Toute reproduction est strictement interdite sans autorisation préalable.</p>
+
+    <h2>6. Responsabilité</h2>
+    <ul>
+        <li>Nous nous efforçons de fournir des informations exactes, mais nous ne garantissons pas l'exactitude ou l'exhaustivité des contenus.</li>
+        <li>Nous ne sommes pas responsables des dommages directs ou indirects résultant de l'utilisation de ce site.</li>
+    </ul>
+
+    <h2>7. Modifications des Conditions</h2>
+    <p>Nous nous réservons le droit de modifier ces conditions à tout moment. Les modifications prendront effet dès leur publication sur cette page.</p>
+
+    <h2>8. Contact</h2>
+    <p>Pour toute question concernant ces conditions, veuillez nous contacter à l'adresse : <a href="mailto:contact@restaurant.com">contact@restaurant.com</a>.</p>
+
+  `;
+
 export const DEFAULT_SETTINGS: RestaurantSettings = {
   name: 'Restaurant',
   description: 'Welcome to our restaurant',
@@ -41,10 +81,12 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
   email: '',
   canDeliver: true,
   canDineIn: true,
+  paymentOnDineInActivated: false,
   rateLimits: {
     maxOrders: 2,
     timeWindowHours: 1,
   },
+  termsOfService,
 };
 
 const defaultCurrencyInfo =
@@ -156,6 +198,13 @@ export const allCurrencies: AllCurrency[] = [
     value: 'RUB',
     infos: '',
     display: '₽',
+    acceptedPaymentMethods: ['Stripe'],
+  },
+  {
+    label: 'DZD (DA)',
+    value: 'DZD',
+    infos: '',
+    display: 'DA',
     acceptedPaymentMethods: ['Stripe'],
   },
 ];

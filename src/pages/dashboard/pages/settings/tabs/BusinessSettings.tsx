@@ -193,11 +193,22 @@ export function BusinessSettings() {
                 {...register('canDineIn')}
                 className="rounded border-gray-300 dark:border-gray-600"
               />
-              <span>
-                Paiement sur place {canDineIn ? '(Actif)' : '(Inactif)'}
-              </span>
+              <span>Sur place {canDineIn ? '(Actif)' : '(Inactif)'}</span>
             </label>
           </div>
+
+          {canDineIn && (
+            <div className="flex items-center gap-3 ml-8">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  {...register('paymentOnDineInActivated')}
+                  className="rounded border-gray-300 dark:border-gray-600"
+                />
+                <span>Activer le paiement sur place</span>
+              </label>
+            </div>
+          )}
         </section>
       </div>
     </div>

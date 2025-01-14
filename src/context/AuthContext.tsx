@@ -5,6 +5,7 @@ import { authService } from '../services/auth/auth.service';
 import { staffService } from '../services/staff/staff.service';
 import { StaffMember } from '../types/staff';
 import toast from 'react-hot-toast';
+import { anonymousAuthService } from '../services/auth/anonymousAuth.service';
 
 interface AuthContextType {
   user: User | null;
@@ -49,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } else {
         setStaffData(null);
+        await anonymousAuthService.signInAnonymously();
         // Redirect to home if logged out
         if (window.location.pathname.startsWith('/dashboard')) {
           navigate('/', { replace: true });

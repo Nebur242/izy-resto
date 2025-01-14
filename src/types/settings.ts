@@ -61,8 +61,10 @@ export interface RestaurantSettings {
   seo: SEOSettings;
   canDeliver: boolean;
   canDineIn: boolean;
+  paymentOnDineInActivated: boolean;
   rateLimits: {
     maxOrders: number;
     timeWindowHours: number;
   };
+  termsOfService?: string;
 }

@@ -1,21 +1,6 @@
 import { useState, useEffect } from 'react';
 import { settingsService } from '../services/settings/settings.service';
-
-export interface RestaurantSettings {
-  name: string;
-  description: string;
-  coverImage: string;
-  email?: string;
-  currency: 'USD' | 'EUR' | 'CAD' | 'MAD' | 'XOF' | 'XAF' | 'CDF';
-  openingHours: {
-    timezone: string;
-  } & {
-    [key: string]: { open: string; close: string; closed: boolean };
-  };
-  canDeliver: boolean;
-  canDineIn: boolean;
-  hasOpeningHours: boolean;
-}
+import { RestaurantSettings } from '../types';
 
 export function useSettings() {
   const [settings, setSettings] = useState<RestaurantSettings | null>(null);

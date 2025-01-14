@@ -13,6 +13,7 @@ import { useSettings } from '../hooks/useSettings';
 import { AuthGuard } from '../components/auth/AuthGuard';
 import PaymentFailure from '../pages/paytech/FailedPage';
 import PaymentSuccess from '../pages/paytech/SuccessPage';
+import { TermsOfService } from '../pages/TermsOfService';
 
 // Lazy load the Dashboard component
 const Dashboard = React.lazy(() =>
@@ -47,6 +48,7 @@ export function AppRoutes() {
       <Route path="/receipt" element={<OrderReceipt />} />
       <Route path="/paytech/success" element={<PaymentSuccess />} />
       <Route path="/paytech/failed" element={<PaymentFailure />} />
+      <Route path="/terms" element={<TermsOfService />} />
 
       {/* Auth Routes */}
       <Route

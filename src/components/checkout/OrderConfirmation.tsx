@@ -104,8 +104,11 @@ export function OrderConfirmation({
   }, [selectedPayment]);
 
   const renderPaymentButton = () => {
+    const isDineInPaymentActivated = settings?.paymentOnDineInActivated;
+    // console.log('isDineInPaymentActivated', isDineInPaymentActivated);
+
     // For dine-in, always show "Confirmer la commande"
-    if (customerData.diningOption === 'dine-in') {
+    if (customerData.diningOption === 'dine-in' && !isDineInPaymentActivated) {
       return (
         <>
           <Check className="w-4 h-4 mr-2" />
@@ -255,7 +258,9 @@ export function OrderConfirmation({
       </div>
 
       {/* Payment Methods */}
-      {showPaymentMethods && (
+      {(showPaymentMethods ||
+        (customerData.diningOption === 'dine-in' &&
+          settings?.paymentOnDineInActivated)) && (
         <div className="space-y-4">
           <h3 className="font-medium flex items-center gap-2">
             <CreditCard className="w-5 h-5" />
@@ -272,6 +277,16 @@ export function OrderConfirmation({
                     method.name?.toLowerCase()
                   )
               )
+              .filter(method => {
+                if (
+                  customerData.diningOption === 'dine-in' &&
+                  settings?.paymentOnDineInActivated &&
+                  method.name?.toLowerCase() === 'paiement à la livraison'
+                ) {
+                  return false;
+                }
+                return true;
+              })
               .map(method => (
                 <label
                   key={method.id}
@@ -381,7 +396,12 @@ export function OrderConfirmation({
           hasPaid) && (
           <Button
             onClick={handleConfirm}
-            disabled={showPaymentMethods && !selectedPayment}
+            disabled={
+              (showPaymentMethods && !selectedPayment) ||
+              (customerData.diningOption === 'dine-in' &&
+                settings?.paymentOnDineInActivated &&
+                !selectedPayment)
+            }
             className={`
             bg-gradient-to-r from-blue-600 to-indigo-600
             hover:from-blue-700 hover:to-indigo-700

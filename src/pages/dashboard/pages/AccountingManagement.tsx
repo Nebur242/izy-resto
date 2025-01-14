@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import { useState, useRef } from 'react';
 import { Tabs } from '../../../components/ui/Tabs';
 import { AccountingOverview } from '../../../components/dashboard/components/accounting/AccountingOverview';
 import { TransactionList } from '../../../components/dashboard/components/accounting/TransactionList';

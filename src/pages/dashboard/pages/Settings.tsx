@@ -11,6 +11,7 @@ import {
   IntegrationSettings,
   SEOSettings,
   DataManagement,
+  LegalSettings,
 } from './settings/tabs';
 
 import toast from 'react-hot-toast';
@@ -20,6 +21,7 @@ const tabs = [
   { id: 'appearance', label: 'Apparence' },
   { id: 'business', label: 'Entreprise' },
   { id: 'seo', label: 'SEO' },
+  { id: 'legal', label: 'Légal' },
   { id: 'integrations', label: 'Intégrations' },
   { id: 'data', label: 'Données' },
 ];
@@ -64,6 +66,8 @@ export function Settings() {
         return <BusinessSettings />;
       case 'seo':
         return <SEOSettings />;
+      case 'legal':
+        return <LegalSettings />;
       case 'integrations':
         return <IntegrationSettings />;
       case 'data':

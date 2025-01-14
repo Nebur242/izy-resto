@@ -19,6 +19,7 @@ export interface Order {
   customerPhone: string;
   customerAddress?: string | null;
   tableNumber?: string | null;
+  preference?: string | null;
   diningOption: 'dine-in' | 'delivery';
   paymentMethod: PaymentMethod | null;
   rating?: OrderRating;

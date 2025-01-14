@@ -16,6 +16,16 @@ const DAYS = [
   'saturday',
 ] as const;
 
+const FRENCH_DAYS: Record<string, string> = {
+  sunday: 'Dimanche',
+  monday: 'Lundi',
+  tuesday: 'Mardi',
+  wednesday: 'Mercredi',
+  thursday: 'Jeudi',
+  friday: 'Vendredi',
+  saturday: 'Samedi',
+};
+
 export function RestaurantClosedModal() {
   const { settings } = useSettings();
   // const [isOpen, setIsOpen] = useState(false);
@@ -65,7 +75,7 @@ export function RestaurantClosedModal() {
                 const hours = settings?.openingHours?.[day];
                 return (
                   <div key={day} className="flex justify-between">
-                    <span className="capitalize">{day}</span>
+                    <span className="capitalize">{FRENCH_DAYS[day]}</span>
                     <span>
                       {hours?.closed
                         ? 'Fermé'

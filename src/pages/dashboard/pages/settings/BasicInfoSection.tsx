@@ -1,5 +1,5 @@
 import { UseFormRegister, UseFormWatch } from 'react-hook-form';
-import { Building2, Currency } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 import { RestaurantSettings } from '../../../../types';
 import { LogoUploader } from '../../../../components/settings/LogoUploader';
 import { allCurrencies } from '../../../../constants/defaultSettings';

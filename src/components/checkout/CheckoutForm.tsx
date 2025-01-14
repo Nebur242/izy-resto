@@ -16,6 +16,7 @@ interface CheckoutFormData {
   phone: string;
   address?: string;
   tableNumber?: string;
+  preference?: string;
 }
 
 interface CheckoutFormProps {
@@ -94,6 +95,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
         customerAddress: diningOption === 'delivery' ? data.address : undefined,
         tableNumber: diningOption === 'dine-in' ? data.tableNumber : undefined,
         diningOption,
+        preference: data.preference,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         paymentMethod: selectedPaymentMethod,
@@ -315,6 +317,18 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
               )}
             </div>
           )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Vos indications pour le restaurant (Optionnel)
+          </label>
+          <textarea
+            {...register('preference')}
+            rows={3}
+            className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow resize-none `}
+            placeholder="Indiquer nous ici vos préférences (exemple: pas de piment...), n'hésiter pas de marquer si vous avez des allergies ou autre chose..."
+          />
         </div>
 
         <AnimatePresence>

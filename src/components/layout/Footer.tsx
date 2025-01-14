@@ -8,11 +8,13 @@ import {
   Youtube,
   Hash,
   MessageCircle,
+  LinkIcon,
 } from 'lucide-react';
 import { Container } from '../ui/Container';
 import { useSettings } from '../../hooks/useSettings';
 import { SocialMediaProfile } from '../../types/settings';
 import packageJson from '../../../package.json';
+import { Link } from 'react-router-dom';
 
 interface SocialMediaIconProps {
   profile: SocialMediaProfile;
@@ -100,6 +102,17 @@ export function Footer() {
                 </p>
               )}
             </div>
+          </div>
+
+          {/* Legal Links */}
+          <div className="flex items-center justify-center md:justify-end gap-4 mt-4 text-sm">
+            <Link
+              to={settings?.termsOfService ? '/terms' : '#'}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center gap-1"
+            >
+              <LinkIcon className="w-3 h-3" />
+              Conditions d'utilisation
+            </Link>
           </div>
         </Container>
       </footer>
