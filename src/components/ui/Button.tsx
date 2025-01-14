@@ -5,6 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   translationKey?: string;
+  spanClassName?: string;
 }
 
 export function Button({
@@ -14,6 +15,7 @@ export function Button({
   children,
   translationKey,
   disabled,
+  spanClassName = '',
   ...props
 }: ButtonProps) {
   const { t } = useTranslation();
@@ -83,7 +85,9 @@ export function Button({
       {...props}
     >
       {hoverOverlay}
-      <span className="relative flex items-center">{content}</span>
+      <span className={`relative flex items-center ${spanClassName}`}>
+        {content}
+      </span>
     </button>
   );
 }

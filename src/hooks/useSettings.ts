@@ -8,10 +8,13 @@ export interface RestaurantSettings {
   email?: string;
   currency: 'USD' | 'EUR' | 'CAD' | 'MAD' | 'XOF' | 'XAF' | 'CDF';
   openingHours: {
+    timezone: string;
+  } & {
     [key: string]: { open: string; close: string; closed: boolean };
   };
   canDeliver: boolean;
   canDineIn: boolean;
+  hasOpeningHours: boolean;
 }
 
 export function useSettings() {

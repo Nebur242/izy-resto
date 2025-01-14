@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { Clock, Globe, Truck } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
+import { timezones } from '../../../../../constants/timezones';
 
 const ErrorAlert = ({ message }: { message: string }) => (
   <div
-    className=" border border-red-400 text-red-700 px-4 py-3 rounded relative"
+    className="border border-red-400 text-red-700 px-4 py-3 rounded relative"
     role="alert"
   >
     <span className="block sm:inline">{message}</span>
@@ -22,6 +23,7 @@ export function BusinessSettings() {
 
   const canDeliver = watch('canDeliver');
   const canDineIn = watch('canDineIn');
+  const hasOpeningHours = watch('hasOpeningHours');
 
   // Validate that at least one option is selected
   useEffect(() => {
@@ -91,41 +93,79 @@ export function BusinessSettings() {
 
       {/* Opening Hours */}
       <section className="space-y-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-xl font-semibold">Horaires d'Ouverture</h2>
+        <div className="flex items-center justify-between gap-3 mb-6">
+          <div className="flex items-center gap-3">
+            <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-xl font-semibold">Horaires d'Ouverture</h2>
+          </div>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              {...register('hasOpeningHours')}
+              className="rounded border-gray-300 dark:border-gray-600"
+            />
+            <span>{hasOpeningHours ? 'Actif' : 'Inactif'}</span>
+          </label>
         </div>
 
-        <div className="space-y-4">
-          {days.map(day => (
-            <div key={day} className="flex items-center space-x-4">
-              <span className="w-32">{dayNames[day]}</span>
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  {...register(`openingHours.${day}.closed`)}
-                  className="rounded border-gray-300 dark:border-gray-600"
-                />
-                <span>Fermé</span>
+        {hasOpeningHours && (
+          <>
+            {/* Timezone Selection */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-1">
+                Fuseau horaire <span className="text-red-500">*</span>
               </label>
-              {!watch(`openingHours.${day}.closed`) && (
-                <>
-                  <input
-                    type="time"
-                    {...register(`openingHours.${day}.open`)}
-                    className="rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
-                  />
-                  <span>à</span>
-                  <input
-                    type="time"
-                    {...register(`openingHours.${day}.close`)}
-                    className="rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
-                  />
-                </>
-              )}
+              <select
+                {...register('openingHours.timezone', {
+                  required: 'Le fuseau horaire est requis',
+                })}
+                className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+              >
+                <option value="">Sélectionner un fuseau horaire</option>
+                {timezones.map(tz => (
+                  <option key={tz.value} value={tz.value}>
+                    {tz.label}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-sm text-gray-500">
+                Ce fuseau horaire sera utilisé pour tous les horaires
+                d'ouverture
+              </p>
             </div>
-          ))}
-        </div>
+
+            <div className="space-y-4">
+              {days.map(day => (
+                <div key={day} className="flex items-center space-x-4">
+                  <span className="w-32">{dayNames[day]}</span>
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      {...register(`openingHours.${day}.closed`)}
+                      className="rounded border-gray-300 dark:border-gray-600"
+                    />
+                    <span>Fermé</span>
+                  </label>
+                  {!watch(`openingHours.${day}.closed`) && (
+                    <>
+                      <input
+                        type="time"
+                        {...register(`openingHours.${day}.open`)}
+                        className="rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+                      />
+                      <span>à</span>
+                      <input
+                        type="time"
+                        {...register(`openingHours.${day}.close`)}
+                        className="rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+                      />
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </section>
 
       {/* Service Options */}

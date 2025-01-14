@@ -150,8 +150,16 @@ export function DataManagement() {
         snapshot.docs.forEach(doc => {
           batch.delete(doc.ref);
         });
+        const hasAcceptedCookies = localStorage.getItem('cookiesAccepted')
+          ? localStorage.getItem('cookiesAccepted') === 'true'
+          : false;
+
         await batch.commit();
         localStorage.clear();
+
+        if (hasAcceptedCookies) {
+          localStorage.setItem('cookiesAccepted', `${hasAcceptedCookies}`);
+        }
       }
 
       await loadCollections();

@@ -1,11 +1,11 @@
-import { 
-  getAuth, 
+import {
+  getAuth,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   type User,
   setPersistence,
-  browserSessionPersistence
+  browserSessionPersistence,
 } from 'firebase/auth';
 import { app } from '../../lib/firebase/config';
 
@@ -32,9 +32,18 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       await signOut(auth);
+
+      const hasAcceptedCookies = localStorage.getItem('cookiesAccepted')
+        ? localStorage.getItem('cookiesAccepted') === 'true'
+        : false;
+
       // Clear any auth-related data from storage
       sessionStorage.clear();
       localStorage.clear();
+
+      if (hasAcceptedCookies) {
+        localStorage.setItem('cookiesAccepted', `${hasAcceptedCookies}`);
+      }
     } catch (error: any) {
       const customError = new Error('Failed to log out');
       customError.name = 'AuthError';

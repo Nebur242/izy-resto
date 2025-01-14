@@ -19,6 +19,10 @@ interface TransactionListProps {
   onDelete: (id: string) => Promise<void>;
 }
 
+const sourceText: Record<string, string> = {
+  orders: 'commandes',
+};
+
 export function TransactionList({
   transactions,
   isLoading,
@@ -111,7 +115,9 @@ export function TransactionList({
                     <td className="px-6 py-4 text-sm whitespace-nowrap">
                       {formatDate(transaction.date)}
                     </td>
-                    <td className="px-6 py-4 text-sm">{transaction.source}</td>
+                    <td className="px-6 py-4 text-sm">
+                      {sourceText[transaction.source]}
+                    </td>
                     <td className="px-6 py-4 text-sm">
                       {transaction.description}
                     </td>

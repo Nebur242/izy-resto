@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import { useCategories } from '../../hooks/useCategories';
-import { UtensilsCrossed, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, Filter } from 'lucide-react';
 
 interface MenuFiltersProps {
   activeCategory: string;
@@ -13,141 +13,144 @@ export function MenuFilters({
   onCategoryChange,
 }: MenuFiltersProps) {
   const { categories, isLoading } = useCategories();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-  const [showScrollHint, setShowScrollHint] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  // More robust overflow check
-  useEffect(() => {
-    const checkOverflow = () => {
-      const container = scrollContainerRef.current;
-      if (container) {
-        const overflow = container.scrollWidth > container.clientWidth;
+  const activeCategoryName =
+    activeCategory === 'all'
+      ? 'Tous les plats'
+      : categories.find(c => c.id === activeCategory)?.name || 'Sélectionner';
 
-        // Set overflow state, ensuring it only shows when we have more than 2 categories
-        const shouldShowHint = overflow && categories.length > 2;
-        setIsOverflowing(shouldShowHint);
-
-        // Show hint only if overflowing
-        if (shouldShowHint) {
-          setShowScrollHint(true);
-
-          // Hide hint after 10 seconds
-          const timeoutId = setTimeout(() => {
-            setShowScrollHint(false);
-          }, 10000);
-
-          return () => clearTimeout(timeoutId);
-        }
-      }
-    };
-
-    // Check immediately and on resize
-    checkOverflow();
-    const resizeObserver = new ResizeObserver(checkOverflow);
-
-    if (scrollContainerRef.current) {
-      resizeObserver.observe(scrollContainerRef.current);
-    }
-
-    // Timeout to recheck after rendering
-    const timeoutId = setTimeout(checkOverflow, 100);
-
-    return () => {
-      resizeObserver.disconnect();
-      clearTimeout(timeoutId);
-    };
-  }, [categories]);
-
-  // Loading state
   if (isLoading) {
     return (
-      <div className="flex h-20 items-center justify-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-          className="relative h-12 w-12"
-        >
-          <div className="absolute inset-0 rounded-full border-2 border-gray-200 dark:border-gray-700" />
-          <div className="absolute inset-0 rounded-full border-t-2 border-blue-600 dark:border-blue-400" />
-        </motion.div>
-      </div>
+      <div className="w-full h-12 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-full" />
     );
   }
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4 relative">
-      {/* Scroll hint positioned above the container */}
-      <AnimatePresence>
-        {showScrollHint && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="absolute -top-5 right-6 flex items-center text-gray-500 dark:text-gray-400 text-xs z-10"
+    <div className="relative w-full max-w-7xl mx-auto px-4">
+      {/* Mobile Filter Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="lg:hidden w-full px-4 py-3 bg-white dark:bg-gray-800 rounded-full shadow-sm
+                 border border-gray-200 dark:border-gray-700 flex items-center justify-between
+                 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <Filter className="w-4 h-4 text-gray-500" />
+          <span className="text-sm font-medium">{activeCategoryName}</span>
+        </div>
+        <ChevronDown
+          className={`w-4 h-4 text-gray-500 transition-transform ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        />
+      </button>
+
+      {/* Desktop Categories */}
+      <div className="hidden lg:flex flex-wrap items-center justify-center gap-2 w-full overflow-x-auto py-2">
+        <div className="inline-flex flex-wrap items-center justify-center gap-2 min-w-0">
+          <motion.button
+            onClick={() => onCategoryChange('all')}
+            className={`
+              px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
+              transition-all duration-200 hover:scale-105
+              ${
+                activeCategory === 'all'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+              }
+            `}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <span className="mr-1">Délifer pour voir les catégories</span>
-            <ChevronRight className="w-3 h-3" />
+            Tous les plats
+          </motion.button>
+
+          {categories.map(category => (
+            <motion.button
+              key={category.id}
+              onClick={() => onCategoryChange(category.id)}
+              className={`
+                px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
+                transition-all duration-200 hover:scale-105
+                ${
+                  activeCategory === category.id
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                }
+              `}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {category.name}
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile Categories Dropdown */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="lg:hidden absolute left-0 right-0 top-full mt-2 py-2 bg-white dark:bg-gray-800 
+                     rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 z-50
+                     max-h-[60vh] overflow-y-auto"
+          >
+            <button
+              onClick={() => {
+                onCategoryChange('all');
+                setIsOpen(false);
+              }}
+              className={`
+                w-full px-4 py-3 text-left text-sm transition-colors
+                ${
+                  activeCategory === 'all'
+                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                }
+              `}
+            >
+              Tous les plats
+            </button>
+
+            {categories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => {
+                  onCategoryChange(category.id);
+                  setIsOpen(false);
+                }}
+                className={`
+                  w-full px-4 py-3 text-left text-sm transition-colors
+                  ${
+                    activeCategory === category.id
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                  }
+                `}
+              >
+                {category.name}
+              </button>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Scroll gradient overlay */}
-      {isOverflowing && (
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 pointer-events-none z-0">
-          <div className="w-full flex justify-between">
-            <div className="w-8 h-full bg-gradient-to-r from-white/50 to-transparent dark:from-gray-900/50" />
-            <div className="w-8 h-full bg-gradient-to-l from-white/50 to-transparent dark:from-gray-900/50" />
-          </div>
-        </div>
-      )}
-
-      <div className="rounded-2xl bg-white/50 p-2 shadow-sm backdrop-blur-sm dark:bg-gray-800/50">
-        {/* Category Filters */}
-        <div
-          ref={scrollContainerRef}
-          className="hide-scrollbar relative flex snap-x gap-2 overflow-x-auto scroll-smooth px-2"
-        >
-          {/* All Dishes Category */}
-          <button
-            onClick={() => onCategoryChange('all')}
-            className={`
-              relative min-w-fit snap-start flex items-center gap-2 
-              rounded-full px-4 py-2 text-sm font-medium 
-              transition-all hover:shadow-md
-              ${
-                activeCategory === 'all'
-                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
-              }
-            `}
-          >
-            <UtensilsCrossed className="h-4 w-4" />
-            <span>Menu principal</span>
-          </button>
-
-          {/* Dynamic Categories */}
-          {categories.map(category => (
-            <button
-              key={category.id}
-              onClick={() => onCategoryChange(category.id)}
-              className={`
-                relative min-w-fit snap-start flex items-center 
-                rounded-full px-4 py-2 text-sm font-medium 
-                transition-all hover:shadow-md
-                ${
-                  activeCategory === category.id
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white'
-                    : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
-                }
-              `}
-            >
-              <span>{category.name}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Backdrop for mobile */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

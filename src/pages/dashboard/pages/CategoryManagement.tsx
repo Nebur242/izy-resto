@@ -90,10 +90,7 @@ export function CategoryManagement() {
           </p>
         </div>
 
-        <Button
-          onClick={() => setIsFormOpen(true)}
-          className="relative group px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl shadow-lg hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5"
-        >
+        <Button onClick={() => setIsFormOpen(true)} type="button">
           <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
           <span className="relative">Nouvelle catégorie</span>

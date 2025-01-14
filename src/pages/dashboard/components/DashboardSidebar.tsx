@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../../i18n/useTranslation';
-import { 
-  LayoutDashboard, 
-  UtensilsCrossed, 
-  ShoppingBag, 
-  Settings, 
-  List, 
-  Store, 
+import {
+  LayoutDashboard,
+  UtensilsCrossed,
+  ShoppingBag,
+  Settings,
+  List,
+  Store,
   QrCode,
   Layers,
   Users,
   Package,
-  ChevronLeft, 
-  ChevronRight, 
+  ChevronLeft,
+  ChevronRight,
   Calculator,
   Image,
   Users2,
   CreditCard,
-  BarChart
+  BarChart,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -37,25 +37,25 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
     { id: 'orders', icon: ShoppingBag, label: t('dashboard.orders') },
     { id: 'pos', icon: Store, label: t('dashboard.pos') },
     { id: 'traffic', icon: BarChart, label: 'Analyses' },
-    
+
     // Menu Management
     { id: 'menu', icon: UtensilsCrossed, label: t('dashboard.menu') },
     { id: 'categories', icon: List, label: t('dashboard.categories') },
     { id: 'variants', icon: Layers, label: 'Variantes' },
-  
+
     // Stock & Finance
     { id: 'inventory', icon: Package, label: 'Inventaire' },
     { id: 'payments', icon: CreditCard, label: 'Paiements' },
     { id: 'accounting', icon: Calculator, label: 'Comptabilité' },
-  
+
     // Customer Relations
     { id: 'customers', icon: Users, label: t('customers.title') },
     { id: 'qr-code', icon: QrCode, label: 'QR Code' },
-  
+
     // Administration
     { id: 'staff', icon: Users2, label: 'Personnel' },
     { id: 'media', icon: Image, label: 'Bibliothèque' },
-    { id: 'settings', icon: Settings, label: t('dashboard.settings') }
+    { id: 'settings', icon: Settings, label: t('dashboard.settings') },
   ];
 
   return (
@@ -79,12 +79,8 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
         <nav className="p-3 pt-8">
-          {menuItems.map((item) => (
-            <motion.div 
-              key={item.id} 
-              className="relative my-1"
-              initial={false}
-            >
+          {menuItems.map(item => (
+            <motion.div key={item.id} className="relative my-1" initial={false}>
               <motion.button
                 whileHover={{ x: isCollapsed ? 0 : 4 }}
                 whileTap={{ scale: 0.98 }}
@@ -93,31 +89,25 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
                   w-full flex items-center space-x-3 
                   ${isCollapsed ? 'justify-center px-3 py-3' : 'px-4 py-3'}
                   rounded-lg transition-colors relative group
-                  ${currentPage === item.id
-                    ? 'text-blue-600 dark:text-blue-400'
-                    : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ${
+                    currentPage === item.id
+                      ? 'bg-blue-50 text-white dark:bg-blue-900/20'
+                      : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }
                 `}
               >
-                {currentPage === item.id && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
-                    initial={false}
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-                <div className={`
+                <div
+                  className={`
                   relative z-10 flex items-center 
                   ${isCollapsed ? 'w-full justify-center' : ''}
-                `}>
-                  <item.icon className={`
+                `}
+                >
+                  <item.icon
+                    className={`
                     relative z-10 transition-transform duration-200
-                    ${isCollapsed 
-                      ? 'w-6 h-6 group-hover:scale-110' 
-                      : 'w-5 h-5'
-                    }
-                  `} />
+                    ${isCollapsed ? 'w-6 h-6 group-hover:scale-110' : 'w-5 h-5'}
+                  `}
+                  />
                   <AnimatePresence mode="wait">
                     {!isCollapsed && (
                       <motion.span
@@ -132,10 +122,11 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
                   </AnimatePresence>
                 </div>
               </motion.button>
-              
+
               {/* Tooltip for collapsed state */}
               {isCollapsed && (
-                <div className="
+                <div
+                  className="
                   absolute left-full top-1/2 -translate-y-1/2 ml-3 
                   bg-gray-800 text-white text-xs 
                   px-3 py-2 rounded-md 
@@ -145,7 +136,8 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
                   pointer-events-none
                   z-50
                   shadow-lg
-                ">
+                "
+                >
                   {item.label}
                 </div>
               )}

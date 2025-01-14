@@ -43,7 +43,10 @@ export interface RestaurantSettings {
   coverImage: string;
   currency: Currency;
   defaultTheme: 'light' | 'dark'; // Add defaultTheme
+  hasOpeningHours: boolean;
   openingHours: {
+    timezone: string; // Required timezone
+  } & {
     [key: string]: {
       open: string;
       close: string;

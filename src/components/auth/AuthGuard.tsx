@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -10,7 +9,7 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children, requireAuth = true }: AuthGuardProps) {
-  const { user, loading, isAuthenticated } = useAuth();
+  const { loading, isAuthenticated, user } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -19,6 +18,10 @@ export function AuthGuard({ children, requireAuth = true }: AuthGuardProps) {
       sessionStorage.setItem('redirectUrl', location.pathname);
     }
   }, [loading, requireAuth, isAuthenticated, location.pathname]);
+
+  if (user?.isAnonymous && window.location.pathname.includes('login')) {
+    return <>{children}</>;
+  }
 
   // Show loading screen while checking auth state
   if (loading) {

@@ -27,10 +27,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Subscribe to auth state changes
     const unsubscribe = authService.onAuthStateChanged(async user => {
-      if (user && user.isAnonymous) {
-        if (window.location.pathname.startsWith('/dashboard')) {
-          navigate('/', { replace: true });
-        }
+      if (
+        user &&
+        user.isAnonymous &&
+        window.location.pathname.startsWith('/dashboard')
+      ) {
+        navigate('/login', { replace: true });
         return setLoading(false);
       }
 
@@ -80,9 +82,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authService.logout();
 
+      const hasAcceptedCookies = localStorage.getItem('cookiesAccepted')
+        ? localStorage.getItem('cookiesAccepted') === 'true'
+        : false;
+
       // Clear all session/local storage data
       sessionStorage.clear();
       localStorage.clear();
+
+      if (hasAcceptedCookies) {
+        localStorage.setItem('cookiesAccepted', `${hasAcceptedCookies}`);
+      }
 
       // Reset states
       setUser(null);

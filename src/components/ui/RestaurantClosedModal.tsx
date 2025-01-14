@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Lock, Settings } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSettings } from '../../hooks/useSettings';
 import { Button } from './Button';
+import { useRestaurantStatus } from '../../hooks/useRestaurantStatus';
 
 const DAYS = [
   'sunday',
@@ -17,108 +18,19 @@ const DAYS = [
 
 export function RestaurantClosedModal() {
   const { settings } = useSettings();
-  const [isOpen, setIsOpen] = useState(false);
-  const [nextOpenTime, setNextOpenTime] = useState<string | null>(null);
+  // const [isOpen, setIsOpen] = useState(false);
+  const [nextOpenTime] = useState<string | null>(null);
   const location = useLocation();
+
+  const { isOpen: isRestaurantOpen } = useRestaurantStatus();
 
   // Check if we're on a protected route
   const isProtectedRoute =
     location.pathname.startsWith('/dashboard') ||
     location.pathname === '/login';
 
-  useEffect(() => {
-    // Don't run effect on protected routes
-    if (isProtectedRoute) {
-      setIsOpen(false);
-      return;
-    }
-
-    const checkIfOpen = () => {
-      if (!settings?.openingHours) return false;
-
-      // Get user's local time
-      const now = new Date();
-      const userTimezoneOffset = now.getTimezoneOffset();
-
-      // Convert user's time to restaurant's timezone (assuming restaurant time is in local time)
-      const restaurantTime = new Date(
-        now.getTime() - userTimezoneOffset * 60000
-      );
-
-      const day = DAYS[restaurantTime.getDay()];
-      const hours = restaurantTime.getHours().toString().padStart(2, '0');
-      const minutes = restaurantTime.getMinutes().toString().padStart(2, '0');
-      const currentTime = `${hours}:${minutes}`;
-
-      const todayHours = settings.openingHours[day];
-
-      if (todayHours?.closed) {
-        // Find next open day
-        const todayIndex = DAYS.indexOf(day);
-        let nextOpenDay = null;
-        let daysUntilOpen = 0;
-
-        for (let i = 1; i <= 7; i++) {
-          const nextIndex = (todayIndex + i) % 7;
-          const nextDay = DAYS[nextIndex];
-          if (!settings.openingHours[nextDay]?.closed) {
-            nextOpenDay = nextDay;
-            daysUntilOpen = i;
-            break;
-          }
-        }
-
-        if (nextOpenDay) {
-          const nextDayHours = settings.openingHours[nextOpenDay];
-          const nextDate = new Date(restaurantTime);
-          nextDate.setDate(nextDate.getDate() + daysUntilOpen);
-
-          const formattedDay = nextDate.toLocaleDateString('fr-FR', {
-            weekday: 'long',
-          });
-          const dayName =
-            formattedDay.charAt(0).toUpperCase() + formattedDay.slice(1);
-          setNextOpenTime(`${dayName} à ${nextDayHours.open}`);
-        }
-
-        return true;
-      }
-
-      if (!todayHours?.open || !todayHours?.close) return false;
-
-      // Parse opening hours
-      const [openHour, openMinute] = todayHours.open.split(':').map(Number);
-      const [closeHour, closeMinute] = todayHours.close.split(':').map(Number);
-      const [currentHour, currentMinute] = currentTime.split(':').map(Number);
-
-      // Convert to minutes for easier comparison
-      const openTime = openHour * 60 + openMinute;
-      const closeTime = closeHour * 60 + closeMinute;
-      const current = currentHour * 60 + currentMinute;
-
-      // Handle cases where closing time is on the next day
-      if (closeTime < openTime) {
-        return current < openTime && current > closeTime;
-      }
-
-      return current < openTime || current > closeTime;
-    };
-
-    const updateModalState = () => {
-      setIsOpen(checkIfOpen());
-    };
-
-    // Initial check
-    updateModalState();
-
-    // Check every minute
-    const interval = setInterval(updateModalState, 60000);
-
-    return () => clearInterval(interval);
-  }, [settings, isProtectedRoute]);
-
   // Early return after hooks
-  if (!isOpen || isProtectedRoute) return null;
+  if (isRestaurantOpen || isProtectedRoute) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">

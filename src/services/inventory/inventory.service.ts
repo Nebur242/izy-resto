@@ -76,17 +76,19 @@ class InventoryService extends FirestoreService<InventoryItem> {
           const price = data.price || currentItem.price;
           const totalCost = Math.abs(quantityDiff * price);
 
-          await accountingService.createTransaction({
-            date: new Date().toISOString(),
-            source: 'inventory',
-            description: `Ajustement stock: ${currentItem.name} (${
-              quantityDiff > 0 ? '+' : ''
-            }${quantityDiff} ${currentItem.unit})`,
-            reference: id,
-            debit: quantityDiff > 0 ? totalCost : 0,
-            credit: quantityDiff < 0 ? totalCost : 0,
-            gross: quantityDiff > 0 ? -totalCost : totalCost,
-          });
+          if (quantityDiff > 0) {
+            await accountingService.createTransaction({
+              date: new Date().toISOString(),
+              source: 'inventory',
+              description: `Ajustement stock: ${currentItem.name} (${
+                quantityDiff > 0 ? '+' : ''
+              }${quantityDiff} ${currentItem.unit})`,
+              reference: id,
+              debit: quantityDiff > 0 ? totalCost : 0,
+              credit: quantityDiff < 0 ? totalCost : 0,
+              gross: quantityDiff > 0 ? -totalCost : totalCost,
+            });
+          }
         }
       });
     } catch (error) {

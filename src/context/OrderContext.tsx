@@ -21,15 +21,16 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  // const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const unsubscribe = orderService.subscribeToOrders(
-      (updatedOrders) => {
+      updatedOrders => {
         setOrders(updatedOrders);
         setIsLoading(false);
         setError(null);
       },
-      (error) => {
+      error => {
         console.error('Error in orders subscription:', error);
         setError(error);
         setIsLoading(false);
@@ -66,17 +67,19 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const preparingOrders = orders.filter(order => order.status === 'preparing');
 
   return (
-    <OrderContext.Provider value={{
-      orders,
-      isLoading,
-      error,
-      updateOrderStatus,
-      getOrderById,
-      filteredOrders,
-      deliveredOrders,
-      pendingOrders,
-      preparingOrders
-    }}>
+    <OrderContext.Provider
+      value={{
+        orders,
+        isLoading,
+        error,
+        updateOrderStatus,
+        getOrderById,
+        filteredOrders,
+        deliveredOrders,
+        pendingOrders,
+        preparingOrders,
+      }}
+    >
       {children}
     </OrderContext.Provider>
   );
