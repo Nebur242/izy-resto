@@ -17,7 +17,8 @@
 
   /* Safe area padding utility classes */
   .safe-area-p {
-    padding: var(--safe-area-top) var(--safe-area-right) var(--safe-area-bottom) var(--safe-area-left);
+    padding: var(--safe-area-top) var(--safe-area-right) var(--safe-area-bottom)
+      var(--safe-area-left);
   }
 
   .safe-area-px {
@@ -49,7 +50,7 @@
   /* Base body styles */
   body {
     @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
-    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+    /* padding-bottom: max(env(safe-area-inset-bottom), 1rem); */
   }
 
   /* Improve text contrast in dark mode */
@@ -58,17 +59,26 @@
   }
 
   /* Form elements */
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     @apply bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white;
   }
 
   /* Headings */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply text-gray-900 dark:text-white font-semibold;
   }
 
   /* Paragraphs and general text */
-  p, span, div {
+  p,
+  span,
+  div {
     @apply text-gray-700 dark:text-gray-300;
   }
 
@@ -112,10 +122,10 @@
 
 /* Hide scrollbar utility */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari, and Opera */
+  display: none; /* Chrome, Safari, and Opera */
 }

@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
@@ -46,5 +47,37 @@ export default {
       },
     },
   },
-  plugins: [require('@tailwindcss/line-clamp')],
+  plugins: [
+    function ({ addComponents, addBase, theme }) {
+      addBase({
+        ':root': {
+          fontSize: theme('fontSize.base'),
+          '@screen 2xl': {
+            fontSize: '1vw',
+          },
+        },
+
+        button: {
+          outline: 'none',
+        },
+        img: {
+          userSelect: 'none',
+        },
+      });
+      addComponents({
+        '.container': {
+          maxWidth: '64rem',
+          marginRight: 'auto',
+          marginLeft: 'auto',
+          paddingRight: '1rem',
+          paddingLeft: '1rem',
+          '@screen xl': {
+            paddingRight: '0rem',
+            paddingLeft: '0rem',
+          },
+        },
+      });
+    },
+    require('@tailwindcss/line-clamp'),
+  ],
 };

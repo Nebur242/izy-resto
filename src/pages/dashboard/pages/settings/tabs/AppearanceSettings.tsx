@@ -1,21 +1,20 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { 
-  Layout, 
-  Sun, 
-  Moon,
-  MenuSquare,
-  LayoutGrid,
-  Rows,
+import {
   Columns,
+  Layout,
   LayoutDashboard,
-  LayoutList
+  LayoutGrid,
+  LayoutList,
+  MenuSquare,
+  Moon,
+  Rows,
+  Sun,
 } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
 import { useTheme } from '../../../../../context/ThemeContext';
 import { RestaurantSettings } from '../../../../../types/settings';
-import { ThemeOption } from './components/ThemeOption';
 import { HeaderOption } from './components/HeaderOption';
 import { TemplateOption } from './components/TemplateOption';
+import { ThemeOption } from './components/ThemeOption';
 
 export function AppearanceSettings() {
   const { register, watch, setValue } = useFormContext<RestaurantSettings>();
@@ -24,7 +23,7 @@ export function AppearanceSettings() {
   const handleThemeChange = async (newTheme: 'light' | 'dark') => {
     setValue('defaultTheme', newTheme, { shouldDirty: true });
     localStorage.removeItem('theme-preference');
-    
+
     if (theme !== newTheme) {
       toggleTheme();
     }
@@ -76,7 +75,9 @@ export function AppearanceSettings() {
             description="Design moderne avec une mise en page élégante"
             value="modern"
             selected={watch('activeHeader') === 'modern'}
-            onChange={(value) => setValue('activeHeader', value, { shouldDirty: true })}
+            onChange={value =>
+              setValue('activeHeader', value, { shouldDirty: true })
+            }
             register={register}
           />
 
@@ -86,7 +87,9 @@ export function AppearanceSettings() {
             description="Design traditionnel avec navigation simple"
             value="classic"
             selected={watch('activeHeader') === 'classic'}
-            onChange={(value) => setValue('activeHeader', value, { shouldDirty: true })}
+            onChange={value =>
+              setValue('activeHeader', value, { shouldDirty: true })
+            }
             register={register}
           />
         </div>
@@ -106,7 +109,9 @@ export function AppearanceSettings() {
             description="Design moderne avec une grande image d'en-tête"
             value="modern"
             selected={watch('activeLanding') === 'modern'}
-            onChange={(value) => setValue('activeLanding', value, { shouldDirty: true })}
+            onChange={value =>
+              setValue('activeLanding', value, { shouldDirty: true })
+            }
             register={register}
             imageUrl="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=500&q=60"
           />
@@ -117,7 +122,9 @@ export function AppearanceSettings() {
             description="Design épuré et minimaliste"
             value="minimal"
             selected={watch('activeLanding') === 'minimal'}
-            onChange={(value) => setValue('activeLanding', value, { shouldDirty: true })}
+            onChange={value =>
+              setValue('activeLanding', value, { shouldDirty: true })
+            }
             register={register}
             imageUrl="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=500&q=60"
           />
@@ -128,7 +135,9 @@ export function AppearanceSettings() {
             description="Mise en page en grille avec images"
             value="grid"
             selected={watch('activeLanding') === 'grid'}
-            onChange={(value) => setValue('activeLanding', value, { shouldDirty: true })}
+            onChange={value =>
+              setValue('activeLanding', value, { shouldDirty: true })
+            }
             register={register}
             imageUrl="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=500&q=60"
           />

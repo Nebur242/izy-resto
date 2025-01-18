@@ -1,17 +1,17 @@
-import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { RestaurantSettings } from '../../../types';
-import { useSettings } from '../../../hooks/useSettings';
+import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Tabs } from '../../../components/ui/Tabs';
+import { useSettings } from '../../../hooks/useSettings';
+import { RestaurantSettings } from '../../../types';
 import {
-  GeneralSettings,
   AppearanceSettings,
   BusinessSettings,
-  IntegrationSettings,
-  SEOSettings,
   DataManagement,
+  GeneralSettings,
+  IntegrationSettings,
   LegalSettings,
+  SEOSettings,
 } from './settings/tabs';
 
 import toast from 'react-hot-toast';
