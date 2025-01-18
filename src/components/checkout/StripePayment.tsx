@@ -10,6 +10,7 @@ import {
   Elements,
 } from '@stripe/react-stripe-js';
 import { processPayment } from '../../services/payments/stripe.service';
+import { AxiosError } from 'axios';
 
 const useCardElementStyle = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -133,6 +134,15 @@ const PaymentModal = ({
 
       throw new Error('Error');
     } catch (error: any) {
+      console.log(error);
+
+      if (error instanceof AxiosError) {
+        setErrorMessage(
+          error.response?.data?.message || 'Erreur de paiement...'
+        );
+        return;
+      }
+
       setErrorMessage(error.message || 'Une erreur est survenue');
     } finally {
       setLoading(false);
@@ -251,7 +261,7 @@ export const StripePayment = ({
             stripe={stripePromise}
             options={{
               mode: 'payment',
-              amount,
+              amount: Math.round(amount * 100),
               currency,
             }}
           >

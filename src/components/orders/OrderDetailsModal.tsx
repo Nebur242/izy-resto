@@ -1,6 +1,14 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Utensils, Truck, Phone, Mail, MapPin, CreditCard } from 'lucide-react';
+import {
+  X,
+  Utensils,
+  Truck,
+  Phone,
+  Mail,
+  MapPin,
+  CreditCard,
+} from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useSettings } from '../../hooks/useSettings';
 import { useOrders } from '../../context/OrderContext';
@@ -15,11 +23,14 @@ interface OrderDetailsModalProps {
   onClose: () => void;
 }
 
-export function OrderDetailsModal({ orderId, onClose }: OrderDetailsModalProps) {
+export function OrderDetailsModal({
+  orderId,
+  onClose,
+}: OrderDetailsModalProps) {
   const { t } = useTranslation();
   const { settings } = useSettings();
   const { getOrderById } = useOrders();
-  
+
   const order = orderId ? getOrderById(orderId) : undefined;
 
   if (!order) return null;
@@ -86,6 +97,7 @@ export function OrderDetailsModal({ orderId, onClose }: OrderDetailsModalProps) 
 
           {/* Order Timeline */}
           <OrderTimeline
+            order={order}
             status={order.status}
             createdAt={order.createdAt}
             updatedAt={order.updatedAt}
@@ -119,7 +131,7 @@ export function OrderDetailsModal({ orderId, onClose }: OrderDetailsModalProps) 
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
               <h3 className="text-lg font-semibold mb-4">Articles</h3>
               <div className="space-y-3">
-                {order.items.map((item) => (
+                {order.items.map(item => (
                   <div
                     key={item.id}
                     className="flex justify-between items-center"
@@ -127,18 +139,24 @@ export function OrderDetailsModal({ orderId, onClose }: OrderDetailsModalProps) 
                     <div>
                       <p className="font-medium">{item.name}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {formatCurrency(item.price, settings?.currency)} × {item.quantity}
+                        {formatCurrency(item.price, settings?.currency)} ×{' '}
+                        {item.quantity}
                       </p>
                     </div>
                     <p className="font-medium">
-                      {formatCurrency(item.price * item.quantity, settings?.currency)}
+                      {formatCurrency(
+                        item.price * item.quantity,
+                        settings?.currency
+                      )}
                     </p>
                   </div>
                 ))}
                 <div className="border-t dark:border-gray-600 pt-3 mt-3">
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span>{formatCurrency(order.total, settings?.currency)}</span>
+                    <span>
+                      {formatCurrency(order.total, settings?.currency)}
+                    </span>
                   </div>
                 </div>
               </div>

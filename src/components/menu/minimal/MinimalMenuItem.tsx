@@ -1,20 +1,42 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { MenuItem } from '../../../types';
+import { MenuItem, MenuItemWithVariants } from '../../../types';
 import { useCart } from '../../../context/CartContext';
 import { useSettings } from '../../../hooks/useSettings';
 import { ProductDetailsModal } from '../ProductDetailsModal';
 import { formatCurrency } from '../../../utils/currency';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 
 interface MinimalMenuItemProps {
   item: MenuItem;
 }
 
 export function MinimalMenuItem({ item }: MinimalMenuItemProps) {
-  const { cart } = useCart();
+  // const { cart } = useCart();
   const { settings } = useSettings();
   const [showModal, setShowModal] = useState(false);
-  const itemInCart = cart.find(cartItem => cartItem.id === item.id);
+  // const itemInCart = cart.find(cartItem => cartItem.id === item.id);
+  const itemWithVariants = item as MenuItemWithVariants;
+  const hasVariants = itemWithVariants.variantPrices?.length > 0;
+
+  const isMobile = useIsMobile();
+
+  // Get price range if item has variants
+  const priceRange = useMemo(() => {
+    if (!itemWithVariants.variantPrices?.length) {
+      return { min: item.price, max: item.price };
+    }
+
+    const prices = [
+      item.price,
+      ...itemWithVariants.variantPrices.map(vp => vp.price),
+    ];
+
+    return {
+      min: Math.min(...prices),
+      max: Math.max(...prices),
+    };
+  }, [item, itemWithVariants.variantPrices]);
 
   return (
     <>
@@ -38,7 +60,21 @@ export function MinimalMenuItem({ item }: MinimalMenuItemProps) {
           </p>
           <div className="flex items-center justify-between">
             <span className="font-bold text-blue-600 dark:text-blue-400">
-              {formatCurrency(item.price, settings?.currency)}
+              {isMobile && formatCurrency(item.price, settings?.currency)}
+              {!isMobile &&
+                (hasVariants ? (
+                  <>
+                    {formatCurrency(priceRange.min, settings?.currency)}
+                    {priceRange.max > priceRange.min && (
+                      <>
+                        {' '}
+                        - {formatCurrency(priceRange.max, settings?.currency)}
+                      </>
+                    )}
+                  </>
+                ) : (
+                  formatCurrency(item.price, settings?.currency)
+                ))}
             </span>
             {item.variants && item.variants.length > 0 && (
               <div className="flex gap-2">

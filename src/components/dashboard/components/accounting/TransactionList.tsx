@@ -19,8 +19,9 @@ interface TransactionListProps {
   onDelete: (id: string) => Promise<void>;
 }
 
-const sourceText: Record<string, string> = {
+export const sourceText: Record<string, string> = {
   orders: 'commandes',
+  inventory: 'Inventaire',
 };
 
 export function TransactionList({

@@ -1,16 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  ShoppingBag, 
-  Users, 
-  TrendingUp, 
-  Calendar,
+import {
+  Users,
+  TrendingUp,
   XCircle,
   Clock,
   Truck,
   Utensils,
   DollarSign,
-  TrendingDown
+  TrendingDown,
 } from 'lucide-react';
 import { useOrdersRealtime } from '../../../hooks/useOrdersRealtime';
 import { useTrafficStats } from '../../../hooks/useTrafficStats';
@@ -21,8 +19,8 @@ import { Tabs } from '../../../components/ui/Tabs';
 import { FeedbackAnalytics } from '../../../components/dashboard/components/analytics/FeedbackAnalytics';
 
 const tabs = [
-  { id: 'overview', label: 'Vue d\'ensemble' },
-  { id: 'feedback', label: 'Avis clients' }
+  { id: 'overview', label: "Vue d'ensemble" },
+  { id: 'feedback', label: 'Avis clients' },
 ];
 
 export function TrafficAnalytics() {
@@ -31,7 +29,7 @@ export function TrafficAnalytics() {
   const [activeTab, setActiveTab] = useState('overview');
   const [dateRange, setDateRange] = useState({
     start: new Date(new Date().setDate(1)), // First day of current month
-    end: new Date()
+    end: new Date(),
   });
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -44,23 +42,30 @@ export function TrafficAnalytics() {
       return orderDate >= dateRange.start && orderDate <= dateRange.end;
     });
 
-    const totalRevenue = filteredOrders.reduce((sum, order) => 
-      order.status === 'delivered' ? sum + order.total : sum, 0);
+    const totalRevenue = filteredOrders.reduce(
+      (sum, order) => (order.status === 'delivered' ? sum + order.total : sum),
+      0
+    );
 
-    const averageOrderValue = filteredOrders.length > 0 
-      ? totalRevenue / filteredOrders.length 
-      : 0;
+    const averageOrderValue =
+      filteredOrders.length > 0 ? totalRevenue / filteredOrders.length : 0;
 
     const canceledOrders = filteredOrders.filter(o => o.status === 'cancelled');
-    const cancelRate = filteredOrders.length > 0
-      ? (canceledOrders.length / filteredOrders.length) * 100
-      : 0;
+    const cancelRate =
+      filteredOrders.length > 0
+        ? (canceledOrders.length / filteredOrders.length) * 100
+        : 0;
 
-    const dineInOrders = filteredOrders.filter(o => o.diningOption === 'dine-in');
-    const deliveryOrders = filteredOrders.filter(o => o.diningOption === 'delivery');
-    const dineInRate = filteredOrders.length > 0
-      ? (dineInOrders.length / filteredOrders.length) * 100
-      : 0;
+    const dineInOrders = filteredOrders.filter(
+      o => o.diningOption === 'dine-in'
+    );
+    const deliveryOrders = filteredOrders.filter(
+      o => o.diningOption === 'delivery'
+    );
+    const dineInRate =
+      filteredOrders.length > 0
+        ? (dineInOrders.length / filteredOrders.length) * 100
+        : 0;
 
     const uniqueCustomers = new Set(
       filteredOrders.map(o => o.customerEmail || o.customerPhone)
@@ -74,7 +79,7 @@ export function TrafficAnalytics() {
       dineInOrders: dineInOrders.length,
       deliveryOrders: deliveryOrders.length,
       dineInRate,
-      uniqueCustomers
+      uniqueCustomers,
     };
   }, [orders, dateRange]);
 
@@ -94,11 +99,7 @@ export function TrafficAnalytics() {
         />
       </div>
 
-      <Tabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onChange={setActiveTab}
-      />
+      <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === 'overview' ? (
         <>
@@ -139,7 +140,10 @@ export function TrafficAnalytics() {
                     Panier Moyen
                   </p>
                   <p className="text-2xl font-semibold">
-                    {formatCurrency(metrics.averageOrderValue, settings?.currency)}
+                    {formatCurrency(
+                      metrics.averageOrderValue,
+                      settings?.currency
+                    )}
                   </p>
                 </div>
               </div>
@@ -159,7 +163,9 @@ export function TrafficAnalytics() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Clients Uniques
                   </p>
-                  <p className="text-2xl font-semibold">{metrics.uniqueCustomers}</p>
+                  <p className="text-2xl font-semibold">
+                    {metrics.uniqueCustomers}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -201,7 +207,9 @@ export function TrafficAnalytics() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     En Attente
                   </p>
-                  <p className="text-2xl font-semibold">{stats.pendingOrders}</p>
+                  <p className="text-2xl font-semibold">
+                    {stats.pendingOrders}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -220,7 +228,9 @@ export function TrafficAnalytics() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Livraisons
                   </p>
-                  <p className="text-2xl font-semibold">{metrics.deliveryOrders}</p>
+                  <p className="text-2xl font-semibold">
+                    {metrics.deliveryOrders}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -260,7 +270,9 @@ export function TrafficAnalytics() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Commandes Annulées
                   </p>
-                  <p className="text-2xl font-semibold">{metrics.canceledOrders}</p>
+                  <p className="text-2xl font-semibold">
+                    {metrics.canceledOrders}
+                  </p>
                 </div>
               </div>
             </motion.div>

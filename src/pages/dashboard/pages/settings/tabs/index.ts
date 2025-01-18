@@ -5,3 +5,4 @@ export * from './IntegrationSettings';
 export * from './SEOSettings';
 export * from './DataManagement';
 export * from './LegalSettings';
+export * from './TaxSettings';

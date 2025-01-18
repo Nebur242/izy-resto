@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMenu } from '../../../hooks/useMenu';
-import { useCategories } from '../../../hooks/useCategories';
-import { MenuItem, CartItem, Order } from '../../../types';
+import { CartItem, Order } from '../../../types';
 import { orderService } from '../../../services/orders/order.service';
 import { useSettings } from '../../../hooks/useSettings';
 import { MenuFilters } from '../../../components/menu/MenuFilters';
@@ -10,13 +9,15 @@ import { POSMenuGrid } from '../../../components/dashboard/components/pos/POSMen
 import { POSCartSidebar } from '../../../components/dashboard/components/pos/POSCartSidebar';
 import { OrderConfirmationModal } from '../../../components/pos/OrderConfirmationModal';
 import toast from 'react-hot-toast';
+import { useServerCart } from '../../../context/ServerCartContext';
+import { useStaffCheck } from '../../../hooks/useStaffCheck';
 
 export function POS() {
   const { items } = useMenu();
   const { settings } = useSettings();
+  const { staffData } = useStaffCheck();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [tableNumber, setTableNumber] = useState('');
   const [amountPaid, setAmountPaid] = useState(0);
   const [customerInfo, setCustomerInfo] = useState<{
@@ -28,7 +29,17 @@ export function POS() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const {
+    total,
+    addToCart,
+    updateQuantity,
+    cart,
+    clearCart,
+    taxTotal,
+    taxes,
+    tip,
+    subtotal,
+  } = useServerCart();
 
   const filteredItems = items.filter(item => {
     const matchesSearch = item.name
@@ -39,64 +50,9 @@ export function POS() {
     return matchesSearch && matchesCategory;
   });
 
-  const addToCart = (item: MenuItem & { quantity?: number }) => {
-    setCart(currentCart => {
-      const existingItem = currentCart.find(
-        cartItem => cartItem.id === item.id
-      );
-
-      if (existingItem) {
-        const newQuantity = existingItem.quantity + (item.quantity || 1);
-
-        if (item.stockQuantity && newQuantity > item.stockQuantity) {
-          toast.error(
-            `Stock insuffisant. Maximum disponible: ${item.stockQuantity}`
-          );
-          return currentCart;
-        }
-
-        const updatedCart = currentCart.map(cartItem =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: newQuantity }
-            : cartItem
-        );
-        return updatedCart;
-      }
-
-      if (item.stockQuantity && (item.quantity || 1) > item.stockQuantity) {
-        return currentCart;
-      }
-
-      const newItem = { ...item, quantity: item.quantity || 1 };
-      return [...currentCart, newItem];
-    });
-  };
-
-  const updateQuantity = (itemId: string, delta: number) => {
-    setCart(currentCart => {
-      const item = currentCart.find(i => i.id === itemId);
-
-      if (!item) return currentCart;
-
-      const newQuantity = item.quantity + delta;
-
-      if (item.stockQuantity && newQuantity > item.stockQuantity) {
-        return currentCart;
-      }
-
-      if (newQuantity < 1) {
-        return currentCart.filter(item => item.id !== itemId);
-      }
-
-      return currentCart.map(item =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      );
-    });
-  };
-
-  const removeFromCart = (itemId: string) => {
-    setCart(currentCart => currentCart.filter(item => item.id !== itemId));
-  };
+  // const removeFromCart = (itemId: string) => {
+  //   setCart(currentCart => currentCart.filter(item => item.id !== itemId));
+  // };
 
   const handleQuickAmount = (amount: number) => {
     setAmountPaid(amount);
@@ -120,15 +76,31 @@ export function POS() {
         tableNumber,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        paymentMethod: null,
+        paymentMethod: {
+          name: 'Paiement à la caisse',
+          id: 'Paiement à la caisse',
+          active: true,
+          createdAt: new Date().toDateString(),
+          updatedAt: new Date().toDateString(),
+        },
+        subtotal,
+        taxes,
+        taxTotal,
+        amountPaid,
+        change: amountPaid - total,
+        tip,
+        servedBy: staffData?.name || 'Le gérant',
       };
 
-      const orderId = await orderService.createOrder(orderData);
+      const orderId = await orderService.createOrder({
+        ...orderData,
+        taxRates: settings?.taxes.rates || [],
+      });
       const createdOrder = await orderService.getOrderById(orderId);
 
       if (createdOrder) {
         setCompletedOrder(createdOrder);
-        setCart([]);
+        clearCart();
         setTableNumber('');
         setAmountPaid(0);
         setCustomerInfo({});
@@ -181,7 +153,7 @@ export function POS() {
                 setAmountPaid={setAmountPaid}
                 total={total}
                 onUpdateQuantity={updateQuantity}
-                onRemoveItem={removeFromCart}
+                // onRemoveItem={removeFromCart}
                 onQuickAmount={handleQuickAmount}
                 onCheckout={handleCheckout}
                 isSubmitting={isSubmitting}
@@ -202,7 +174,7 @@ export function POS() {
             setAmountPaid={setAmountPaid}
             total={total}
             onUpdateQuantity={updateQuantity}
-            onRemoveItem={removeFromCart}
+            // onRemoveItem={removeFromCart}
             onQuickAmount={handleQuickAmount}
             onCheckout={handleCheckout}
             isSubmitting={isSubmitting}

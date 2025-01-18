@@ -164,8 +164,8 @@ export function MenuManagement() {
         isOpen={deleteConfirmation.isOpen}
         onClose={() => setDeleteConfirmation({ isOpen: false })}
         onConfirm={confirmDelete}
-        title={t('menu.deleteConfirmTitle')}
-        message={t('menu.deleteConfirmMessage')}
+        title="Supprimer le produit"
+        message="Voulez-vous vraiment supprimer ce produit ?"
       />
     </div>
   );

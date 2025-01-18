@@ -17,7 +17,7 @@ export function MenuFilters({
 
   const activeCategoryName =
     activeCategory === 'all'
-      ? 'Tous les plats'
+      ? 'Menu principal'
       : categories.find(c => c.id === activeCategory)?.name || 'Sélectionner';
 
   if (isLoading) {
@@ -63,7 +63,7 @@ export function MenuFilters({
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
-            Tous les plats
+            Menu principal
           </motion.button>
 
           {categories.map(category => (
@@ -113,7 +113,7 @@ export function MenuFilters({
                 }
               `}
             >
-              Tous les plats
+              Menu principal
             </button>
 
             {categories.map(category => (

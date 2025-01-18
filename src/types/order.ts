@@ -1,5 +1,18 @@
 import { CartItem } from './cart';
 import { PaymentMethod } from './payment';
+import { TaxRate } from './settings';
+
+export interface OrderTax {
+  id: string;
+  name: string;
+  rate: number;
+  amount: number;
+}
+
+export interface OrderTip {
+  amount: number;
+  percentage?: number;
+}
 
 export type OrderStatus = 'pending' | 'preparing' | 'delivered' | 'cancelled';
 
@@ -25,4 +38,11 @@ export interface Order {
   rating?: OrderRating;
   createdAt: any;
   updatedAt: any;
+  subtotal: number; // Price before tax and tip
+  taxes: OrderTax[]; // Array of applied taxes
+  taxTotal: number; // Total tax amount
+  tip: OrderTip | null;
+  amountPaid?: number;
+  change?: number;
+  servedBy?: string;
 }

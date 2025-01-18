@@ -146,8 +146,11 @@ export function Overview() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm"
         >
-          <h3 className="text-lg font-semibold mb-4">{t('customers.top')}</h3>
-          <PaginatedCustomerList orders={filteredOrders} itemsPerPage={5} />
+          <h3 className="text-lg font-semibold mb-4">Meilleurs clients</h3>
+          <PaginatedCustomerList
+            orders={filteredOrders.filter(order => !!order.customerPhone)}
+            itemsPerPage={5}
+          />
         </motion.div>
       </div>
     </div>

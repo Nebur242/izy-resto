@@ -1,64 +1,86 @@
-import React from 'react';
-import { CartItem as CartItemType } from '../../types';
+import { Receipt } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
+import { useSettings } from '../../hooks/useSettings';
+import { formatCurrency } from '../../utils/currency';
+import { formatTaxRate } from '../../utils/tax';
 
-interface CartSummaryProps {
-  items: CartItemType[];
-  total: number;
-}
-
-export function CartSummary({ items, total }: { items: CartItemType[]; total: number }) {
+export function CartSummary() {
   const { settings } = useSettings();
-
-  const formatPrice = (price: number) => {
-    switch (settings?.currency) {
-      case 'EUR':
-        return `€${price.toFixed(2)}`;
-      case 'XOF':
-        return `${price.toFixed(0)} FCFA`;
-      default:
-        return `$${price.toFixed(2)}`;
-    }
-  };
+  const { subtotal, taxes, taxTotal, tip, total, setTipPercentage } = useCart();
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700/50 rounded-xl p-6 space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-        Order Summary
-      </h3>
-      
-      <div className="space-y-3">
-        {items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs">
-                {item.quantity}
-              </span>
-              <span className="text-gray-600 dark:text-gray-300">{item.name}</span>
-            </div>
-            <span className="font-medium text-gray-900 dark:text-white">
-              {formatPrice(item.price * item.quantity)}
-            </span>
-          </div>
-        ))}
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <Receipt className="w-5 h-5 text-gray-500" />
+        <h3 className="font-medium">Résumé de la Commande</h3>
       </div>
 
-      <div className="border-t border-gray-200 dark:border-gray-600 pt-4 mt-4">
-        <div className="flex justify-between items-center">
-          <span className="text-gray-600 dark:text-gray-300">Subtotal</span>
-          <span className="font-medium text-gray-900 dark:text-white">{formatPrice(total)}</span>
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+          <span>Sous-total</span>
+          <span>{formatCurrency(subtotal, settings?.currency)}</span>
         </div>
-        <div className="flex justify-between items-center mt-2">
-          <span className="text-gray-600 dark:text-gray-300">Taxes</span>
-          <span className="font-medium text-gray-900 dark:text-white">{formatPrice(total * 0.2)}</span>
-        </div>
-        <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-          <span className="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
-          <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-            {formatPrice(total * 1.2)}
+
+        {/* Taxes */}
+        {taxes.map(tax => (
+          <div
+            key={tax.id}
+            className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+          >
+            <span>
+              {tax.name} ({formatTaxRate(tax.rate)})
+            </span>
+            <span>{formatCurrency(tax.amount, settings?.currency)}</span>
+          </div>
+        ))}
+
+        {/* Tips */}
+        {settings?.tips.enabled && (
+          <div className="pt-2 border-t dark:border-gray-700">
+            <div className="flex flex-wrap gap-2 mb-2">
+              {settings.tips.defaultPercentages.map(Number).map(percentage => (
+                <button
+                  key={percentage}
+                  onClick={() => setTipPercentage(percentage)}
+                  className={`
+                    px-3 py-1 text-sm rounded-full transition-colors
+                    ${
+                      tip?.percentage === percentage
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                    }
+                  `}
+                >
+                  {percentage}%
+                </button>
+              ))}
+              <button
+                onClick={() => setTipPercentage(null)}
+                className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+              >
+                Aucun
+              </button>
+            </div>
+
+            {tip && (
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                <span>
+                  {settings.tips.label} ({tip.percentage}%)
+                </span>
+                <span>{formatCurrency(tip.amount, settings?.currency)}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Total */}
+        <div className="flex justify-between text-lg font-semibold border-t dark:border-gray-700 pt-2">
+          <span>Total</span>
+          <span className="text-blue-600 dark:text-blue-400">
+            {formatCurrency(total, settings?.currency)}
           </span>
         </div>
       </div>
     </div>
   );
 }
-

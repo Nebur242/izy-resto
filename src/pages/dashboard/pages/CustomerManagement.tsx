@@ -11,19 +11,23 @@ const ITEMS_PER_PAGE = 10;
 export function CustomerManagement() {
   const { orders } = useOrdersRealtime();
   const customers = useCustomers(orders);
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [sortBy, setSortBy] = useState<'spent' | 'orders'>('spent');
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
+    null
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredCustomers = useMemo(() => {
     return customers
-      .filter(customer => 
-        customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.phone.includes(searchTerm)
+      .filter(custmer => !!custmer.phone)
+      .filter(
+        customer =>
+          customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.phone.includes(searchTerm)
       )
       .sort((a, b) => {
         const multiplier = sortOrder === 'asc' ? 1 : -1;
@@ -49,12 +53,14 @@ export function CustomerManagement() {
   const customerOrders = useMemo(() => {
     if (!selectedCustomerId) return [];
     return orders
-      .filter(order => 
-        order.customerEmail === selectedCustomerId || 
-        order.customerPhone === selectedCustomerId
+      .filter(
+        order =>
+          order.customerEmail === selectedCustomerId ||
+          order.customerPhone === selectedCustomerId
       )
-      .sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
   }, [selectedCustomerId, orders]);
 
@@ -92,11 +98,15 @@ export function CustomerManagement() {
       )}
 
       <CustomerDetailsModal
-        customer={selectedCustomer ? {
-          name: selectedCustomer.name,
-          email: selectedCustomer.email,
-          phone: selectedCustomer.phone
-        } : null}
+        customer={
+          selectedCustomer
+            ? {
+                name: selectedCustomer.name,
+                email: selectedCustomer.email,
+                phone: selectedCustomer.phone,
+              }
+            : null
+        }
         orders={customerOrders}
         onClose={() => setSelectedCustomerId(null)}
       />

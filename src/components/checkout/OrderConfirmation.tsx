@@ -10,6 +10,7 @@ import {
   Check,
   ExternalLink,
   X,
+  AlertCircle,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useSettings } from '../../hooks/useSettings';
@@ -24,6 +25,7 @@ import { getOrderByRef } from '../../services/payments/paytech.service';
 import { StripePayment } from './StripePayment';
 import { getCurrencyObject } from '../../constants/defaultSettings';
 import { CinetPayPayment } from './CinetPayPayment';
+import { formatTaxRate } from '../../utils/tax';
 
 interface OrderConfirmationProps {
   customerData: {
@@ -34,7 +36,7 @@ interface OrderConfirmationProps {
     tableNumber?: string;
     diningOption: 'delivery' | 'dine-in';
   };
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   onBack: () => void;
   showPaymentMethods?: boolean;
   setSelectedPaymentMethod: React.Dispatch<
@@ -50,7 +52,8 @@ export function OrderConfirmation({
   setSelectedPaymentMethod,
 }: OrderConfirmationProps) {
   const { settings } = useSettings();
-  const { cart, total } = useCart();
+  const { subtotal, taxes, tip, total, cart, setTipPercentage } = useCart();
+
   const { paymentMethods } = usePayments();
   const [selectedPayment, setSelectedPayment] = useState(
     paymentMethods[0]?.id || ''
@@ -58,6 +61,7 @@ export function OrderConfirmation({
   const [showQRCode, setShowQRCode] = useState(false);
   const [hasPaid, setHasPaid] = useState(false);
   const [hasClickedPaymentLink, setHasClickedPaymentLink] = useState(false);
+  const [isConfirmingOrder, setIsConfirmingOrder] = useState(false);
 
   const selectedPaymentMethod = paymentMethods.find(
     method => method.id === selectedPayment
@@ -65,6 +69,7 @@ export function OrderConfirmation({
 
   const getPaymentUrl = () => {
     if (!selectedPaymentMethod?.url) return '';
+    console.log(`${selectedPaymentMethod.url}?amount=${total}`);
     return selectedPaymentMethod.name?.toLowerCase() === 'wave'
       ? `${selectedPaymentMethod.url}?amount=${total}`
       : '#';
@@ -74,20 +79,34 @@ export function OrderConfirmation({
     ? getCurrencyObject(settings.currency!)
     : null;
 
-  const handleConfirm = () => {
-    if (selectedPaymentMethod?.url && !hasPaid) {
-      // Open payment URL in new tab
-      window.open(getPaymentUrl(), '_blank', 'noopener,noreferrer');
-      setHasClickedPaymentLink(true);
-      return;
-    }
+  const handleConfirm = async () => {
+    try {
+      if (selectedPaymentMethod?.url && !hasPaid) {
+        // Open payment URL in new tab
+        window.open(getPaymentUrl(), '_blank', 'noopener,noreferrer');
+        setHasClickedPaymentLink(true);
+        return;
+      }
 
-    if (selectedPaymentMethod?.qrCode && !hasPaid) {
-      setShowQRCode(true);
-      return;
-    }
+      if (selectedPaymentMethod?.qrCode && !hasPaid) {
+        setShowQRCode(true);
+        return;
+      }
 
-    onConfirm();
+      setIsConfirmingOrder(true);
+      await onConfirm();
+    } catch (error) {
+      setIsConfirmingOrder(false);
+    }
+  };
+
+  const handleOrderConfirm = async () => {
+    try {
+      setIsConfirmingOrder(true);
+      await onConfirm();
+    } catch (error) {
+      setIsConfirmingOrder(false);
+    }
   };
 
   useEffect(() => {
@@ -235,12 +254,77 @@ export function OrderConfirmation({
               </p>
             </div>
           ))}
-          <div className="border-t dark:border-gray-700 pt-3 mt-3">
-            <div className="flex justify-between font-bold">
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+              <span>Sous-total</span>
+              <span>{formatCurrency(subtotal, settings?.currency)}</span>
+            </div>
+
+            {/* Taxes */}
+            {taxes.map(tax => (
+              <div
+                key={tax.id}
+                className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+              >
+                <span>
+                  {tax.name} ({formatTaxRate(tax.rate)})
+                </span>
+                <span>{formatCurrency(tax.amount, settings?.currency)}</span>
+              </div>
+            ))}
+
+            {/* Tips */}
+            {settings?.tips.enabled && (
+              <div className="pt-2 border-t dark:border-gray-700">
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {settings?.tips?.defaultPercentages
+                    .map(Number)
+                    ?.map(percentage => (
+                      <button
+                        key={percentage}
+                        onClick={() => setTipPercentage(percentage)}
+                        className={`
+                              px-3 py-1 text-sm rounded-full transition-colors
+                              ${
+                                tip?.percentage === percentage
+                                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+                                  : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                              }
+                            `}
+                      >
+                        {percentage}%
+                      </button>
+                    ))}
+                  <button
+                    onClick={() => setTipPercentage(null)}
+                    className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                  >
+                    Aucun
+                  </button>
+                </div>
+
+                {tip && (
+                  <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                    <span>
+                      {settings.tips.label} ({tip.percentage}%)
+                    </span>
+                    <span>
+                      {formatCurrency(tip.amount, settings?.currency)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Total */}
+            <div className="flex justify-between text-lg font-semibold border-t dark:border-gray-700 pt-2">
               <span>Total</span>
-              <span>{formatCurrency(total, settings?.currency)}</span>
+              <span className="text-blue-600 dark:text-blue-400">
+                {formatCurrency(total, settings?.currency)}
+              </span>
             </div>
           </div>
+
           {selectedPaymentMethod?.instruction && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -385,11 +469,7 @@ export function OrderConfirmation({
       )}
 
       {/* Actions */}
-      <div className="flex justify-end gap-4">
-        <Button variant="secondary" onClick={onBack}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour
-        </Button>
+      <div className="flex flex-col justify-end gap-4">
         {(!['paytech', 'stripe', 'cinetpay'].includes(
           selectedPaymentMethod?.name.toLowerCase() || ''
         ) ||
@@ -400,7 +480,8 @@ export function OrderConfirmation({
               (showPaymentMethods && !selectedPayment) ||
               (customerData.diningOption === 'dine-in' &&
                 settings?.paymentOnDineInActivated &&
-                !selectedPayment)
+                !selectedPayment) ||
+              isConfirmingOrder
             }
             className={`
             bg-gradient-to-r from-blue-600 to-indigo-600
@@ -424,7 +505,7 @@ export function OrderConfirmation({
                 apiSecret: `${selectedPaymentMethod.apiSecret}`,
               }}
               settings={settings as any}
-              amount={total}
+              amount={Math.round(total)}
             />
           )}
 
@@ -435,13 +516,13 @@ export function OrderConfirmation({
               apiSecret={selectedPaymentMethod.apiSecret!}
               amount={total}
               currency={settings.currency.toLowerCase()}
-              onConfirm={onConfirm}
+              onConfirm={handleOrderConfirm}
             />
           )}
         {selectedPaymentMethod?.name.toLowerCase() === 'paytech' &&
           settings?.currency && (
             <PayTechPaymentButton
-              onConfirm={onConfirm}
+              onConfirm={handleOrderConfirm}
               total={total}
               cart={cart}
               paymentMethod={{
@@ -451,6 +532,11 @@ export function OrderConfirmation({
               currency={settings.currency}
             />
           )}
+
+        <Button variant="secondary" onClick={onBack}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour
+        </Button>
       </div>
 
       {/* QR Code Modal */}
@@ -487,7 +573,7 @@ const PayTechModal = ({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         onClick={e => e.stopPropagation()}
-        className="relative w-full max-w-2xl aspect-square bg-white dark:bg-gray-800 rounded-2xl overflow-hidden min-h-[600px]"
+        className="relative aspect-square bg-white dark:bg-gray-800 rounded-2xl overflow-hidden min-h-[600px]"
       >
         <button
           onClick={onClose}
@@ -519,14 +605,20 @@ const PayTechPaymentButton = ({
   currency: string;
   onConfirm: () => void;
 }) => {
-  const { isPaying, paymentSucceeded, paymentResponse, requestPayment, ref } =
-    usePaytech({
-      paymentMethod,
-      total,
-      cart,
-      onConfirm,
-      currency,
-    });
+  const {
+    isPaying,
+    paymentSucceeded,
+    paymentResponse,
+    requestPayment,
+    ref,
+    paymentError,
+  } = usePaytech({
+    paymentMethod,
+    total,
+    cart,
+    onConfirm,
+    currency,
+  });
 
   const [isClosed, setIsClosed] = useState(true);
 
@@ -552,6 +644,20 @@ const PayTechPaymentButton = ({
           />
         )}
       </AnimatePresence>
+      {paymentError && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-900/20"
+        >
+          <div className="flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-red-500" />
+            <p className="text-sm font-medium text-red-800 dark:text-red-400">
+              {paymentError}
+            </p>
+          </div>
+        </motion.div>
+      )}
       <Button
         disabled={isPaying}
         onClick={

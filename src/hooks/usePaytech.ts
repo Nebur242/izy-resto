@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
 import { CartItem } from '../types';
 import { v4 as uuidv4 } from 'uuid';
@@ -88,6 +88,16 @@ export const usePaytech = ({
       setPaymentResponse(response.data);
     } catch (error: any) {
       console.log(error);
+
+      if (error instanceof AxiosError) {
+        setPaymentError(
+          error.response?.data?.error?.length > 0
+            ? error.response?.data?.error[0]
+            : 'Une erreur est survenue...'
+        );
+        return;
+      }
+
       setPaymentSucceeded(false);
       setPaymentError(error?.message || 'Erreur de paiement');
     } finally {

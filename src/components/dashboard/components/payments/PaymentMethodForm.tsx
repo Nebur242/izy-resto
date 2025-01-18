@@ -174,7 +174,7 @@ export function PaymentMethodForm({
                       methodType === 'Wave' ? 'Le lien Wave est requis' : false,
                   })}
                   className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
-                  placeholder="https://pay.wave.com/m/xxxxxxxxxxxxxx/c/sn"
+                  placeholder="https://pay.wave.com/m/xxxxxxxxxxxxxx/c/sn/"
                 />
                 <small className="text-red-800 dark:text-red-400">
                   Coller votre lien de paiement wave marchand
@@ -240,7 +240,7 @@ export function PaymentMethodForm({
                       required: 'API key obligatoire',
                     })}
                     className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
-                    placeholder="pk_test_VePHdqKTYQjKNInc7u56JBrQ"
+                    placeholder="pk_live_VePHdqKTYQjKNInc7u56JBrQ"
                   />
                   {errors.apiKey && (
                     <p className="mt-1 text-sm text-red-500">
@@ -258,7 +258,7 @@ export function PaymentMethodForm({
                       required: 'API key obligatoire',
                     })}
                     className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
-                    placeholder="sk_test_VePHdqKTYQjKNInc7u56JBrQ"
+                    placeholder="sk_live_VePHdqKTYQjKNInc7u56JBrQ"
                   />
                   {errors.apiKey && (
                     <p className="mt-1 text-sm text-red-500">
@@ -291,7 +291,7 @@ export function PaymentMethodForm({
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">
-                    SECRET KEY
+                    API KEY
                   </label>
                   <input
                     type="text"

@@ -67,6 +67,7 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
 
           {/* Order Timeline */}
           <OrderTimeline
+            order={order}
             status={order.status}
             createdAt={order.createdAt}
             updatedAt={order.updatedAt}
@@ -107,7 +108,7 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
           </div>
           <Button
             onClick={handlePrint}
-            disabled={isPrinting}
+            disabled={isPrinting || order.status !== 'delivered'}
             className="bg-white/90 hover:bg-white text-current px-4 py-2 rounded w-full"
           >
             <Printer className="h-4 w-4 mr-2" />

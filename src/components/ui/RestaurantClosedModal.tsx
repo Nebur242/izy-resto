@@ -7,13 +7,13 @@ import { Button } from './Button';
 import { useRestaurantStatus } from '../../hooks/useRestaurantStatus';
 
 const DAYS = [
-  'sunday',
   'monday',
   'tuesday',
   'wednesday',
   'thursday',
   'friday',
   'saturday',
+  'sunday',
 ] as const;
 
 const FRENCH_DAYS: Record<string, string> = {
@@ -32,7 +32,7 @@ export function RestaurantClosedModal() {
   const [nextOpenTime] = useState<string | null>(null);
   const location = useLocation();
 
-  const { isOpen: isRestaurantOpen } = useRestaurantStatus();
+  const { isOpen: isRestaurantOpen, isHoliday } = useRestaurantStatus();
 
   // Check if we're on a protected route
   const isProtectedRoute =
@@ -40,7 +40,7 @@ export function RestaurantClosedModal() {
     location.pathname === '/login';
 
   // Early return after hooks
-  if (isRestaurantOpen || isProtectedRoute) return null;
+  if (isRestaurantOpen || isProtectedRoute || isHoliday) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -70,7 +70,7 @@ export function RestaurantClosedModal() {
               Horaires d'ouverture :
             </div>
 
-            <div className="space-y-1 text-sm">
+            <div className="space-y-1 text-sm px-10">
               {DAYS.map(day => {
                 const hours = settings?.openingHours?.[day];
                 return (

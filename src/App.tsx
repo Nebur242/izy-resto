@@ -7,6 +7,8 @@ import { ApiProvider } from './context/ApiContext';
 import { useSEO } from './hooks/useSEO';
 import { RestaurantClosedModal } from './components/ui/RestaurantClosedModal';
 import { CookieBanner } from './components/ui/CookieBanner';
+import { HolidayClosureModal } from './components/ui/HolidayClosureModal';
+import { ServerCartProvider } from './context/ServerCartContext';
 
 export default function App() {
   // Add SEO hook to update title and favicon
@@ -17,11 +19,14 @@ export default function App() {
       <AuthProvider>
         <ApiProvider>
           <CartProvider>
-            <OrderProvider>
-              <AppRoutes />
-              <RestaurantClosedModal />
-              <CookieBanner />
-            </OrderProvider>
+            <ServerCartProvider>
+              <OrderProvider>
+                <AppRoutes />
+                <RestaurantClosedModal />
+                <HolidayClosureModal />
+                <CookieBanner />
+              </OrderProvider>
+            </ServerCartProvider>
           </CartProvider>
         </ApiProvider>
       </AuthProvider>

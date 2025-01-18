@@ -3,6 +3,7 @@ import { Phone, Mail, MapPin, Utensils, Truck } from 'lucide-react';
 import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
+import { formatTaxRate } from '../../../utils/tax';
 
 interface OrderTrackingDetailsProps {
   order: Order;
@@ -17,10 +18,13 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Détails client</h2>
         <div className="space-y-3">
-          <p className="flex items-center text-gray-600 dark:text-gray-400">
-            <Phone className="w-4 h-4 mr-2" />
-            {order.customerPhone}
-          </p>
+          {order.customerPhone && (
+            <p className="flex items-center text-gray-600 dark:text-gray-400">
+              <Phone className="w-4 h-4 mr-2" />
+              {order.customerPhone}
+            </p>
+          )}
+
           {order.customerEmail && (
             <p className="flex items-center text-gray-600 dark:text-gray-400">
               <Mail className="w-4 h-4 mr-2" />
@@ -53,12 +57,13 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Articles commandés</h2>
         <div className="space-y-3">
-          {order.items.map((item) => (
+          {order.items.map(item => (
             <div key={item.id} className="flex justify-between items-center">
               <div>
                 <p className="font-medium">{item.name}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {formatCurrency(item.price, settings?.currency)} × {item.quantity}
+                  {formatCurrency(item.price, settings?.currency)} ×{' '}
+                  {item.quantity}
                 </p>
               </div>
               <p className="font-medium">
@@ -66,12 +71,46 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
               </p>
             </div>
           ))}
-          <div className="border-t dark:border-gray-700 pt-3 mt-3">
-            <div className="flex justify-between font-bold">
-              <span>Total</span>
-              <span>{formatCurrency(order.total, settings?.currency)}</span>
+          {(!!order.subtotal || !!order?.taxes || !!order?.tip?.percentage) && (
+            <div className="space-y-2  pt-4 mt-4 border-t border-current/10">
+              {order.subtotal && (
+                <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                  <span>Sous-total</span>
+                  <span>
+                    {formatCurrency(order.subtotal, settings?.currency)}
+                  </span>
+                </div>
+              )}
+
+              {(order?.taxes || []).map((tax, index) => (
+                <div
+                  key={tax.id}
+                  className="flex justify-between text-sm text-gray-800 dark:text-gray-400"
+                >
+                  <span>
+                    {tax.name} ({formatTaxRate(tax.rate)})
+                  </span>
+                  <span>{formatCurrency(tax.amount, settings?.currency)}</span>
+                </div>
+              ))}
+              {order?.tip?.percentage && (
+                <div
+                  key={order.tip.amount}
+                  className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+                >
+                  <span>Pourboire ({order.tip.percentage}%)</span>
+                  <span>
+                    {formatCurrency(order.tip.amount, settings?.currency)}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                <span>Total</span>
+                <span>{formatCurrency(order.total, settings?.currency)}</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

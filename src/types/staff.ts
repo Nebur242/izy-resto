@@ -1,5 +1,3 @@
-import { DashboardMenuItem } from './dashboard';
-
 export interface StaffMember {
   id: string;
   email: string;

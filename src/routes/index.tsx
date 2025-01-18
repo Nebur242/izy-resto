@@ -1,19 +1,14 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import {
-  LandingModern,
-  LandingMinimal,
-  LandingGrid,
-} from '../components/landing';
 import { LoginPage } from '../pages/auth/LoginPage';
 import OrderTracking from '../pages/OrderTracking'; // Updated import
 import { OrderReceipt } from '../pages/OrderReceipt';
 import { LoadingScreen } from '../components/ui/LoadingScreen';
-import { useSettings } from '../hooks/useSettings';
 import { AuthGuard } from '../components/auth/AuthGuard';
 import PaymentFailure from '../pages/paytech/FailedPage';
 import PaymentSuccess from '../pages/paytech/SuccessPage';
 import { TermsOfService } from '../pages/TermsOfService';
+import { Home } from '../pages/home';
 
 // Lazy load the Dashboard component
 const Dashboard = React.lazy(() =>
@@ -26,24 +21,12 @@ const Dashboard = React.lazy(() =>
 );
 
 export function AppRoutes() {
-  const { settings } = useSettings();
-
-  // Select landing component based on settings
-  const getLandingComponent = () => {
-    switch (settings?.activeLanding) {
-      case 'minimal':
-        return <LandingMinimal />;
-      case 'grid':
-        return <LandingGrid />;
-      default:
-        return <LandingModern />;
-    }
-  };
+  // const { settings } = useSettings();
 
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={getLandingComponent()} />
+      <Route path="/" element={<Home />} />
       <Route path="/order/:orderId" element={<OrderTracking />} />
       <Route path="/receipt" element={<OrderReceipt />} />
       <Route path="/paytech/success" element={<PaymentSuccess />} />

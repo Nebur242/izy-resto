@@ -5,9 +5,10 @@ import { useSettings } from '../../hooks/useSettings';
 import { CartItem } from './CartItem';
 import { CheckoutForm } from '../checkout/CheckoutForm';
 import { formatCurrency } from '../../utils/currency';
+import { formatTaxRate } from '../../utils/tax';
 
 export function Cart() {
-  const { cart, total } = useCart();
+  const { cart, total, taxes, subtotal } = useCart();
   const { settings } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -71,23 +72,47 @@ export function Cart() {
               )}
             </div>
 
-            {/* Footer */}
+            {/* Footer - Inherits parent width */}
             {!isCheckingOut && cart.length > 0 && (
               <div className="p-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Total Panier
-                  </span>
-                  <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                    {formatCurrency(total, settings?.currency)}
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                    <span>Sous-total</span>
+                    <span>{formatCurrency(subtotal, settings?.currency)}</span>
+                  </div>
+
+                  {taxes.map((tax, index) => (
+                    <div
+                      key={tax.id}
+                      className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+                    >
+                      <span>
+                        {tax.name} ({formatTaxRate(tax.rate)})
+                      </span>
+                      <span>
+                        {formatCurrency(tax.amount, settings?.currency)}
+                      </span>
+                    </div>
+                  ))}
+
+                  <div className="pt-2 border-t dark:border-gray-700 mt-2">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-gray-800 dark:text-gray-200">
+                        Total Panier
+                      </span>
+                      <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                        {formatCurrency(total, settings?.currency)}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setIsCheckingOut(true)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 
+                                 hover:to-indigo-500 text-white font-medium px-6 py-3 rounded-xl shadow-md"
+                    >
+                      Passer la commande
+                    </button>
+                  </div>
                 </div>
-                <button
-                  onClick={() => setIsCheckingOut(true)}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium px-6 py-3 rounded-xl transition-colors duration-200"
-                >
-                  Passer la commande
-                </button>
               </div>
             )}
           </div>

@@ -1,11 +1,11 @@
-
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, Trash2,ShoppingBag } from 'lucide-react';
+import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 import { CartItem } from '../../types';
 import { Button } from '../ui/Button';
 import { useSettings } from '../../hooks/useSettings';
 import { formatCurrency } from '../../utils/currency';
+import { useServerCart } from '../../context/ServerCartContext';
 
 interface CartItemListProps {
   items: CartItem[];
@@ -13,10 +13,14 @@ interface CartItemListProps {
   onRemoveItem: (itemId: string) => void;
 }
 
-export function CartItemList({ items, onUpdateQuantity, onRemoveItem }: CartItemListProps) {
+export function CartItemList() {
   const { settings } = useSettings();
 
-  if (items.length === 0) {
+  const { cart, updateQuantity, removeFromCart } = useServerCart();
+
+  // console.log(cart);
+
+  if (cart.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400">
         <ShoppingBag className="w-12 h-12 mb-2 opacity-50" />
@@ -27,7 +31,7 @@ export function CartItemList({ items, onUpdateQuantity, onRemoveItem }: CartItem
 
   return (
     <AnimatePresence mode="popLayout">
-      {items.map(item => (
+      {cart.map(item => (
         <motion.div
           key={item.id}
           layout
@@ -50,19 +54,21 @@ export function CartItemList({ items, onUpdateQuantity, onRemoveItem }: CartItem
             <h3 className="font-medium text-gray-900 dark:text-white truncate">
               {item.name}
             </h3>
-            
+
             {/* Variants if any */}
-            {item.selectedVariants?.length > 0 && (
+            {item?.selectedVariants?.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-1">
-                {item.selectedVariants.map((variant, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs
+                {item.selectedVariants.map(
+                  (variant: string, index: React.Key | null | undefined) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-xs
                              bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                  >
-                    {variant.split(': ')[1]}
-                  </span>
-                ))}
+                    >
+                      {variant.split(': ')[1]}
+                    </span>
+                  )
+                )}
               </div>
             )}
 
@@ -77,22 +83,22 @@ export function CartItemList({ items, onUpdateQuantity, onRemoveItem }: CartItem
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => onUpdateQuantity(item.id, -1)}
+              onClick={() => updateQuantity(item.id, item.quantity - 1)}
               className="h-8 w-8 p-0 rounded-full"
             >
               <Minus className="w-4 h-4" />
             </Button>
-            
-            <span className="w-8 text-center font-medium">
-              {item.quantity}
-            </span>
-            
+
+            <span className="w-8 text-center font-medium">{item.quantity}</span>
+
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => onUpdateQuantity(item.id, 1)}
+              onClick={() => updateQuantity(item.id, item.quantity + 1)}
               className="h-8 w-8 p-0 rounded-full"
-              disabled={item.stockQuantity && item.quantity >= item.stockQuantity}
+              disabled={Boolean(
+                item.stockQuantity && item.quantity >= item.stockQuantity
+              )}
             >
               <Plus className="w-4 h-4" />
             </Button>
@@ -100,7 +106,7 @@ export function CartItemList({ items, onUpdateQuantity, onRemoveItem }: CartItem
             <Button
               variant="danger"
               size="sm"
-              onClick={() => onRemoveItem(item.id)}
+              onClick={() => removeFromCart(item.id)}
               className="h-8 w-8 p-0 rounded-full ml-2"
             >
               <Trash2 className="w-4 h-4" />

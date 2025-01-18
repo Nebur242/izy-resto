@@ -1,6 +1,14 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Phone, Calendar, CreditCard, ShoppingBag, TrendingUp } from 'lucide-react';
+import {
+  X,
+  Mail,
+  Phone,
+  Calendar,
+  CreditCard,
+  ShoppingBag,
+  TrendingUp,
+} from 'lucide-react';
 import { Order } from '../../types';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useSettings } from '../../hooks/useSettings';
@@ -18,7 +26,11 @@ interface CustomerDetailsModalProps {
   onClose: () => void;
 }
 
-export function CustomerDetailsModal({ customer, orders, onClose }: CustomerDetailsModalProps) {
+export function CustomerDetailsModal({
+  customer,
+  orders,
+  onClose,
+}: CustomerDetailsModalProps) {
   const { t } = useTranslation();
   const { settings } = useSettings();
 
@@ -35,7 +47,7 @@ export function CustomerDetailsModal({ customer, orders, onClose }: CustomerDeta
       averageOrder,
       ordersCount: orders.length,
       firstOrder,
-      lastOrder
+      lastOrder,
     };
   }, [orders]);
 
@@ -52,9 +64,7 @@ export function CustomerDetailsModal({ customer, orders, onClose }: CustomerDeta
         {/* Header - Fixed */}
         <div className="flex items-start justify-between p-4 border-b dark:border-gray-700">
           <div className="space-y-1">
-            <h2 className="text-xl font-bold">
-              {customer.name}
-            </h2>
+            <h2 className="text-xl font-bold">{customer.name}</h2>
             <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               {customer.email && (
                 <span className="flex items-center">
@@ -120,7 +130,7 @@ export function CustomerDetailsModal({ customer, orders, onClose }: CustomerDeta
           {/* Order History */}
           <div>
             <h3 className="text-sm font-medium mb-3 text-gray-900 dark:text-white">
-              {t('customers.orderHistory')}
+              Historique des clients
             </h3>
             <div className="space-y-2">
               {orders.map(order => (
@@ -155,7 +165,7 @@ export function CustomerDetailsModal({ customer, orders, onClose }: CustomerDeta
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="w-4 h-4 text-gray-500" />
                 <span className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('customers.firstOrder')}
+                  Première commande
                 </span>
               </div>
               <p className="text-sm font-medium">
@@ -167,7 +177,7 @@ export function CustomerDetailsModal({ customer, orders, onClose }: CustomerDeta
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="w-4 h-4 text-gray-500" />
                 <span className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('customers.lastOrder')}
+                  Dernière commande
                 </span>
               </div>
               <p className="text-sm font-medium">

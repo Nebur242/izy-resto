@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
 import { Button } from '../ui';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { AlertCircle, X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { RestaurantSettings } from '../../types';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 
 const CinetPayPaymentModal = ({
@@ -65,6 +65,7 @@ export const CinetPayPayment = ({
   const [isClosed, setIsClosed] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [url, setUrl] = useState('');
+  const [error, setError] = useState('');
 
   const handleClose = async () => {
     onConfirm();
@@ -74,6 +75,7 @@ export const CinetPayPayment = ({
   const handleClick = async () => {
     try {
       setIsLoading(true);
+      setError('');
       const commandRef = uuidv4();
 
       const data = {
@@ -102,17 +104,15 @@ export const CinetPayPayment = ({
         code: string;
       }>(`https://api-checkout.cinetpay.com/v2/payment`, data);
 
-      //   await createPayment({
-      //     ref: commandRef,
-      //     data: JSON.stringify(data),
-      //     apiKey,
-      //     apiSecret,
-      //     type: 'cinetpay',
-      //   });
       setUrl(response.data.data.payment_url);
       setIsClosed(false);
     } catch (error) {
       console.log(error);
+      if (error instanceof AxiosError) {
+        setError(
+          error.response?.data.description || 'Une erreur est survenue...'
+        );
+      }
       toast.error('Erreur de paiement...');
     } finally {
       setIsLoading(false);
@@ -126,10 +126,18 @@ export const CinetPayPayment = ({
           <CinetPayPaymentModal iframeUrl={url} onClose={handleClose} />
         )}
       </AnimatePresence>
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/20">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-red-500" />
+            <p className="text-red-800 dark:text-red-400">{error}</p>
+          </div>
+        </div>
+      )}
       <Button
         disabled={isLoading}
         onClick={handleClick}
-        className="w-full mt-4"
+        className="w-full"
         type="submit"
       >
         {isLoading ? 'En cours de chargement...' : 'Payer avec Cinetpay'}

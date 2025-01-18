@@ -15,6 +15,13 @@ export function OrderManagement() {
     orderId?: string;
   }>({ isOpen: false });
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+  };
+
   // Filter orders based on current filters
   const filteredOrders = useMemo(() => {
     return orders
@@ -35,13 +42,28 @@ export function OrderManagement() {
           }
         }
 
+        if (searchTerm.length > 0) {
+          return (
+            order.id.includes(searchTerm) ||
+            order.customerName
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            order.customerEmail
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            order.customerPhone
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          );
+        }
+
         return true;
       })
       .sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
-  }, [orders, statusFilter, dateRange]);
+  }, [orders, statusFilter, dateRange, searchTerm]);
 
   // Calculate stats
   const stats = useMemo(
@@ -75,6 +97,18 @@ export function OrderManagement() {
 
   return (
     <div className="space-y-6">
+      <div>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleChange}
+          placeholder="Lancer une recherche..."
+          className="w-full pl-12 pr-10 py-3 rounded-full border border-gray-200 dark:border-gray-700 
+                   bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
+                   focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+                   shadow-sm hover:shadow-md transition-shadow"
+        />
+      </div>
       <OrderStats stats={stats} />
 
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6">

@@ -1,5 +1,14 @@
 import { HeaderStyle, LandingTemplate } from './theme';
 
+export interface TaxRate {
+  id: string;
+  name: string;
+  rate: number;
+  enabled: boolean;
+  appliesTo: 'all' | string; // all items or specific categories
+  order: number; // For controlling calculation order
+}
+
 export interface SocialMediaProfile {
   platform:
     | 'facebook'
@@ -67,4 +76,21 @@ export interface RestaurantSettings {
     timeWindowHours: number;
   };
   termsOfService?: string;
+  holidayClosure?: {
+    enabled: boolean;
+    startDate: string;
+    endDate: string;
+    reason?: string;
+  };
+  taxes: {
+    enabled: boolean;
+    includedInPrice: boolean;
+    rates: TaxRate[];
+  };
+  tips: {
+    enabled: boolean;
+    defaultPercentages: string[];
+    allowCustom: boolean;
+    label: string;
+  };
 }

@@ -25,7 +25,8 @@ export function useSettings() {
   const updateSettings = async (newSettings: RestaurantSettings) => {
     try {
       await settingsService.updateSettings(newSettings);
-      setSettings(newSettings);
+      const data = await settingsService.getSettings();
+      setSettings(data);
     } catch (error) {
       console.error('Error updating settings:', error);
       throw error;

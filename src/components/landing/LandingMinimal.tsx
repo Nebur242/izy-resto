@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HeaderWrapper } from '../layout/HeaderWrapper';
 import { MinimalMenuSection } from '../menu/minimal/MinimalMenuSection';
@@ -16,9 +15,7 @@ export function LandingMinimal() {
   return (
     <>
       <AnimatePresence>
-        {isLoading && (
-          <LoadingScreen isLoading={true} />
-        )}
+        {isLoading && <LoadingScreen isLoading={true} />}
       </AnimatePresence>
 
       <AnimatePresence>

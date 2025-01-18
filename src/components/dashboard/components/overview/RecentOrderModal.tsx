@@ -51,6 +51,7 @@ export function RecentOrderModal({ order, onClose }: RecentOrderModalProps) {
         <div className="overflow-y-auto p-4 space-y-6">
           {/* Order Timeline */}
           <OrderTimeline
+            order={order}
             status={order.status}
             createdAt={order.createdAt}
             updatedAt={order.updatedAt}
@@ -83,16 +84,23 @@ export function RecentOrderModal({ order, onClose }: RecentOrderModalProps) {
           <div className="space-y-4">
             <h3 className="font-medium">Articles Commandés</h3>
             <div className="divide-y dark:divide-gray-700">
-              {order.items.map((item) => (
-                <div key={item.id} className="py-3 flex justify-between items-center">
+              {order.items.map(item => (
+                <div
+                  key={item.id}
+                  className="py-3 flex justify-between items-center"
+                >
                   <div>
                     <p className="font-medium">{item.name}</p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {formatCurrency(item.price, settings?.currency)} × {item.quantity}
+                      {formatCurrency(item.price, settings?.currency)} ×{' '}
+                      {item.quantity}
                     </p>
                   </div>
                   <p className="font-medium">
-                    {formatCurrency(item.price * item.quantity, settings?.currency)}
+                    {formatCurrency(
+                      item.price * item.quantity,
+                      settings?.currency
+                    )}
                   </p>
                 </div>
               ))}

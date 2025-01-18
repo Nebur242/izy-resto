@@ -6,9 +6,14 @@ import { Button } from '../../ui/Button';
 interface KeywordsInputProps {
   value: string[];
   onChange: (keywords: string[]) => void;
+  type?: 'text' | 'number';
 }
 
-export function KeywordsInput({ value, onChange }: KeywordsInputProps) {
+export function KeywordsInput({
+  value,
+  onChange,
+  type = 'text',
+}: KeywordsInputProps) {
   const [input, setInput] = React.useState('');
 
   const handleAdd = (e?: React.FormEvent) => {
@@ -16,7 +21,7 @@ export function KeywordsInput({ value, onChange }: KeywordsInputProps) {
       e.preventDefault();
     }
     if (!input.trim()) return;
-    
+
     const newKeyword = input.trim().toLowerCase();
     if (!value.includes(newKeyword)) {
       onChange([...value, newKeyword]);
@@ -39,14 +44,14 @@ export function KeywordsInput({ value, onChange }: KeywordsInputProps) {
     <div className="space-y-3">
       <div className="flex gap-2">
         <input
-          type="text"
+          type={type}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={e => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Ajouter un mot-clé..."
           className="flex-1 rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
         />
-        <Button 
+        <Button
           type="button"
           onClick={() => handleAdd()}
           disabled={!input.trim()}
@@ -58,7 +63,7 @@ export function KeywordsInput({ value, onChange }: KeywordsInputProps) {
 
       <div className="flex flex-wrap gap-2">
         <AnimatePresence mode="popLayout">
-          {value.map((keyword) => (
+          {value.map(keyword => (
             <motion.span
               key={keyword}
               initial={{ scale: 0.8, opacity: 0 }}

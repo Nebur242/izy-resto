@@ -2,6 +2,7 @@ import { AlertTriangle, CreditCard } from 'lucide-react';
 import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
+import { formatTaxRate } from '../../../utils/tax';
 
 interface OrderCardDetailsProps {
   order: Order;
@@ -55,6 +56,46 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
             </div>
           ))}
         </div>
+
+        {(!!order.subtotal || !!order?.taxes || !!order?.tip?.percentage) && (
+          <div className="space-y-2  pt-4 mt-4 border-t border-current/10">
+            {order.subtotal && (
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                <span>Sous-total</span>
+                <span>
+                  {formatCurrency(order.subtotal, settings?.currency)}
+                </span>
+              </div>
+            )}
+
+            {(order?.taxes || []).map((tax, index) => (
+              <div
+                key={tax.id}
+                className="flex justify-between text-sm text-gray-800 dark:text-gray-400"
+              >
+                <span>
+                  {tax.name} ({formatTaxRate(tax.rate)})
+                </span>
+                <span>{formatCurrency(tax.amount, settings?.currency)}</span>
+              </div>
+            ))}
+            {order?.tip?.percentage && (
+              <div
+                key={order.tip.amount}
+                className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+              >
+                <span>Pourboire ({order.tip.percentage}%)</span>
+                <span>
+                  {formatCurrency(order.tip.amount, settings?.currency)}
+                </span>
+              </div>
+            )}
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+              <span>Total</span>
+              <span>{formatCurrency(order.total, settings?.currency)}</span>
+            </div>
+          </div>
+        )}
       </div>
       {order.preference && (
         <div className="border-t border-current/10 pt-4">

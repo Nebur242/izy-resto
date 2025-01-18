@@ -27,15 +27,15 @@ export function formatCurrency(
       if (numericAmount < 0) return `-$${Math.abs(numericAmount).toFixed(2)}`;
       return `$${numericAmount.toFixed(2)}`;
     case 'XOF':
-      return `${Math.round(numericAmount).toLocaleString()} FCFA`;
+      return `${numericAmount.toLocaleString()} FCFA`;
     case 'MAD':
-      return `${Math.round(numericAmount).toLocaleString()} DH`;
+      return `${numericAmount.toLocaleString()} DH`;
     case 'UM':
-      return `${Math.round(numericAmount).toLocaleString()} MRU`;
+      return `${numericAmount.toLocaleString()} MRU`;
     default:
       return currency
-        ? `${Math.round(numericAmount).toLocaleString()} ${currency}`
-        : `${Math.round(numericAmount).toLocaleString()}`;
+        ? `${numericAmount.toLocaleString()} ${currency}`
+        : `${numericAmount.toLocaleString()}`;
   }
 }
 

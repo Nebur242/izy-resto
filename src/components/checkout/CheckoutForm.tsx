@@ -29,7 +29,7 @@ type CheckoutStep = 'form' | 'confirmation';
 
 export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   const navigate = useNavigate();
-  const { cart, total, clearCart } = useCart();
+  const { cart, total, clearCart, subtotal, tip } = useCart();
   const { settings } = useSettings();
   // const { paymentMethods } = usePayments();
   const [diningOption, setDiningOption] = useState<DiningOption | null>(null);
@@ -89,7 +89,9 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
       const orderId = await orderService.createOrder({
         items: cart,
         status: 'pending',
+        subtotal,
         total,
+        tip,
         customerName: data.name || `Table ${data.tableNumber}`,
         customerPhone: data.phone,
         customerAddress: diningOption === 'delivery' ? data.address : undefined,
@@ -99,6 +101,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         paymentMethod: selectedPaymentMethod,
+        taxRates: settings?.taxes.rates || [],
       });
 
       toast.success(
@@ -109,9 +112,8 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
 
       clearCart();
       onSuccess?.();
-
       const order = await orderService.getOrderById(orderId);
-      navigate('/receipt', { state: { order } });
+      navigate(`/order/${order?.id}`);
     } catch (error: any) {
       console.log('Error creating order:', error?.code);
       if (error?.code?.includes('rate-limit')) {

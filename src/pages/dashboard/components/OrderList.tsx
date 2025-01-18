@@ -1,8 +1,5 @@
-import React,  { useState } from 'react';
+import { useState } from 'react';
 import { Order, OrderStatus } from '../../../types';
-import { formatDistanceToNow } from 'date-fns';
-import { Badge } from '../../../components/ui/Badge';
-import { Button } from '../../../components/ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OrderCard } from '../../../components/orders/OrderCard';
 import { Pagination } from '../../../components/ui/Pagination';
@@ -16,7 +13,7 @@ const ITEMS_PER_PAGE = 8;
 
 export function OrderList({ orders, onStatusChange }: OrderListProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   // Calculate pagination
   const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -26,7 +23,7 @@ export function OrderList({ orders, onStatusChange }: OrderListProps) {
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <AnimatePresence mode="popLayout">
-          {paginatedOrders.map((order) => (
+          {paginatedOrders.map(order => (
             <motion.div
               key={order.id}
               layout
@@ -35,13 +32,10 @@ export function OrderList({ orders, onStatusChange }: OrderListProps) {
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{
                 layout: { duration: 0.3 },
-                opacity: { duration: 0.2 }
+                opacity: { duration: 0.2 },
               }}
             >
-              <OrderCard
-                order={order}
-                onStatusChange={onStatusChange}
-              />
+              <OrderCard order={order} onStatusChange={onStatusChange} />
             </motion.div>
           ))}
         </AnimatePresence>

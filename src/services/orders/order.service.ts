@@ -16,8 +16,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase/config';
-import { Order, OrderStatus } from '../../types';
-// import { paymentService } from '../payments/payment.service';
+import { Order, OrderStatus, TaxRate } from '../../types';
 import { accountingService } from '../accounting/accounting.service';
 import { stockUpdateService } from '../inventory/stockUpdate.service';
 import { validateOrder } from './validators';
@@ -25,6 +24,7 @@ import { formatOrderData } from './formatters';
 import { OrderServiceError } from './errors';
 import type { OrderFilters } from './types';
 import { anonymousAuthService } from '../auth/anonymousAuth.service';
+import { calculateTaxes, calculateTotal } from '../../utils/tax';
 
 class OrderService {
   private collection = 'orders';
@@ -38,7 +38,7 @@ class OrderService {
       const q = query(
         collection(db, this.collection),
         orderBy('createdAt', 'desc'),
-        limit(100) // Limit to last 100 orders for better performance
+        limit(1000) // Limit to last 100 orders for better performance
       );
 
       return onSnapshot(
@@ -155,7 +155,12 @@ class OrderService {
     });
   }
 
-  async createOrder(orderData: Omit<Order, 'id'>): Promise<string> {
+  async createOrder(
+    orderData: Omit<Order, 'id'> & {
+      taxRates: TaxRate[];
+      tip: { amount: number; percentage?: number } | null;
+    }
+  ): Promise<string> {
     try {
       const user = anonymousAuthService.getCurrentUser();
 
@@ -174,10 +179,26 @@ class OrderService {
       // Validate order data
       validateOrder(orderData);
 
+      // Calculate taxes and total
+      const { taxes, total: taxTotal } = calculateTaxes(
+        orderData.subtotal,
+        orderData.taxRates || [],
+        orderData.items.map(item => item.categoryId)
+      );
+
       // Format order data and add user ID
       const order = {
         ...formatOrderData(orderData, orderData.paymentMethod),
         anonymousUid: user?.uid || null,
+        subtotal: orderData.subtotal,
+        taxes,
+        taxTotal,
+        tip: orderData.tip || null,
+        total: calculateTotal(
+          orderData.subtotal,
+          taxTotal,
+          orderData.tip?.amount || 0
+        ),
       };
 
       // Format order data

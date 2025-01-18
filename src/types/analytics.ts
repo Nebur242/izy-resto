@@ -4,6 +4,7 @@ export interface TrafficStats {
   deliveryOrders: number;
   canceledOrders: number;
   fulfilledOrders: number;
+  pendingOrders: number;
   bestSellers: BestSeller[];
 }
 

@@ -49,15 +49,14 @@ export function CustomerList({ customers, onViewDetails }: CustomerListProps) {
               <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
                 {formatCurrency(customer.totalSpent, settings?.currency)}
               </p>
-              {!customer.name?.toLowerCase().includes('table') && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => onViewDetails(customer.id)}
-                >
-                  Voir détails
-                </Button>
-              )}
+
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => onViewDetails(customer.id)}
+              >
+                Voir détails
+              </Button>
             </div>
           </div>
         </motion.div>

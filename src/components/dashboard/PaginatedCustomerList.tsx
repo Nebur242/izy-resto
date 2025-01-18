@@ -6,13 +6,17 @@ import { useSettings } from '../../hooks/useSettings';
 import { formatCurrency } from '../../utils/currency';
 import { Pagination } from '../ui/Pagination';
 import { CustomerDetailsModal } from './CustomerDetailsModal';
+import { Phone, User } from 'lucide-react';
 
 interface PaginatedCustomerListProps {
   orders: Order[];
   itemsPerPage: number;
 }
 
-export function PaginatedCustomerList({ orders, itemsPerPage }: PaginatedCustomerListProps) {
+export function PaginatedCustomerList({
+  orders,
+  itemsPerPage,
+}: PaginatedCustomerListProps) {
   const { t } = useTranslation();
   const { settings } = useSettings();
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,7 +28,7 @@ export function PaginatedCustomerList({ orders, itemsPerPage }: PaginatedCustome
 
   const customers = useMemo(() => {
     const customerMap = orders.reduce((acc, order) => {
-      const key = order.customerEmail || order.customerPhone;
+      const key = order.customerPhone;
       const customer = acc.get(key);
       if (customer) {
         customer.totalOrders++;
@@ -37,29 +41,31 @@ export function PaginatedCustomerList({ orders, itemsPerPage }: PaginatedCustome
           phone: order.customerPhone,
           totalOrders: 1,
           totalSpent: order.total,
-          orders: [order]
+          orders: [order],
         });
       }
       return acc;
     }, new Map());
 
-    return Array.from(customerMap.values())
-      .sort((a, b) => b.totalSpent - a.totalSpent);
+    return Array.from(customerMap.values()).sort(
+      (a, b) => b.totalSpent - a.totalSpent
+    );
   }, [orders]);
 
   const totalPages = Math.ceil(customers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedCustomers = customers.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedCustomers = customers.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   const selectedCustomerOrders = useMemo(() => {
     if (!selectedCustomer) return [];
     return orders
-      .filter(order => 
-        order.customerEmail === selectedCustomer.email || 
-        order.customerPhone === selectedCustomer.phone
-      )
-      .sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      .filter(order => order.customerPhone === selectedCustomer.phone)
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
   }, [selectedCustomer, orders]);
 
@@ -72,19 +78,27 @@ export function PaginatedCustomerList({ orders, itemsPerPage }: PaginatedCustome
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
-            onClick={() => setSelectedCustomer({
-              name: customer.name,
-              email: customer.email,
-              phone: customer.phone
-            })}
+            onClick={() =>
+              setSelectedCustomer({
+                name: customer.name,
+                email: customer.email,
+                phone: customer.phone,
+              })
+            }
             className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600/50 transition-colors text-left"
           >
             <div>
               <h4 className="font-medium text-gray-900 dark:text-white">
-                {customer.name}
+                <span className="flex items-center ">
+                  <User className="w-4 h-4 mr-1" /> {customer.name}
+                </span>
               </h4>
+              <span className="flex items-center">
+                <Phone className="w-4 h-4 mr-1" />
+                {customer.phone}
+              </span>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {customer.totalOrders} {t('customers.orders')}
+                {customer.totalOrders} commandes
               </p>
             </div>
             <div className="text-right">

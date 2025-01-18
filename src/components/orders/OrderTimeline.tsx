@@ -1,18 +1,20 @@
 // import React from 'react';
 import { motion } from 'framer-motion';
-import { OrderStatus } from '../../types';
+import { Order, OrderStatus } from '../../types';
 import { formatFirestoreTimestamp } from '../../utils/date';
 
 interface OrderTimelineProps {
   status: OrderStatus;
   createdAt: string;
   updatedAt: string;
+  order: Order;
 }
 
 export function OrderTimeline({
   status,
   createdAt,
   updatedAt,
+  order,
 }: OrderTimelineProps) {
   const statuses: OrderStatus[] = ['pending', 'preparing', 'delivered'];
   const currentIndex = statuses.indexOf(status);
@@ -22,6 +24,17 @@ export function OrderTimeline({
     pending: 'En attente',
     preparing: 'En préparation',
     delivered: 'Livraison',
+    cancelled: 'Annulé',
+  };
+
+  const getStatusLabel = (
+    status: Order['status'],
+    diningOption: Order['diningOption']
+  ) => {
+    if (status === 'delivered' && diningOption === 'dine-in') {
+      return 'A la table';
+    }
+    return statusLabels[status];
   };
 
   return (
@@ -52,7 +65,7 @@ export function OrderTimeline({
 
                 {/* Status Label */}
                 <span className="mt-2 text-sm text-center">
-                  {statusLabels[s]}
+                  {getStatusLabel(s, order.diningOption)}
                 </span>
 
                 {/* Timestamp */}

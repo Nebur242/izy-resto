@@ -1,10 +1,11 @@
-import { forwardRef, useState } from 'react';
-import { MenuItem as MenuItemType } from '../../types';
+import { forwardRef, useMemo, useState } from 'react';
+import { MenuItem as MenuItemType, MenuItemWithVariants } from '../../types';
 import { Badge } from '../ui/Badge';
 import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks/useSettings';
 import { ProductDetailsModal } from './ProductDetailsModal';
 import { formatCurrency } from '../../utils/currency';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 interface MenuItemProps {
   item: MenuItemType;
@@ -17,6 +18,27 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
     const [showModal, setShowModal] = useState(false);
     const itemInCart = cart.find(cartItem => cartItem.id === item.id);
     const isOutOfStock = item.stockQuantity === 0;
+    const itemWithVariants = item as MenuItemWithVariants;
+    const hasVariants = itemWithVariants.variantPrices?.length > 0;
+
+    const isMobile = useIsMobile();
+
+    // Get price range if item has variants
+    const priceRange = useMemo(() => {
+      if (!itemWithVariants.variantPrices?.length) {
+        return { min: item.price, max: item.price };
+      }
+
+      const prices = [
+        item.price,
+        ...itemWithVariants.variantPrices.map(vp => vp.price),
+      ];
+
+      return {
+        min: Math.min(...prices),
+        max: Math.max(...prices),
+      };
+    }, [item, itemWithVariants.variantPrices]);
 
     return (
       <>
@@ -68,7 +90,22 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
 
             {/* Price Badge */}
             <div className="absolute right-2 top-2 rounded-full bg-white/95 px-3 py-1 text-sm font-bold text-gray-900 shadow-lg backdrop-blur-sm dark:bg-gray-900/95 dark:text-white md:right-4 md:top-4 md:px-4 md:py-2">
-              {formatCurrency(item.price, settings?.currency)}
+              {isMobile && formatCurrency(item.price, settings?.currency)}
+
+              {!isMobile &&
+                (hasVariants ? (
+                  <>
+                    {formatCurrency(priceRange.min, settings?.currency)}
+                    {priceRange.max > priceRange.min && (
+                      <>
+                        {' '}
+                        - {formatCurrency(priceRange.max, settings?.currency)}
+                      </>
+                    )}
+                  </>
+                ) : (
+                  formatCurrency(item.price, settings?.currency)
+                ))}
             </div>
 
             {/* Cart Badge - Mobile Position */}

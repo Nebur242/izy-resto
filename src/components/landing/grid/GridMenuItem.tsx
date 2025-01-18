@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus } from 'lucide-react';
-import { MenuItem } from '../../../types';
+import { MenuItem, MenuItemWithVariants } from '../../../types';
 import { useCart } from '../../../context/CartContext';
 import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
 import { ProductDetailsModal } from '../../../components/menu/ProductDetailsModal';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 
 interface GridMenuItemProps {
   item: MenuItem;
@@ -15,6 +15,28 @@ export function GridMenuItem({ item }: GridMenuItemProps) {
   const { addToCart } = useCart();
   const { settings } = useSettings();
   const [showModal, setShowModal] = useState(false);
+
+  const itemWithVariants = item as MenuItemWithVariants;
+  const hasVariants = itemWithVariants.variantPrices?.length > 0;
+
+  const isMobile = useIsMobile();
+
+  // Get price range if item has variants
+  const priceRange = useMemo(() => {
+    if (!itemWithVariants.variantPrices?.length) {
+      return { min: item.price, max: item.price };
+    }
+
+    const prices = [
+      item.price,
+      ...itemWithVariants.variantPrices.map(vp => vp.price),
+    ];
+
+    return {
+      min: Math.min(...prices),
+      max: Math.max(...prices),
+    };
+  }, [item, itemWithVariants.variantPrices]);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent modal from opening when clicking add button
@@ -49,7 +71,23 @@ export function GridMenuItem({ item }: GridMenuItemProps) {
 
               <div className="flex items-center justify-between pt-2">
                 <span className="text-lg font-bold text-white">
-                  {formatCurrency(item.price, settings?.currency)}
+                  {isMobile && formatCurrency(item.price, settings?.currency)}
+
+                  {!isMobile &&
+                    (hasVariants ? (
+                      <>
+                        {formatCurrency(priceRange.min, settings?.currency)}
+                        {priceRange.max > priceRange.min && (
+                          <>
+                            {' '}
+                            -{' '}
+                            {formatCurrency(priceRange.max, settings?.currency)}
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      formatCurrency(item.price, settings?.currency)
+                    ))}
                 </span>
 
                 {/* <button

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useMenu } from '../../../hooks/useMenu';
 import { MinimalMenuItem } from './MinimalMenuItem';
 import { MinimalMenuCategories } from './MinimalMenuCategories';
 import { SearchBar } from '../SearchBar';
 import { Pagination } from '../../ui/Pagination';
+// import { useIsMobile } from '../../../hooks/useIsMobile';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -12,7 +13,7 @@ export function MinimalMenuSection() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const { items, isLoading } = useMenu(
+  const { items } = useMenu(
     activeCategory !== 'all' ? activeCategory : undefined
   );
 

@@ -3,6 +3,7 @@ import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
 import { formatFirestoreTimestamp } from '../../../utils/date';
+import { formatTaxRate } from '../../../utils/tax';
 
 interface OrderReceiptDetailsProps {
   order: Order;
@@ -10,6 +11,8 @@ interface OrderReceiptDetailsProps {
 
 export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
   const { settings } = useSettings();
+
+  console.log(order);
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 sm:p-8">
@@ -86,13 +89,49 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
               </div>
             ))}
           </div>
+
+          <div className="space-y-2  pt-4 border-t border-gray-200 dark:border-gray-700">
+            {order.subtotal && (
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                <span>Sous-total</span>
+                <span>
+                  {formatCurrency(order.subtotal, settings?.currency)}
+                </span>
+              </div>
+            )}
+
+            {(order?.taxes || []).map((tax, index) => (
+              <div
+                key={tax.id}
+                className="flex justify-between text-sm text-gray-800 dark:text-gray-400"
+              >
+                <span>
+                  {tax.name} ({formatTaxRate(tax.rate)})
+                </span>
+                <span>{formatCurrency(tax.amount, settings?.currency)}</span>
+              </div>
+            ))}
+            {order?.tip?.percentage && (
+              <div
+                key={order.tip.amount}
+                className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+              >
+                <span>Pourboire ({order.tip.percentage}%)</span>
+                <span>
+                  {formatCurrency(order.tip.amount, settings?.currency)}
+                </span>
+              </div>
+            )}
+          </div>
+
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <p className="text-lg font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
               Total
             </p>
-            <p className="text-lg font-semibold text-gray-800 dark:text-white">
+
+            <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
               {formatCurrency(order.total, settings?.currency)}
-            </p>
+            </span>
           </div>
         </div>
       </div>

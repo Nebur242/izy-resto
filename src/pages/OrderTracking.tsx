@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Home, Star } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Home, Star, XCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useOrders } from '../context/OrderContext';
 import { OrderTrackingDetails } from '../components/orders/tracking/OrderTrackingDetails';
@@ -68,10 +68,12 @@ export default function OrderTracking() {
       <div className="max-w-3xl mx-auto">
         {/* Navigation */}
         <div className="flex justify-between items-center mb-8">
-          <Button variant="ghost" onClick={() => navigate(-1)}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour
-          </Button>
+          <Link to="/">
+            <Button variant="ghost">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Retour
+            </Button>
+          </Link>
           <Link to="/">
             <Button variant="secondary">
               <Home className="w-4 h-4 mr-2" />
@@ -81,8 +83,40 @@ export default function OrderTracking() {
         </div>
 
         <div className="space-y-6">
-          {/* Order Header */}
-          <OrderTrackingHeader order={order} />
+          <div>
+            {/* Status Header */}
+            <div
+              className={`p-6 text-white rounded-t-2xl shadow-xl overflow-hidden ${
+                order.status === 'cancelled'
+                  ? 'bg-red-600'
+                  : 'bg-gradient-to-r from-emerald-500 to-green-600'
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-white/20 rounded-xl">
+                  {order.status === 'cancelled' ? (
+                    <XCircle className="w-8 h-8" />
+                  ) : (
+                    <CheckCircle className="w-8 h-8" />
+                  )}
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold mb-1">
+                    {order.status === 'cancelled'
+                      ? 'Commande annulée'
+                      : 'Commande confirmée !'}
+                  </h1>
+                  <p className="text-white/80">
+                    {order.status === 'cancelled'
+                      ? 'Cette commande a été annulée'
+                      : 'Votre commande a été enregistrée avec succès'}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Order Header */}
+            <OrderTrackingHeader order={order} />
+          </div>
 
           {/* Order Timeline */}
           <OrderTrackingTimeline order={order} />
@@ -91,27 +125,28 @@ export default function OrderTracking() {
           <OrderTrackingDetails order={order} />
 
           {/* Rating Section - Only show for delivered orders without rating */}
-          {(order.status === 'delivered' || order.status === 'cancelled') && !order.rating && (
-            <OrderRating
-              rating={rating}
-              onRatingChange={setRating}
-              feedback={feedback}
-              onFeedbackChange={setFeedback}
-              onSubmit={handleSubmitRating}
-              isSubmitting={isSubmitting}
-            />
-          )}
+          {(order.status === 'delivered' || order.status === 'cancelled') &&
+            !order.rating && (
+              <OrderRating
+                rating={rating}
+                onRatingChange={setRating}
+                feedback={feedback}
+                onFeedbackChange={setFeedback}
+                onSubmit={handleSubmitRating}
+                isSubmitting={isSubmitting}
+              />
+            )}
 
           {/* Show rating if exists */}
           {order.rating && (
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
               <h3 className="text-lg font-semibold mb-4">Votre avis</h3>
               <div className="flex items-center gap-2 mb-2">
-                {[1, 2, 3, 4, 5].map((star) => (
+                {[1, 2, 3, 4, 5].map(star => (
                   <Star
                     key={star}
                     className={`w-5 h-5 ${
-                      star <= order.rating.rating
+                      star <= order?.rating?.rating
                         ? 'text-yellow-400 fill-yellow-400'
                         : 'text-gray-300 dark:text-gray-600'
                     }`}

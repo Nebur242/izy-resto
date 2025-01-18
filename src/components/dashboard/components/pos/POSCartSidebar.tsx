@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { useCallback, useState } from 'react';
 import { X } from 'lucide-react';
 import { CartItem } from '../../../../types';
 import { CartItemList } from '../../../pos/CartItemList';
@@ -7,8 +6,8 @@ import { CustomerInfoForm } from '../../../pos/CustomerInfoForm';
 import { OrderSummary } from '../../../pos/OrderSummary';
 import { PaymentSection } from '../../../pos/PaymentSection';
 import { Button } from '../../../ui/Button';
-import { createPosOrder } from '../../../../services/orders/createOrder';
 import toast from 'react-hot-toast';
+import { useServerCart } from '../../../../context/ServerCartContext';
 
 interface POSCartSidebarProps {
   onClose?: () => void;
@@ -24,7 +23,7 @@ interface POSCartSidebarProps {
   setAmountPaid: (amount: number) => void;
   total: number;
   onUpdateQuantity: (itemId: string, delta: number) => void;
-  onRemoveItem: (itemId: string) => void;
+  // onRemoveItem: (itemId: string) => void;
   onQuickAmount: (amount: number) => void;
   onCheckout: () => Promise<void>;
   isSubmitting: boolean;
@@ -39,15 +38,29 @@ export function POSCartSidebar({
   setCustomerInfo,
   amountPaid,
   setAmountPaid,
-  total,
-  onUpdateQuantity,
-  onRemoveItem,
+  // total,
+  // onUpdateQuantity,
+  // onRemoveItem,
   onQuickAmount,
   onCheckout,
   isSubmitting,
 }: POSCartSidebarProps) {
+  const [error, setError] = useState('');
+
+  const { total } = useServerCart();
+
   const handleCheckout = async () => {
+    console.log(total);
     try {
+      if (!amountPaid) {
+        setError('Montant reçu obligatoire');
+        return;
+      }
+      if (amountPaid < total) {
+        setError('Montant reçu doit etre supérieur au total');
+        return;
+      }
+
       await onCheckout();
       toast.success('Commande créée avec succès');
     } catch (error) {
@@ -99,34 +112,38 @@ export function POSCartSidebar({
         {/* Cart Items */}
         <div className="px-4">
           <CartItemList
-            items={cart}
-            onUpdateQuantity={onUpdateQuantity}
-            onRemoveItem={onRemoveItem}
+          // items={cart}
+          // onUpdateQuantity={onUpdateQuantity}
+          // onRemoveItem={onRemoveItem}
           />
         </div>
       </div>
 
       {/* Fixed Bottom Section */}
-      <div className="border-t dark:border-gray-700 p-4 space-y-4 bg-white dark:bg-gray-800">
-        <OrderSummary items={cart} total={total} />
+      {cart.length > 0 && (
+        <div className="border-t dark:border-gray-700 p-4 space-y-4 bg-white dark:bg-gray-800">
+          <OrderSummary items={cart} total={total} />
 
-        <PaymentSection
-          total={total}
-          amountPaid={amountPaid}
-          onAmountPaidChange={setAmountPaid}
-          onQuickAmount={onQuickAmount}
-        />
+          <PaymentSection
+            total={total}
+            amountPaid={amountPaid}
+            onAmountPaidChange={setAmountPaid}
+            onQuickAmount={onQuickAmount}
+          />
 
-        <Button
-          onClick={handleCheckout}
-          disabled={cart.length === 0 || isSubmitting}
-          className="w-full py-3 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg
+          {error && <p className="text-red-500 dark:text-red-400">{error}</p>}
+
+          <Button
+            onClick={handleCheckout}
+            disabled={cart.length === 0 || isSubmitting}
+            className="w-full py-3 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg
                      transition-colors duration-200 shadow-sm hover:shadow-md
                      disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Traitement...' : 'Valider la commande'}
-        </Button>
-      </div>
+          >
+            {isSubmitting ? 'Traitement...' : 'Valider la commande'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

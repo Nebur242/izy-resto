@@ -3,6 +3,17 @@ import { Order, OrderStatus } from '../types';
 import { orderService } from '../services/orders/order.service';
 import toast from 'react-hot-toast';
 
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  runTransaction,
+  doc,
+  Timestamp,
+} from 'firebase/firestore';
+import { db } from '../lib/firebase/config';
+
 interface OrderContextType {
   orders: Order[];
   isLoading: boolean;
@@ -13,6 +24,10 @@ interface OrderContextType {
   deliveredOrders: Order[];
   pendingOrders: Order[];
   preparingOrders: Order[];
+  getDateOrders: (period: {
+    startDate: Date;
+    endDate: Date;
+  }) => Promise<Order[]>;
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
@@ -40,6 +55,30 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
     return () => unsubscribe();
   }, []);
+
+  const getDateOrders = async (period: {
+    startDate: Date;
+    endDate: Date;
+  }): Promise<Order[]> => {
+    try {
+      const q = query(
+        collection(db, 'orders'),
+        where('createdAt', '>=', Timestamp.fromDate(period.startDate)),
+        where('createdAt', '<=', Timestamp.fromDate(period.endDate))
+      );
+
+      const snapshot = await getDocs(q);
+      const orders = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Order[];
+
+      return orders;
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      throw error;
+    }
+  };
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
     try {
@@ -78,6 +117,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         deliveredOrders,
         pendingOrders,
         preparingOrders,
+        getDateOrders,
       }}
     >
       {children}

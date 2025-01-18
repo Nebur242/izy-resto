@@ -5,6 +5,7 @@ export function useRestaurantStatus() {
   const { settings } = useSettings();
   const [isOpen, setIsOpen] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [isHoliday, setIsHoliday] = useState(false);
 
   useEffect(() => {
     checkRestaurantStatus();
@@ -13,30 +14,91 @@ export function useRestaurantStatus() {
     return () => clearInterval(interval);
   }, [settings]);
 
-  const checkRestaurantStatus = () => {
+  const getDateInRestaurantTimezone = (date: Date, timeZone: string): Date => {
+    return new Date(date.toLocaleString('en-US', { timeZone }));
+  };
+
+  const checkHolidayClosure = (
+    restaurantTime: Date,
+    timezone: string
+  ): boolean => {
     if (
-      !settings?.openingHours ||
-      !settings?.openingHours?.timezone ||
-      !settings.hasOpeningHours
-    )
-      return;
+      !settings?.holidayClosure?.enabled ||
+      !settings?.holidayClosure?.startDate ||
+      !settings?.holidayClosure?.endDate ||
+      !settings?.openingHours?.timezone
+    ) {
+      return false;
+    }
 
-    const now = new Date();
-    const restaurantTime = new Date(
-      now.toLocaleString('en-US', {
-        timeZone: settings.openingHours.timezone,
-      })
+    const startDate = new Date(settings.holidayClosure.startDate);
+    const endDate = new Date(settings.holidayClosure.endDate);
+
+    // Set time to start of day for start date and end of day for end date
+    const startDateTime = new Date(startDate);
+    startDateTime.setHours(0, 0, 0, 0);
+    const endDateTime = new Date(endDate);
+    endDateTime.setHours(23, 59, 59, 999);
+
+    const startInTimezone = getDateInRestaurantTimezone(
+      startDateTime,
+      timezone
     );
+    const endInTimezone = getDateInRestaurantTimezone(endDateTime, timezone);
 
-    const currentDay = restaurantTime.toLocaleDateString('en-US', {
-      weekday: 'long',
-      timeZone: settings.openingHours.timezone,
-    }) as keyof typeof settings.openingHours;
+    return restaurantTime >= startInTimezone && restaurantTime <= endInTimezone;
+  };
 
-    const todaySchedule =
-      settings.openingHours[currentDay.toString().toLowerCase()];
+  const parseTimeToMinutes = (timeString: string): number => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
 
-    if (todaySchedule.closed) {
+  const normalizeTime = (minutes: number): number => {
+    // Handle times past midnight by adding 24 hours worth of minutes
+    return minutes < 0 ? minutes + 24 * 60 : minutes;
+  };
+
+  const checkRestaurantStatus = () => {
+    if (!settings?.openingHours?.timezone || !settings.hasOpeningHours) {
+      return;
+    }
+
+    const timezone = settings.openingHours.timezone;
+    const now = new Date();
+    const restaurantTime = getDateInRestaurantTimezone(now, timezone);
+
+    // Check holiday closure first
+    if (checkHolidayClosure(restaurantTime, timezone)) {
+      setIsOpen(false);
+      setIsHoliday(true);
+      setShowModal(true);
+      return;
+    }
+
+    setIsHoliday(false);
+
+    // Get current and previous day
+    const currentDay = restaurantTime
+      .toLocaleDateString('en-US', {
+        weekday: 'long',
+        timeZone: timezone,
+      })
+      .toLowerCase() as keyof typeof settings.openingHours;
+
+    const previousDay = new Date(restaurantTime);
+    previousDay.setDate(previousDay.getDate() - 1);
+    const previousDayName = previousDay
+      .toLocaleDateString('en-US', {
+        weekday: 'long',
+        timeZone: timezone,
+      })
+      .toLowerCase() as keyof typeof settings.openingHours;
+
+    const todaySchedule = settings.openingHours[currentDay];
+    const previousDaySchedule = settings.openingHours[previousDayName];
+
+    if (todaySchedule.closed && previousDaySchedule.closed) {
       setIsOpen(false);
       setShowModal(true);
       return;
@@ -44,16 +106,41 @@ export function useRestaurantStatus() {
 
     const currentHour = restaurantTime.getHours();
     const currentMinutes = restaurantTime.getMinutes();
-    const currentTime = currentHour * 60 + currentMinutes;
+    const currentTimeInMinutes = currentHour * 60 + currentMinutes;
 
-    const [openHour, openMinute] = todaySchedule.open.split(':').map(Number);
-    const [closeHour, closeMinute] = todaySchedule.close.split(':').map(Number);
+    let restaurantIsOpen = false;
 
-    const openingTime = openHour * 60 + openMinute;
-    const closingTime = (closeHour === 0 ? 24 : closeHour) * 60 + closeMinute;
+    // Check if we're still in previous day's opening period (for times after midnight)
+    if (!previousDaySchedule.closed) {
+      const prevDayOpenTime = parseTimeToMinutes(previousDaySchedule.open);
+      const prevDayCloseTime = parseTimeToMinutes(previousDaySchedule.close);
 
-    const restaurantIsOpen =
-      currentTime >= openingTime && currentTime < closingTime;
+      if (prevDayCloseTime < prevDayOpenTime) {
+        // Previous day's closing time is after midnight
+        const normalizedCurrentTime = normalizeTime(currentTimeInMinutes);
+        const normalizedCloseTime = normalizeTime(prevDayCloseTime);
+
+        if (normalizedCurrentTime < normalizedCloseTime) {
+          restaurantIsOpen = true;
+        }
+      }
+    }
+
+    // Check current day's schedule if we're not open from previous day
+    if (!restaurantIsOpen && !todaySchedule.closed) {
+      const openingTime = parseTimeToMinutes(todaySchedule.open);
+      const closingTime = parseTimeToMinutes(todaySchedule.close);
+
+      if (closingTime < openingTime) {
+        // Closing time is after midnight
+        restaurantIsOpen = currentTimeInMinutes >= openingTime;
+      } else {
+        // Normal same-day schedule
+        restaurantIsOpen =
+          currentTimeInMinutes >= openingTime &&
+          currentTimeInMinutes < closingTime;
+      }
+    }
 
     setIsOpen(restaurantIsOpen);
     setShowModal(!restaurantIsOpen);
@@ -62,6 +149,7 @@ export function useRestaurantStatus() {
   return {
     isOpen,
     showModal,
+    isHoliday,
     closeModal: () => setShowModal(false),
   };
 }

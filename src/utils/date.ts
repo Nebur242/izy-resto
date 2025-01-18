@@ -4,10 +4,10 @@ import { fr } from 'date-fns/locale';
 
 export function formatFirestoreTimestamp(timestamp: any): string {
   if (!timestamp) return 'Date non disponible';
-  
+
   try {
     let date: Date;
-    
+
     if (timestamp instanceof Timestamp) {
       date = timestamp.toDate();
     } else if (typeof timestamp === 'string') {
@@ -18,7 +18,7 @@ export function formatFirestoreTimestamp(timestamp: any): string {
     } else {
       throw new Error('Invalid timestamp format');
     }
-    
+
     return formatDistanceToNow(date, { addSuffix: true, locale: fr });
   } catch (error) {
     console.error('Error formatting timestamp:', error);
@@ -26,12 +26,12 @@ export function formatFirestoreTimestamp(timestamp: any): string {
   }
 }
 
-export function formatDate(date: any): string {
+export function formatDate(date: any, withHours?: boolean = false): string {
   if (!date) return 'Date non disponible';
-  
+
   try {
     let dateObj: Date;
-    
+
     if (date instanceof Timestamp) {
       dateObj = date.toDate();
     } else if (typeof date === 'string') {
@@ -44,8 +44,12 @@ export function formatDate(date: any): string {
     } else {
       throw new Error('Invalid date format');
     }
-    
-    return format(dateObj, 'dd/MM/yyyy', { locale: fr });
+
+    return format(
+      dateObj,
+      withHours ? "dd MMMM yyyy 'à' HH:mm:ss" : 'dd MMMM yyyy',
+      { locale: fr }
+    );
   } catch (error) {
     console.error('Error formatting date:', error);
     return 'Date non disponible';

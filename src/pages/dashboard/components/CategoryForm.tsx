@@ -5,18 +5,26 @@ import { Button } from '../../../components/ui/Button';
 import { Category } from '../../../types';
 
 interface CategoryFormProps {
-  category?: Category;
+  category: Category | null;
   onSave: (data: Omit<Category, 'id'>) => void;
   onCancel: () => void;
 }
 
-export function CategoryForm({ category, onSave, onCancel }: CategoryFormProps) {
-  const { register, handleSubmit, formState: { errors, isDirty } } = useForm<Omit<Category, 'id'>>({
+export function CategoryForm({
+  category,
+  onSave,
+  onCancel,
+}: CategoryFormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isDirty },
+  } = useForm<Omit<Category, 'id'>>({
     defaultValues: category || {
       name: '',
       description: '',
-      order: 0
-    }
+      order: 0,
+    },
   });
 
   return (
@@ -29,10 +37,12 @@ export function CategoryForm({ category, onSave, onCancel }: CategoryFormProps) 
               {category ? 'Modifier la catégorie' : 'Nouvelle catégorie'}
             </h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {category ? 'Modifier les détails de la catégorie' : 'Ajouter une nouvelle catégorie au menu'}
+              {category
+                ? 'Modifier les détails de la catégorie'
+                : 'Ajouter une nouvelle catégorie au menu'}
             </p>
           </div>
-          <button 
+          <button
             onClick={onCancel}
             className="absolute right-4 top-4 p-2 rounded-full text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors"
           >
@@ -41,7 +51,13 @@ export function CategoryForm({ category, onSave, onCancel }: CategoryFormProps) 
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSave)} className="p-6 space-y-5">
+        <form
+          onSubmit={e => {
+            e.stopPropagation();
+            handleSubmit(onSave)(e);
+          }}
+          className="p-6 space-y-5"
+        >
           {/* Name Field */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -99,9 +115,9 @@ export function CategoryForm({ category, onSave, onCancel }: CategoryFormProps) 
             </label>
             <input
               type="number"
-              {...register('order', { 
+              {...register('order', {
                 valueAsNumber: true,
-                min: { value: 0, message: "L'ordre doit être positif" }
+                min: { value: 0, message: "L'ordre doit être positif" },
               })}
               className="
                 w-full rounded-lg bg-gray-50 dark:bg-gray-700/50 p-2.5
