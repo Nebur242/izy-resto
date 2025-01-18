@@ -1,7 +1,7 @@
+import { ArrowDown, MapPin, Phone } from 'lucide-react';
 import React from 'react';
-import { MapPin, Phone, ArrowDown } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings';
-import { Button } from '../ui/Button';
+import { Button } from '../ui';
 import { OpeningHoursButton } from './OpeningHoursButton';
 
 interface InfoCardProps {
@@ -82,7 +82,7 @@ export function Hero() {
                 onClick={scrollToMenu}
                 className="group relative rounded-full px-8 py-3 text-base font-medium transition-all hover:shadow-lg hover:opacity-90 sm:text-lg
     bg-gradient-to-r from-gray-200 to-white text-blue-600 hover:bg-gradient-to-r hover:from-gray-200 hover:to-gray-300
-    dark:bg-gradient-to-r dark:from-blue-500 dark:to-blue-400 dark:text-white dark:hover:from-blue-600 dark:hover:to-blue-500"
+    dark:bg-gradient-to-r dark:from-blue-500 dark:hover:from-blue-600 dark:hover:to-blue-500"
               >
                 Voir le Menu
                 <ArrowDown className="ml-2 inline-block h-4 w-4 transition-transform group-hover:translate-y-1 group-hover:animate-bounce" />

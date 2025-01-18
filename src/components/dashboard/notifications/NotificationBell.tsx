@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Bell, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '../../ui/Button';
+import React, { useEffect, useState } from 'react';
 import { useNotifications } from '../../../hooks/useNotifications';
+import { Button } from '../../ui/Button';
 import { OrderNotification } from './OrderNotification';
 
 const MAX_NOTIFICATIONS = 5;
@@ -14,7 +14,10 @@ export function NotificationBell() {
 
   // Sort notifications by date, newest first
   const sortedNotifications = [...notifications].sort((a, b) => {
-    return new Date(b.order.createdAt).getTime() - new Date(a.order.createdAt).getTime();
+    return (
+      new Date(b.order.createdAt).getTime() -
+      new Date(a.order.createdAt).getTime()
+    );
   });
 
   // Calculate pagination values
@@ -63,13 +66,13 @@ export function NotificationBell() {
       <Button
         variant="ghost"
         size="sm"
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation();
           setIsOpen(!isOpen);
         }}
         className="relative h-10 w-10 rounded-full p-0"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-5 w-5 text-gray-900 dark:text-white" />
         {hasUnread && (
           <motion.div
             initial={{ scale: 0 }}
@@ -94,13 +97,14 @@ export function NotificationBell() {
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
               className="absolute right-0 z-50 mt-2 w-80 rounded-lg bg-white p-4 shadow-xl dark:bg-gray-800"
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             >
               {notifications.length > 0 ? (
                 <>
                   {/* Header with total count */}
                   <div className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-                    {notifications.length} notification{notifications.length > 1 ? 's' : ''}
+                    {notifications.length} notification
+                    {notifications.length > 1 ? 's' : ''}
                   </div>
 
                   {/* Notifications */}
@@ -112,7 +116,10 @@ export function NotificationBell() {
                           order={notification.order}
                           onClose={() => {
                             clearNotification(notification.id);
-                            if (currentNotifications.length === 1 && currentPage > 1) {
+                            if (
+                              currentNotifications.length === 1 &&
+                              currentPage > 1
+                            ) {
                               setCurrentPage(prev => prev - 1);
                             }
                           }}
@@ -131,7 +138,7 @@ export function NotificationBell() {
                         disabled={currentPage === 1}
                         className="p-1"
                       >
-                        <ChevronLeft className="h-4 w-4" />
+                        <ChevronLeft className="h-4 w-4 text-gray-900 dark:text-white" />
                       </Button>
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         Page {currentPage} sur {totalPages}

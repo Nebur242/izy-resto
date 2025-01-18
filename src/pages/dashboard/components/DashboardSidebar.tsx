@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import { useTranslation } from '../../../i18n/useTranslation';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
-  LayoutDashboard,
-  UtensilsCrossed,
-  ShoppingBag,
-  Settings,
-  List,
-  Store,
-  QrCode,
-  Layers,
-  Users,
-  Package,
+  BarChart,
+  Calculator,
   ChevronLeft,
   ChevronRight,
-  Calculator,
-  Image,
-  Users2,
   CreditCard,
-  BarChart,
+  Image,
+  Layers,
+  LayoutDashboard,
+  List,
+  Package,
+  QrCode,
+  Settings,
+  ShoppingBag,
+  Store,
+  Users,
+  Users2,
+  UtensilsCrossed,
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../../../i18n/useTranslation';
 
 interface DashboardSidebarProps {
   currentPage: string;
@@ -91,7 +91,7 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
                   rounded-lg transition-colors relative group
                   ${
                     currentPage === item.id
-                      ? 'bg-blue-50 text-white dark:bg-blue-900/20'
+                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
                       : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }
                 `}

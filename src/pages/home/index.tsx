@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
-import { useSettings } from '../../hooks';
 import {
   LandingGrid,
   LandingMinimal,
   LandingModern,
 } from '../../components/landing';
+import { useSettings } from '../../hooks';
 
 export const Home = () => {
   const { settings } = useSettings();

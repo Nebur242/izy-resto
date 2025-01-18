@@ -20,7 +20,7 @@ const initializeTheme = async () => {
     // If no localStorage theme, get from settings
     const settings = await settingsService.getSettings();
     const theme = settings?.defaultTheme || 'dark';
-    
+
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     }
@@ -36,7 +36,9 @@ initializeTheme().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <BrowserRouter>
-        <App />
+        <div className="text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 ">
+          <App />
+        </div>
       </BrowserRouter>
     </StrictMode>
   );

@@ -1,8 +1,7 @@
-import React from 'react';
-import { Sun, Moon } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
+import { Button } from '../../../../components/ui/Button';
 import { useTheme } from '../../../../context/ThemeContext';
 import { useTranslation } from '../../../../i18n/useTranslation';
-import { Button } from '../../../../components/ui/Button';
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -16,9 +15,17 @@ export function ThemeToggle() {
       className="h-10 w-10 rounded-full p-0"
     >
       {theme === 'light' ? (
-        <Moon size={20} title={t('common.darkMode')} />
+        <Moon
+          size={20}
+          title={t('common.darkMode')}
+          className="text-gray-900 dark:text-white"
+        />
       ) : (
-        <Sun size={20} title={t('common.lightMode')} />
+        <Sun
+          size={20}
+          title={t('common.lightMode')}
+          className="text-gray-900 dark:text-white"
+        />
       )}
     </Button>
   );

@@ -42,6 +42,16 @@ export interface SEOSettings {
   googleSiteVerification?: string;
 }
 
+export interface PaletteColor {
+  name: string;
+  description: string;
+  colors: {
+    name: string;
+    hex: string;
+    class: string;
+  }[];
+}
+
 export interface RestaurantSettings {
   name: string;
   description: string;
@@ -92,5 +102,8 @@ export interface RestaurantSettings {
     defaultPercentages: string[];
     allowCustom: boolean;
     label: string;
+  };
+  theme: {
+    paletteColor: PaletteColor;
   };
 }
