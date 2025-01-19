@@ -1,10 +1,10 @@
+import { Loader2, Package, Search, X } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { X, Package, Search, Loader2 } from 'lucide-react';
-import { Button } from '../../../ui/Button';
-import { InventoryItem } from '../../../../types/inventory';
 import { useSettings } from '../../../../hooks/useSettings';
+import { InventoryItem } from '../../../../types/inventory';
 import { formatCurrency } from '../../../../utils/currency';
+import { Button } from '../../../ui/Button';
 
 interface StockUpdateFormProps {
   items: InventoryItem[];
@@ -107,7 +107,7 @@ export function StockUpdateForm({
         {/* Form Content */}
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
-          className="flex flex-col flex-1 min-h-0"
+          className="flex flex-col flex-1"
         >
           <div className="flex-1 overflow-y-auto p-4 sm:p-6">
             <div className="space-y-4 sm:space-y-6">

@@ -17,26 +17,22 @@ export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
   const isMobile = useIsMobile();
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
+    <div className="flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden h-screen">
       {/* Only show header on desktop */}
       {!isMobile && (
-        <div className="flex-none">
-          <DashboardHeader
-            onLogout={onLogout}
-            onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          />
-        </div>
+        <DashboardHeader
+          onLogout={onLogout}
+          onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
       )}
 
-      <div className="flex-1 flex min-h-0">
+      <div className="flex-1 flex">
         {/* Sidebar - Hidden on mobile by default */}
         {!isMobile && (
-          <div className="flex-none">
-            <DashboardSidebar
-              currentPage={currentPage}
-              onClose={() => setIsSidebarOpen(false)}
-            />
-          </div>
+          <DashboardSidebar
+            currentPage={currentPage}
+            onClose={() => setIsSidebarOpen(false)}
+          />
         )}
 
         {/* Mobile Sidebar */}
@@ -67,8 +63,8 @@ export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
         </AnimatePresence>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto p-4 md:p-6">
+        <main className="flex-1 h-[calc(100vh-64px)] overflow-y-scroll">
+          <div className="overflow-y-scroll p-4 md:p-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

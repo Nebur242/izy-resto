@@ -13,10 +13,12 @@ interface ProductDetailsModalProps {
   item: MenuItemWithVariants | null;
   onClose: () => void;
   onAddToCart?: (item: MenuItem & { quantity: number }) => void;
+  isOpen: boolean;
 }
 
 export function ProductDetailsModal({
   item,
+  isOpen,
   onClose,
   onAddToCart,
 }: ProductDetailsModalProps) {
@@ -201,7 +203,12 @@ export function ProductDetailsModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
+        isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+      } bg-black/50 backdrop-blur-sm overflow-y-auto transition-all duration-300`}
+      style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
+    >
       <motion.div
         ref={modalRef}
         initial={{ opacity: 0, scale: 0.9 }}

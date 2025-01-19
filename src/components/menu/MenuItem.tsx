@@ -175,12 +175,11 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
         </div>
 
         {/* Modal */}
-        {showModal && (
-          <ProductDetailsModal
-            item={item}
-            onClose={() => setShowModal(false)}
-          />
-        )}
+        <ProductDetailsModal
+          isOpen={showModal}
+          item={item}
+          onClose={() => setShowModal(false)}
+        />
       </>
     );
   }

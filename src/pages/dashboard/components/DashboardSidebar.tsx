@@ -62,7 +62,7 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
     <motion.aside
       initial={false}
       animate={{ width: isCollapsed ? '5rem' : '16rem' }}
-      className="relative h-full bg-white dark:bg-gray-800 flex flex-col shadow-sm"
+      className="relative bg-white dark:bg-gray-800 flex flex-col shadow-sm h-[calc(100vh-64px)] overflow-y-scroll"
     >
       {/* Toggle Button */}
       <button
@@ -77,7 +77,7 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
       </button>
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
+      <div className="overflow-y-scroll flex-1 overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
         <nav className="p-3 pt-8">
           {menuItems.map(item => (
             <motion.div key={item.id} className="relative my-1" initial={false}>

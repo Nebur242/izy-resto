@@ -1,10 +1,10 @@
-import { DashboardLayout } from './DashboardLayout';
-import { useStaffCheck } from '../../hooks/useStaffCheck';
-import { usePageLoading } from '../../hooks/usePageLoading';
 import { LoadingScreen } from '../../components/ui/LoadingScreen';
-import { DashboardRoutes } from './routes/DashboardRoutes';
 import { Toast } from '../../components/ui/Toast';
 import { useAuth } from '../../context/AuthContext';
+import { usePageLoading } from '../../hooks/usePageLoading';
+import { useStaffCheck } from '../../hooks/useStaffCheck';
+import { DashboardLayout } from './DashboardLayout';
+import { DashboardRoutes } from './routes/DashboardRoutes';
 
 export default function Dashboard() {
   const { logout } = useAuth();
