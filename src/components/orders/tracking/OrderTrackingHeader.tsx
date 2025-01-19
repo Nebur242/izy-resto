@@ -1,9 +1,9 @@
-import React from 'react';
-import { Order } from '../../../types';
+import { CreditCard, Truck, Utensils } from 'lucide-react';
 import { useSettings } from '../../../hooks/useSettings';
+import useTextColor from '../../../hooks/useTextColor';
+import { Order } from '../../../types';
 import { formatCurrency } from '../../../utils/currency';
 import { formatFirestoreTimestamp } from '../../../utils/date';
-import { CreditCard, Truck, Utensils } from 'lucide-react';
 
 interface OrderTrackingHeaderProps {
   order: Order;
@@ -11,6 +11,7 @@ interface OrderTrackingHeaderProps {
 
 export function OrderTrackingHeader({ order }: OrderTrackingHeaderProps) {
   const { settings } = useSettings();
+  const textClasses = useTextColor();
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-b-xl p-6 shadow-sm">
@@ -24,7 +25,7 @@ export function OrderTrackingHeader({ order }: OrderTrackingHeaderProps) {
           </p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <p className={`text-2xl font-bold ${textClasses}`}>
             {formatCurrency(order.total, settings?.currency)}
           </p>
           <p className="text-gray-600 dark:text-gray-400">

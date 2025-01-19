@@ -1,31 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
-  ShoppingBag,
+  AlertCircle,
   ArrowLeft,
-  Phone,
+  Check,
+  CreditCard,
+  ExternalLink,
   Mail,
   MapPin,
-  CreditCard,
-  Check,
-  ExternalLink,
+  Phone,
+  ShoppingBag,
   X,
-  AlertCircle,
 } from 'lucide-react';
-import { Button } from '../ui/Button';
-import { useSettings } from '../../hooks/useSettings';
-import { formatCurrency } from '../../utils/currency';
+import React, { useEffect, useState } from 'react';
+import { getCurrencyObject } from '../../constants/defaultSettings';
 import { useCart } from '../../context/CartContext';
 import { usePayments } from '../../hooks/usePayments';
-import { QRCodeModal } from './QRCodeModal';
+import { usePaytech } from '../../hooks/usePaytech';
+import { useSettings } from '../../hooks/useSettings';
+import useTextColor from '../../hooks/useTextColor';
+import { getOrderByRef } from '../../services/payments/paytech.service';
 import { CartItem } from '../../types';
 import { PaymentMethod } from '../../types/payment';
-import { usePaytech } from '../../hooks/usePaytech';
-import { getOrderByRef } from '../../services/payments/paytech.service';
-import { StripePayment } from './StripePayment';
-import { getCurrencyObject } from '../../constants/defaultSettings';
-import { CinetPayPayment } from './CinetPayPayment';
+import { formatCurrency } from '../../utils/currency';
 import { formatTaxRate } from '../../utils/tax';
+import { Button } from '../ui/Button';
+import { CinetPayPayment } from './CinetPayPayment';
+import { QRCodeModal } from './QRCodeModal';
+import { StripePayment } from './StripePayment';
 
 interface OrderConfirmationProps {
   customerData: {
@@ -52,6 +53,7 @@ export function OrderConfirmation({
   setSelectedPaymentMethod,
 }: OrderConfirmationProps) {
   const { settings } = useSettings();
+  const textClasses = useTextColor();
   const { subtotal, taxes, tip, total, cart, setTipPercentage } = useCart();
 
   const { paymentMethods } = usePayments();
@@ -78,6 +80,8 @@ export function OrderConfirmation({
   const currencyObject = settings
     ? getCurrencyObject(settings.currency!)
     : null;
+
+  const selectedPaymentBg = `${settings?.theme?.paletteColor?.colors[0]?.borderClass} bg-blue-50`;
 
   const handleConfirm = async () => {
     try {
@@ -199,7 +203,7 @@ export function OrderConfirmation({
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold flex items-center gap-2">
-          <ShoppingBag className="w-6 h-6 text-blue-500" />
+          <ShoppingBag className={`w-6 h-6 ${textClasses}`} />
           Confirmation de commande
         </h2>
       </div>
@@ -319,7 +323,7 @@ export function OrderConfirmation({
             {/* Total */}
             <div className="flex justify-between text-lg font-semibold border-t dark:border-gray-700 pt-2">
               <span>Total</span>
-              <span className="text-blue-600 dark:text-blue-400">
+              <span className={`${textClasses}`}>
                 {formatCurrency(total, settings?.currency)}
               </span>
             </div>
@@ -378,7 +382,7 @@ export function OrderConfirmation({
                   relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all
                   ${
                     selectedPayment === method.id
-                      ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
+                      ? `${selectedPaymentBg} bg-blue-50 dark:bg-blue-900/20`
                       : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                   }
                 `}
@@ -420,7 +424,13 @@ export function OrderConfirmation({
                     className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
                     transition-colors duration-200 ${
                       selectedPayment === method.id
-                        ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400'
+                        ? `${
+                            settings?.theme?.paletteColor?.colors[0]
+                              ?.borderClass || 'border-blue-500'
+                          } ${
+                            settings?.theme?.paletteColor?.colors[0]
+                              ?.borderClass || 'bg-blue-500'
+                          }`
                         : 'border-gray-300 dark:border-gray-600'
                     }`}
                   >
@@ -430,7 +440,10 @@ export function OrderConfirmation({
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           exit={{ scale: 0 }}
-                          className="w-2.5 h-2.5 rounded-full bg-white"
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            settings?.theme?.paletteColor?.colors[0]?.class ||
+                            'bg-white'
+                          }`}
                         />
                       )}
                     </AnimatePresence>
@@ -456,7 +469,8 @@ export function OrderConfirmation({
                     </p>
                     <Button
                       onClick={() => setHasPaid(true)}
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-colors"
+                      className="w-full text-white transition-colors"
+                      variant="primary"
                     >
                       <Check className="w-4 h-4 mr-2" />
                       J'ai payé
@@ -483,11 +497,7 @@ export function OrderConfirmation({
                 !selectedPayment) ||
               isConfirmingOrder
             }
-            className={`
-            bg-gradient-to-r from-blue-600 to-indigo-600
-            hover:from-blue-700 hover:to-indigo-700
-            disabled:opacity-50 disabled:cursor-not-allowed
-          `}
+            variant="primary"
           >
             {renderPaymentButton()}
           </Button>
@@ -668,8 +678,6 @@ const PayTechPaymentButton = ({
             : requestPayment
         }
         className={`
-    bg-gradient-to-r from-blue-600 to-indigo-600
-    hover:from-blue-700 hover:to-indigo-700
     disabled:opacity-50 disabled:cursor-not-allowed
   `}
       >

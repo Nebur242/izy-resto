@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Utensils, Lock, ArrowLeft, Mail, AlertCircle } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Lock, Mail, Utensils } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '../../components/ui/Button';
 import { useAuth } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -74,7 +74,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[var(--bg-color)] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* Back Button */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
         <Link to="/">

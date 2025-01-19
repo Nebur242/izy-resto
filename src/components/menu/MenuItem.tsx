@@ -1,11 +1,12 @@
 import { forwardRef, useMemo, useState } from 'react';
-import { MenuItem as MenuItemType, MenuItemWithVariants } from '../../types';
-import { Badge } from '../ui/Badge';
 import { useCart } from '../../context/CartContext';
-import { useSettings } from '../../hooks/useSettings';
-import { ProductDetailsModal } from './ProductDetailsModal';
-import { formatCurrency } from '../../utils/currency';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { useSettings } from '../../hooks/useSettings';
+import useTextColor from '../../hooks/useTextColor';
+import { MenuItem as MenuItemType, MenuItemWithVariants } from '../../types';
+import { formatCurrency } from '../../utils/currency';
+import { Badge } from '../ui/Badge';
+import { ProductDetailsModal } from './ProductDetailsModal';
 
 interface MenuItemProps {
   item: MenuItemType;
@@ -15,6 +16,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
   ({ item }, ref) => {
     const { cart } = useCart();
     const { settings } = useSettings();
+    const textClasses = useTextColor();
     const [showModal, setShowModal] = useState(false);
     const itemInCart = cart.find(cartItem => cartItem.id === item.id);
     const isOutOfStock = item.stockQuantity === 0;
@@ -123,7 +125,15 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
           <div className="flex flex-1 flex-col justify-between p-3 md:p-5">
             {/* Title and Description */}
             <div>
-              <h3 className="mb-1 text-base font-semibold text-gray-900 line-clamp-1 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400 md:text-lg md:mb-2">
+              <h3
+                className={`mb-1 text-base font-semibold text-gray-900 line-clamp-1 transition-colors group-hover:${
+                  settings?.theme?.paletteColor?.colors[0]?.textHover ||
+                  'text-blue-600'
+                } dark:text-white dark:group-hover:${
+                  settings?.theme?.paletteColor?.colors[0]?.textHover ||
+                  'text-blue-400'
+                } md:text-lg md:mb-2`}
+              >
                 {item.name}
               </h3>
 

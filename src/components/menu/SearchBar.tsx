@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Search, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import { useSettings } from '../../hooks';
 
 interface SearchBarProps {
   onSearch: (term: string) => void;
 }
 
 export function SearchBar({ onSearch }: SearchBarProps) {
+  const { settings } = useSettings();
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,6 +22,8 @@ export function SearchBar({ onSearch }: SearchBarProps) {
     onSearch('');
   };
 
+  console.log(settings, 'settings');
+
   return (
     <div className="relative max-w-xl mx-auto">
       <div className="relative">
@@ -29,10 +33,16 @@ export function SearchBar({ onSearch }: SearchBarProps) {
           value={searchTerm}
           onChange={handleChange}
           placeholder="Lancer une recherche..."
-          className="w-full pl-12 pr-10 py-3 rounded-full border border-gray-200 dark:border-gray-700 
+          className={`w-full pl-12 pr-10 py-3 rounded-full border border-gray-200 dark:border-gray-700 
                    bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
-                   focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                   shadow-sm hover:shadow-md transition-shadow"
+                   focus:outline-none focus:ring-2 focus:${
+                     settings?.theme?.paletteColor?.colors[0]?.focusClass ||
+                     'ring-blue-500'
+                   }  dark:focus:${
+            settings?.theme?.paletteColor?.colors[0]?.focusClass ||
+            'ring-blue-400'
+          } 
+                   shadow-sm hover:shadow-md transition-shadow`}
         />
         <AnimatePresence>
           {searchTerm && (

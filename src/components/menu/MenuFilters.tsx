@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { useCategories } from '../../hooks/useCategories';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { useSettings } from '../../hooks';
+import { useCategories } from '../../hooks/useCategories';
 
 interface MenuFiltersProps {
   activeCategory: string;
@@ -12,6 +13,7 @@ export function MenuFilters({
   activeCategory,
   onCategoryChange,
 }: MenuFiltersProps) {
+  const { settings } = useSettings();
   const { categories, isLoading } = useCategories();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -56,7 +58,10 @@ export function MenuFilters({
               transition-all duration-200 hover:scale-105
               ${
                 activeCategory === 'all'
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                  ? `${
+                      settings?.theme?.paletteColor?.colors[0]?.class ||
+                      'bg-gradient-to-r from-blue-600 to-indigo-600'
+                    } text-white`
                   : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
               }
             `}
@@ -75,7 +80,10 @@ export function MenuFilters({
                 transition-all duration-200 hover:scale-105
                 ${
                   activeCategory === category.id
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                    ? `${
+                        settings?.theme?.paletteColor?.colors[0]?.class ||
+                        'bg-gradient-to-r from-blue-600 to-indigo-600'
+                      } text-white`
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                 }
               `}

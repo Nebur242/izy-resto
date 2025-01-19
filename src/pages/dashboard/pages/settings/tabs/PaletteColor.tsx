@@ -10,17 +10,28 @@ import { colorPalettes } from '../../../../../utils/colorPalettes';
 function PaletteColor() {
   const { settings } = useSettings();
   const { setValue } = useFormContext<RestaurantSettings>();
-  const [selectedPalette, setSelectedPalette] = useState(colorPalettes[0]);
 
-  const handlePaletteColorChange = async (palette: typePaletteColor) => {
+  // Thème par défaut
+  const defaultTheme = colorPalettes[0];
+
+  // État pour gérer le thème sélectionné
+  const [selectedPalette, setSelectedPalette] = useState(defaultTheme);
+
+  // Gestion du changement de palette
+  const handlePaletteColorChange = (palette: typePaletteColor) => {
     setSelectedPalette(palette);
-    setValue('theme.paletteColor', palette, {
-      shouldDirty: true,
-    });
+    setValue('theme.paletteColor', palette, { shouldDirty: true }); // Sauvegarde du choix
   };
 
+  // Réinitialisation au thème par défaut
+  const resetToDefaultTheme = () => {
+    setSelectedPalette(defaultTheme);
+    setValue('theme.paletteColor', null, { shouldDirty: true }); // Thème remis à la valeur par défaut
+  };
+
+  // Initialisation avec le thème actuel ou le thème par défaut
   useEffect(() => {
-    setSelectedPalette(settings?.theme.paletteColor || colorPalettes[0]);
+    setSelectedPalette(settings?.theme?.paletteColor || defaultTheme);
   }, [settings]);
 
   return (
@@ -33,8 +44,14 @@ function PaletteColor() {
                 Selected Palette: {selectedPalette.name}
               </h2>
             </div>
+            <button
+              onClick={resetToDefaultTheme}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-sm hover:bg-red-600 transition-all"
+            >
+              Reset to Default
+            </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {selectedPalette.colors.map((color, index) => (
               <div key={index} className="group">
                 <div
@@ -61,9 +78,9 @@ function PaletteColor() {
                   ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
                   : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
               }`}
-              onClick={() => handlePaletteColorChange(palette)} // Mettre à jour avec l'objet complet
+              onClick={() => handlePaletteColorChange(palette)}
             >
-              <div className="h-12 grid grid-cols-4">
+              <div className="h-12 grid grid-cols-3">
                 {palette.colors.map((color, colorIndex) => (
                   <div
                     key={colorIndex}

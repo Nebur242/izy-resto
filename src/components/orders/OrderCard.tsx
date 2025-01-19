@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Order } from '../../types';
-import { OrderCardHeader } from './card/OrderCardHeader';
-import { OrderCardDetails } from './card/OrderCardDetails';
-import { OrderTimeline } from './OrderTimeline';
-import { Button } from '../ui/Button';
 import { Printer } from 'lucide-react';
-import { generateReceiptPDF } from '../../utils/pdf';
-import { useSettings } from '../../hooks';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useSettings } from '../../hooks';
+import { Order } from '../../types';
+import { generateReceiptPDF } from '../../utils/pdf';
+import { Button } from '../ui/Button';
+import { OrderCardDetails } from './card/OrderCardDetails';
+import { OrderCardHeader } from './card/OrderCardHeader';
+import { OrderTimeline } from './OrderTimeline';
 
 interface OrderCardProps {
   order: Order;
@@ -87,7 +87,6 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
                     order.status === 'pending' ? 'preparing' : 'delivered'
                   )
                 }
-                className="flex-1 bg-white/90 hover:bg-white text-current"
               >
                 {order.status === 'pending'
                   ? 'Marquer en préparation'
@@ -109,7 +108,8 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
           <Button
             onClick={handlePrint}
             disabled={isPrinting || order.status !== 'delivered'}
-            className="bg-white/90 hover:bg-white text-current px-4 py-2 rounded w-full"
+            className=" text-current px-4 py-2 rounded w-full"
+            variant="primary"
           >
             <Printer className="h-4 w-4 mr-2" />
             {isPrinting ? 'Impression...' : 'Imprimer le ticket'}

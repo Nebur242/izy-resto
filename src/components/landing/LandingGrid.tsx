@@ -1,13 +1,12 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { HeaderWrapper } from '../layout/HeaderWrapper';
-import { GridHero } from './grid/GridHero';
-import { GridMenuSection } from './grid/GridMenuSection';
-import { Container } from '../ui/Container';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useLayoutMount } from '../../hooks/useLayoutMount';
 import { Cart } from '../cart/Cart';
 import { Footer } from '../layout/Footer';
+import { HeaderWrapper } from '../layout/HeaderWrapper';
+import { Container } from '../ui/Container';
 import { LoadingScreen } from '../ui/LoadingScreen';
-import { useLayoutMount } from '../../hooks/useLayoutMount';
+import { GridHero } from './grid/GridHero';
+import { GridMenuSection } from './grid/GridMenuSection';
 
 export function LandingGrid() {
   const { isLoading, isLayoutMounted } = useLayoutMount();
@@ -24,7 +23,7 @@ export function LandingGrid() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="min-h-screen bg-gray-50 dark:bg-gray-900"
+            className="min-h-screen bg-[var(--bg-color)]"
           >
             <HeaderWrapper />
             <GridHero />

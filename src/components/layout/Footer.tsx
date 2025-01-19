@@ -21,6 +21,7 @@ interface SocialMediaIconProps {
 }
 
 function SocialMediaIcon({ profile }: SocialMediaIconProps) {
+  const { settings } = useSettings();
   const icons = {
     facebook: Facebook,
     instagram: Instagram,
@@ -61,13 +62,25 @@ export function Footer() {
       profile => profile.active && profile.url.trim()
     ) || [];
 
+  console.log(settings?.theme?.paletteColor?.colors[0]?.textClass, 'kdkd');
+
   return (
-    <footer className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-8">
+    <footer
+      className={`${
+        `${settings?.theme?.paletteColor?.colors[0]?.darkBgColor}` ||
+        'bg-white dark:bg-gray-900/90'
+      } border-t border-gray-200 dark:border-gray-800 py-8 mt-10 `}
+    >
       <Container>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8">
           {/* Restaurant Info */}
           <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+            <h3
+              className={`text-lg font-semibold ${
+                settings?.theme?.paletteColor?.colors[0]?.textClass ||
+                'text-gray-900'
+              }  dark:text-white mb-3`}
+            >
               {settings?.name || 'Restaurant'}
             </h3>
 

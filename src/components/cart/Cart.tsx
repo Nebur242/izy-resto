@@ -1,13 +1,16 @@
-import { useState } from 'react';
 import { ShoppingCart, X } from 'lucide-react';
+import { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks/useSettings';
-import { CartItem } from './CartItem';
-import { CheckoutForm } from '../checkout/CheckoutForm';
+import useTextColor from '../../hooks/useTextColor';
 import { formatCurrency } from '../../utils/currency';
 import { formatTaxRate } from '../../utils/tax';
+import { CheckoutForm } from '../checkout/CheckoutForm';
+import { Button } from '../ui/Button';
+import { CartItem } from './CartItem';
 
 export function Cart() {
+  const textClasses = useTextColor();
   const { cart, total, taxes, subtotal } = useCart();
   const { settings } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +25,9 @@ export function Cart() {
       {/* Cart Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all z-50 hover:scale-105 active:scale-95"
+        className={`fixed bottom-6 right-6 ${
+          settings?.theme?.paletteColor?.colors[0]?.class || 'bg-blue-600'
+        } text-white p-4 rounded-full shadow-lg hover:from-blue-700 transition-all z-50 hover:scale-105 active:scale-95`}
       >
         <ShoppingCart className="w-6 h-6" />
         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium rounded-full w-6 h-6 flex items-center justify-center">
@@ -100,17 +105,16 @@ export function Cart() {
                       <span className="text-gray-800 dark:text-gray-200">
                         Total Panier
                       </span>
-                      <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                      <span className={`text-xl font-bold ${textClasses}`}>
                         {formatCurrency(total, settings?.currency)}
                       </span>
                     </div>
-                    <button
+                    <Button
                       onClick={() => setIsCheckingOut(true)}
-                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 
-                                 hover:to-indigo-500 text-white font-medium px-6 py-3 rounded-xl shadow-md"
+                      className="w-full px-6 py-3 rounded-xl shadow-md"
                     >
                       Passer la commande
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

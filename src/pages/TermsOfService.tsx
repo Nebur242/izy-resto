@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, FileText } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { useSettings } from '../hooks/useSettings';
 
@@ -8,7 +8,7 @@ export function TermsOfService() {
   const { settings } = useSettings();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4">
+    <div className="min-h-screen bg-[var(--bg-color)] py-12 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Back Button */}
         <Link to="/">

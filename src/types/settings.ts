@@ -44,12 +44,24 @@ export interface SEOSettings {
 
 export interface PaletteColor {
   name: string;
-  description: string;
-  colors: {
+  colors: Array<{
     name: string;
     hex: string;
     class: string;
-  }[];
+    hoverClass: string;
+    focusClass: string;
+    borderClass: string;
+    shadowClass: string;
+    darkBgColor: string;
+    textClass: string;
+    textHover: string;
+    textPrimary: string;
+    textDark: string;
+    textOpacity: string;
+    textDarkOpacity: string;
+    colorName: string;
+    borderColor: string;
+  }>;
 }
 
 export interface RestaurantSettings {

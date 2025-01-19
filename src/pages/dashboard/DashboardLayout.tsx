@@ -1,9 +1,9 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { DashboardHeader } from './components/DashboardHeader';
-import { DashboardSidebar } from './components/DashboardSidebar';
 import { useLocation } from 'react-router-dom';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { DashboardHeader } from './components/DashboardHeader';
+import { DashboardSidebar } from './components/DashboardSidebar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -21,19 +21,19 @@ export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
       {/* Only show header on desktop */}
       {!isMobile && (
         <div className="flex-none">
-          <DashboardHeader 
-            onLogout={onLogout} 
+          <DashboardHeader
+            onLogout={onLogout}
             onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
           />
         </div>
       )}
-      
+
       <div className="flex-1 flex min-h-0">
         {/* Sidebar - Hidden on mobile by default */}
         {!isMobile && (
           <div className="flex-none">
-            <DashboardSidebar 
-              currentPage={currentPage} 
+            <DashboardSidebar
+              currentPage={currentPage}
               onClose={() => setIsSidebarOpen(false)}
             />
           </div>
@@ -57,8 +57,8 @@ export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                 className="fixed inset-y-0 left-0 w-64 z-50"
               >
-                <DashboardSidebar 
-                  currentPage={currentPage} 
+                <DashboardSidebar
+                  currentPage={currentPage}
                   onClose={() => setIsSidebarOpen(false)}
                 />
               </motion.div>

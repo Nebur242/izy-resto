@@ -1,15 +1,16 @@
+import { AnimatePresence, motion } from 'framer-motion';
+import { AlertCircle, Truck, Utensils, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/Button';
-import { useCart } from '../../context/CartContext';
-import { orderService } from '../../services/orders/order.service';
 import toast from 'react-hot-toast';
-import { Utensils, Truck, AlertCircle, X } from 'lucide-react';
-import { OrderConfirmation } from './OrderConfirmation';
-import { PaymentMethod } from '../../types/payment';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks';
-import { AnimatePresence, motion } from 'framer-motion';
+import useTextColor from '../../hooks/useTextColor';
+import { orderService } from '../../services/orders/order.service';
+import { PaymentMethod } from '../../types/payment';
+import { Button } from '../ui/Button';
+import { OrderConfirmation } from './OrderConfirmation';
 
 interface CheckoutFormData {
   name?: string;
@@ -28,6 +29,7 @@ type DiningOption = 'dine-in' | 'delivery';
 type CheckoutStep = 'form' | 'confirmation';
 
 export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
+  const textClasses = useTextColor();
   const navigate = useNavigate();
   const { cart, total, clearCart, subtotal, tip } = useCart();
   const { settings } = useSettings();
@@ -175,8 +177,11 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
            flex flex-col items-center gap-2 relative overflow-hidden
            ${
              diningOption === 'delivery'
-               ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-               : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+               ? `${
+                   settings.theme.paletteColor.colors[0].borderClass ||
+                   'border-blue-500'
+                 } bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20`
+               : 'border-gray-200 dark:border-gray-700  dark:hover:border-blue-600'
            }
          `}
           >
@@ -186,7 +191,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             <Truck
               className={`w-6 h-6 ${
                 diningOption === 'delivery'
-                  ? 'text-blue-500 dark:text-blue-400'
+                  ? `${textClasses}`
                   : 'text-gray-500 dark:text-gray-400'
               }`}
             />
@@ -203,8 +208,11 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
              flex flex-col items-center gap-2 relative overflow-hidden
              ${
                diningOption === 'dine-in'
-                 ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-                 : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+                 ? `${
+                     settings.theme.paletteColor.colors[0].borderClass ||
+                     'border-blue-500'
+                   } bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20`
+                 : 'border-gray-200 dark:border-gray-700 dark:hover:border-blue-600'
              }
            `}
           >
@@ -214,7 +222,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             <Utensils
               className={`w-6 h-6 ${
                 diningOption === 'dine-in'
-                  ? 'text-blue-500 dark:text-blue-400'
+                  ? `${textClasses}`
                   : 'text-gray-500 dark:text-gray-400'
               }`}
             />
@@ -233,7 +241,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             <input
               type="text"
               {...register('name')}
-              className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow"
+              className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:border-transparent transition-shadow"
               placeholder="Votre nom"
             />
           </div>
@@ -253,7 +261,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
                       : false,
                   validate: validatePhone,
                 })}
-                className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow pr-10
+                className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:border-transparent transition-shadow pr-10
                  ${errors.phone ? 'border-red-500 dark:border-red-500' : ''}
                `}
                 placeholder="Numéro de téléphone"
@@ -282,7 +290,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
                 {...register('tableNumber', {
                   required: 'Le numéro de table est requis',
                 })}
-                className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow
+                className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:border-transparent transition-shadow
                  ${
                    errors.tableNumber
                      ? 'border-red-500 dark:border-red-500'
@@ -307,7 +315,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
                   required: "L'adresse de livraison est requise",
                 })}
                 rows={3}
-                className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow resize-none
+                className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:border-transparent transition-shadow resize-none
                  ${errors.address ? 'border-red-500 dark:border-red-500' : ''}
                `}
                 placeholder="Votre adresse complète"
@@ -328,7 +336,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
           <textarea
             {...register('preference')}
             rows={3}
-            className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow resize-none `}
+            className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:border-transparent transition-shadow resize-none `}
             placeholder="Indiquer nous ici vos préférences (exemple: pas de piment...), n'hésiter pas de marquer si vous avez des allergies ou autre chose..."
           />
         </div>
@@ -367,10 +375,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
           >
             Retour
           </Button>
-          <Button
-            type="submit"
-            className="px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-          >
+          <Button type="submit" variant="primary">
             Suivant
           </Button>
         </div>

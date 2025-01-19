@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { useLocation, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
-  // Download,
-  Star,
+  CheckCircle,
+  Clipboard,
   // Share2,
   QrCode,
-  CheckCircle,
+  // Download,
+  Star,
   XCircle,
-  Clipboard,
 } from 'lucide-react';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import { Link, Navigate, useLocation } from 'react-router-dom';
+import { OrderQRCode } from '../components/orders/OrderQRCode';
+import { OrderReceiptDetails } from '../components/orders/receipt/OrderReceiptDetails';
+import { OrderTrackingLink } from '../components/orders/receipt/OrderTrackingLink';
 import { Button } from '../components/ui/Button';
 import { useOrders } from '../context/OrderContext';
 import { useSettings } from '../hooks/useSettings';
-import { OrderReceiptDetails } from '../components/orders/receipt/OrderReceiptDetails';
-import { OrderTrackingLink } from '../components/orders/receipt/OrderTrackingLink';
-import { OrderQRCode } from '../components/orders/OrderQRCode';
-import { generateReceiptPDF } from '../utils/pdf';
 import { orderService } from '../services/orders/order.service';
-import toast from 'react-hot-toast';
+import { generateReceiptPDF } from '../utils/pdf';
 
 export function OrderReceipt() {
   const location = useLocation();
@@ -156,7 +156,6 @@ export function OrderReceipt() {
           </div>
 
           <OrderReceiptDetails order={order} />
-
           {/* Actions */}
           <div className="p-6 border-t dark:border-gray-700">
             <div className="grid grid-cols-1 gap-4">

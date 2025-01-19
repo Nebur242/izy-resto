@@ -39,9 +39,9 @@ export function Header({ onDashboardOpen }: HeaderProps) {
   return (
     <header
       className={`
-        fixed left-0 right-0 top-0 z-50 
+        absolute left-0 right-0 top-0 z-50 
         transition-all duration-300 
-        ${isScrolled ? 'bg-white dark:bg-gray-900/90' : 'bg-transparent'}
+       
       `}
     >
       <Container>
@@ -54,17 +54,19 @@ export function Header({ onDashboardOpen }: HeaderProps) {
               onClick={toggleTheme}
               className={`
                 h-10 w-10 rounded-full p-0 
-                ${
-                  isScrolled
-                    ? 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
-                    : 'text-white hover:bg-white/10'
-                }
+                 text-white
               `}
             >
               {theme === 'light' ? (
-                <Moon size={24} className={isScrolled ? 'text-gray-900' : ''} />
+                <Moon
+                  size={24}
+                  className={isScrolled ? 'text-gray-200' : 'text-gray-200'}
+                />
               ) : (
-                <Sun size={24} />
+                <Sun
+                  size={24}
+                  className={isScrolled ? 'text-gray-200' : 'text-gray-200'}
+                />
               )}
             </Button>
           </div>
@@ -83,17 +85,19 @@ export function Header({ onDashboardOpen }: HeaderProps) {
               className={`
                 ml-4 flex h-10 w-10 items-center justify-center rounded-full p-0 
                 transition-colors 
-                ${
-                  isScrolled
-                    ? 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
-                    : 'text-white hover:bg-white/10'
-                }
               `}
             >
-              <Settings
-                size={24}
-                className={isScrolled ? 'text-gray-900' : ''}
-              />
+              {theme === 'light' ? (
+                <Settings
+                  size={24}
+                  className={isScrolled ? 'text-gray-200' : 'text-gray-200'}
+                />
+              ) : (
+                <Settings
+                  size={24}
+                  className={isScrolled ? 'text-gray-200' : 'text-gray-200'}
+                />
+              )}
             </Button>
           </div>
         </div>
