@@ -104,6 +104,7 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
     allowCustom: true,
     label: 'Pourboire',
   },
+  staffPermissions: ['pos', 'staff', 'orders', 'dashboard'],
 };
 
 const defaultCurrencyInfo =

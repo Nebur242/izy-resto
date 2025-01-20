@@ -5,6 +5,7 @@ import { UserSection } from './header/UserSection';
 
 interface DashboardHeaderProps {
   onLogout: () => void;
+  onMenuClick: VoidFunction;
 }
 
 export function DashboardHeader({ onLogout }: DashboardHeaderProps) {

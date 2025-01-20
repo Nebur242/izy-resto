@@ -4,12 +4,14 @@ import { useStaffPermissions } from '../../../hooks/useStaffPermissions';
 import { PUBLIC_ROUTES } from '../../../constants/routes';
 import type { DashboardRoute } from '../../../constants/routes';
 import { StaffMember } from '../../../types/staff';
+import { RestaurantSettings } from '../../../types';
 
 interface ProtectedRouteProps {
   element: React.ReactElement;
   route: DashboardRoute;
   isStaff: boolean;
   staffData: StaffMember | null;
+  settings: RestaurantSettings | null;
 }
 
 export function ProtectedRoute({
@@ -17,8 +19,9 @@ export function ProtectedRoute({
   route,
   isStaff,
   staffData,
+  settings,
 }: ProtectedRouteProps) {
-  const { allowedRoutes } = useStaffPermissions();
+  const allowedRoutes = settings?.staffPermissions || [];
 
   // Admin has access to all routes
   if (!isStaff || staffData?.role === 'admin') return element;

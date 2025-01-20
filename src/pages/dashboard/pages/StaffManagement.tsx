@@ -7,10 +7,13 @@ import { ConfirmationModal } from '../../../components/ui/ConfirmationModal';
 import { useStaff } from '../../../hooks/useStaff';
 import { StaffMember } from '../../../types/staff';
 import toast from 'react-hot-toast';
+import { useStaffCheck } from '../../../hooks/useStaffCheck';
 
 export function StaffManagement() {
   const { staff, isLoading, createStaff, updateStaff, deleteStaff } =
     useStaff();
+  const { isStaff, staffData } = useStaffCheck();
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
@@ -66,10 +69,12 @@ export function StaffManagement() {
             Gérez les comptes du personnel et leurs accès
           </p>
         </div>
-        <Button onClick={() => setIsFormOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Ajouter un membre
-        </Button>
+        {((isStaff && staffData?.role === 'admin') || !isStaff) && (
+          <Button onClick={() => setIsFormOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter un membre
+          </Button>
+        )}
       </div>
 
       <StaffList

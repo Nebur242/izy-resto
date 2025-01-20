@@ -15,11 +15,11 @@ export function FastFoodMenu() {
   const formatPrice = (price: number) => {
     switch (settings?.currency) {
       case 'EUR':
-        return `€${price.toFixed(2)}`;
+        return `€${price.toFixed(3)}`;
       case 'XOF':
-        return `${price.toFixed(0)} FCFA`;
+        return `${price.toFixed(3)} FCFA`;
       default:
-        return `$${price.toFixed(2)}`;
+        return `$${price.toFixed(3)}`;
     }
   };
 
@@ -38,9 +38,9 @@ export function FastFoodMenu() {
           <h2 className="text-3xl font-bold text-white">
             {items[0]?.category}
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {items.map((item) => (
+            {items.map(item => (
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -49,7 +49,10 @@ export function FastFoodMenu() {
                 className="bg-black/50 backdrop-blur-sm rounded-xl overflow-hidden border border-red-500/20"
               >
                 <div className="aspect-video relative overflow-hidden">
-                  <MenuItemImage item={item} className="w-full h-full object-cover" />
+                  <MenuItemImage
+                    item={item}
+                    className="w-full h-full object-cover"
+                  />
                   <button
                     onClick={() => addToCart(item)}
                     className="absolute bottom-4 right-4 bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transform transition-transform hover:scale-110"
@@ -57,7 +60,7 @@ export function FastFoodMenu() {
                     <Plus className="w-6 h-6" />
                   </button>
                 </div>
-                
+
                 <div className="p-4">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-xl font-bold text-white">

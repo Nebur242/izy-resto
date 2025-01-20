@@ -93,4 +93,5 @@ export interface RestaurantSettings {
     allowCustom: boolean;
     label: string;
   };
+  staffPermissions: string[];
 }

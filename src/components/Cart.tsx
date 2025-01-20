@@ -15,15 +15,20 @@ export function Cart() {
         <h3 className="text-lg font-semibold flex items-center">
           <ShoppingCart className="mr-2" /> Cart
         </h3>
-        <span className="text-lg font-bold">${total.toFixed(2)}</span>
+        <span className="text-lg font-bold">${total.toFixed(3)}</span>
       </div>
-      
+
       <div className="max-h-96 overflow-y-auto">
-        {cart.map((item) => (
-          <div key={item.id} className="flex items-center justify-between py-2 border-b">
+        {cart.map(item => (
+          <div
+            key={item.id}
+            className="flex items-center justify-between py-2 border-b"
+          >
             <div className="flex-1">
               <h4 className="font-medium">{item.name}</h4>
-              <p className="text-sm text-gray-600">${item.price.toFixed(2)} × {item.quantity}</p>
+              <p className="text-sm text-gray-600">
+                ${item.price} × {item.quantity}
+              </p>
             </div>
             <div className="flex items-center space-x-2">
               <button
@@ -49,12 +54,12 @@ export function Cart() {
           </div>
         ))}
       </div>
-      
+
       <button
         onClick={() => alert('Checkout functionality would go here!')}
         className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors"
       >
-        Checkout (${total.toFixed(2)})
+        Checkout (${total})
       </button>
     </div>
   );

@@ -7,26 +7,32 @@ interface CustomerListProps {
 }
 
 export function CustomerList({ orders }: CustomerListProps) {
-  const customers = orders.reduce((acc, order) => {
-    const customer = acc.find(c => c.email === order.customerEmail);
-    if (customer) {
-      customer.totalOrders++;
-      customer.totalSpent += order.total;
-    } else {
-      acc.push({
-        name: order.customerName,
-        email: order.customerEmail,
-        totalOrders: 1,
-        totalSpent: order.total
-      });
-    }
-    return acc;
-  }, [] as Array<{
-    name: string;
-    email: string;
-    totalOrders: number;
-    totalSpent: number;
-  }>).sort((a, b) => b.totalSpent - a.totalSpent).slice(0, 5);
+  const customers = orders
+    .reduce(
+      (acc, order) => {
+        const customer = acc.find(c => c.email === order.customerEmail);
+        if (customer) {
+          customer.totalOrders++;
+          customer.totalSpent += order.total;
+        } else {
+          acc.push({
+            name: order.customerName,
+            email: order.customerEmail,
+            totalOrders: 1,
+            totalSpent: order.total,
+          });
+        }
+        return acc;
+      },
+      [] as Array<{
+        name: string;
+        email: string;
+        totalOrders: number;
+        totalSpent: number;
+      }>
+    )
+    .sort((a, b) => b.totalSpent - a.totalSpent)
+    .slice(0, 5);
 
   return (
     <div className="space-y-4">
@@ -48,7 +54,7 @@ export function CustomerList({ orders }: CustomerListProps) {
           </div>
           <div className="text-right">
             <p className="font-medium text-gray-900 dark:text-white">
-              ${customer.totalSpent.toFixed(2)}
+              ${customer.totalSpent.toFixed(3)}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {customer.totalOrders} orders

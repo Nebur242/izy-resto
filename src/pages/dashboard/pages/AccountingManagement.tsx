@@ -14,7 +14,7 @@ import { useAccounting } from '../../../hooks/useAccounting';
 import { TransactionForm } from '../../../components/dashboard/components/accounting/TransactionForm';
 import { FinancialStatement } from '../../../components/dashboard/components/accounting/FinancialStatement';
 import { accountingService } from '../../../services/accounting/accounting.service';
-import { exportToPng } from '../../../utils/export';
+import { exportToPdf, exportToPng } from '../../../utils/export';
 import toast from 'react-hot-toast';
 import { useSettings } from '../../../hooks';
 import { AccountingTaxesManagement } from './AccountingTaxesManagement';
@@ -37,6 +37,7 @@ export function AccountingManagement() {
     startDate: new Date(new Date().setDate(0)), // First day of current month
     endDate: new Date(),
   });
+  const [isDownloading, setIsDownloading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const statementRef = useRef<HTMLDivElement>(null);
 
@@ -81,115 +82,53 @@ export function AccountingManagement() {
     }
   };
 
-  function exportFinancialStatementToCSV(
-    transactions: Transaction[],
-    period: { startDate: Date; endDate: Date },
-    settings: any
-  ) {
-    try {
-      // Calculate totals
-      const totals = transactions.reduce(
-        (acc, t) => ({
-          debit: acc.debit + (t.debit || 0),
-          credit: acc.credit + (t.credit || 0),
-          net: acc.net + ((t.credit || 0) - (t.debit || 0)),
-        }),
-        { debit: 0, credit: 0, net: 0 }
-      );
-
-      const currency = settings?.currency || 'XOF';
-
-      // Create CSV content
-      let csvContent = '';
-
-      // Add header info
-      csvContent += `${settings?.name || 'Restaurant'}\n`;
-      csvContent += 'États Financiers\n';
-      csvContent += `Période: ${formatDate(period.startDate)} - ${formatDate(
-        period.endDate
-      )}\n\n`;
-
-      // Add summary section
-      csvContent += 'Résumé\n';
-      csvContent += `Total Débit,${formatCurrency(
-        totals.debit,
-        currency
-      ).replace(',', ' ')}\n`;
-      csvContent += `Total Crédit,${formatCurrency(
-        totals.credit,
-        currency
-      ).replace(',', ' ')}\n`;
-      csvContent += `Solde Net,${formatCurrency(totals.net, currency).replace(
-        ',',
-        ' '
-      )}\n\n`;
-
-      // Add transactions
-      csvContent += 'Détail des transactions\n';
-      csvContent += 'Date,Source,Description,Référence,Débit,Crédit,Solde\n';
-
-      transactions.forEach(transaction => {
-        csvContent +=
-          [
-            formatDate(transaction.date),
-            sourceText[transaction.source],
-            transaction.description?.replace(/,/g, ';'), // Replace commas with semicolons to avoid CSV issues
-            transaction.reference,
-            transaction.debit > 0
-              ? formatCurrency(transaction.debit, currency).replace(',', ' ')
-              : '',
-            transaction.credit > 0
-              ? formatCurrency(transaction.credit, currency).replace(',', ' ')
-              : '',
-            formatCurrency(transaction.gross, currency).replace(',', ' '),
-          ].join(',') + '\n';
-      });
-
-      // Add footer
-      csvContent += '\n';
-      csvContent += `Document généré le ${new Date().toLocaleDateString()}\n`;
-      if (settings?.address) {
-        csvContent += `${settings.address}\n`;
-      }
-
-      // Create and trigger download
-      const blob = new Blob(['\ufeff' + csvContent], {
-        type: 'text/csv;charset=utf-8;',
-      });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-
-      link.setAttribute('href', url);
-      link.setAttribute(
-        'download',
-        `etats-financiers-${formatDate(period.startDate)}-${formatDate(
-          period.endDate
-        )}.csv`
-      );
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Error generating financial statement CSV:', error);
-      throw new Error('Failed to generate financial statement CSV');
-    }
-  }
-
   // Update the handleExport function
   const handleExport = async () => {
+    if (!statementRef.current || !settings) return;
+
     try {
-      // Fetch latest transactions
+      setIsDownloading(true);
+      // Ensure we have the latest transactions for the selected period
       const fetchedTransactions = await accountingService.getTransactions(
         dateRange
       );
 
-      // Generate and download CSV
-      exportFinancialStatementToCSV(fetchedTransactions, dateRange, settings);
+      // Update the ref content with fresh data
+      const statement = (
+        <FinancialStatement
+          transactions={fetchedTransactions}
+          period={dateRange}
+          settings={settings as any}
+        />
+      );
+
+      // Render the statement into the hidden div
+      const root = document.createElement('div');
+      root.style.position = 'absolute';
+      root.style.left = '-9999px';
+      document.body.appendChild(root);
+
+      const { createRoot } = await import('react-dom/client');
+      const reactRoot = createRoot(root);
+      await new Promise<void>(resolve => {
+        reactRoot.render(<div ref={statementRef}>{statement}</div>);
+        // Wait for render to complete
+        setTimeout(resolve, 100);
+      });
+
+      // Export to PNG
+      await exportToPdf(root);
+
+      // Cleanup
+      document.body.removeChild(root);
+      reactRoot.unmount();
 
       toast.success('États financiers exportés avec succès');
     } catch (error) {
       console.error('Error exporting statement:', error);
       toast.error("Erreur lors de l'export");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -220,12 +159,14 @@ export function AccountingManagement() {
                   Ajouter une Transaction
                 </Button>
                 <Button
-                  disabled={settingsLoading && !settings}
+                  disabled={(settingsLoading && !settings) || isDownloading}
                   variant="secondary"
                   onClick={handleExport}
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  Télécharger les États financiers
+                  {isDownloading
+                    ? 'Téléchargement en cours...'
+                    : 'Télécharger les États financiers'}
                 </Button>
               </div>
             </div>

@@ -87,6 +87,11 @@ export function PaymentMethodForm({
         return;
       }
 
+      if (methodType === 'Autres' && !data.qrCode) {
+        toast.error('Qrcode obligatoire...');
+        return;
+      }
+
       await onSave(data);
     } catch (error: any) {
       if (error.code === 'payment/duplicate-name') {

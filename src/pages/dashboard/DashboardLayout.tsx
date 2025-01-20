@@ -4,37 +4,52 @@ import { DashboardHeader } from './components/DashboardHeader';
 import { DashboardSidebar } from './components/DashboardSidebar';
 import { useLocation } from 'react-router-dom';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { RestaurantSettings } from '../../types';
+import { StaffMember } from '../../types/staff';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   onLogout: () => void;
+  isStaff: boolean;
+  staffData: StaffMember | null;
+  settings: RestaurantSettings | null;
 }
 
-export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
+export function DashboardLayout({
+  children,
+  onLogout,
+  settings,
+  isStaff,
+  staffData,
+}: DashboardLayoutProps) {
   const location = useLocation();
   const currentPage = location.pathname.split('/dashboard/')[1] || '';
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
+  const allowedRoutes = settings?.staffPermissions || [];
 
   return (
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
       {/* Only show header on desktop */}
       {!isMobile && (
         <div className="flex-none">
-          <DashboardHeader 
-            onLogout={onLogout} 
+          <DashboardHeader
+            onLogout={onLogout}
             onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
           />
         </div>
       )}
-      
+
       <div className="flex-1 flex min-h-0">
         {/* Sidebar - Hidden on mobile by default */}
         {!isMobile && (
           <div className="flex-none">
-            <DashboardSidebar 
-              currentPage={currentPage} 
+            <DashboardSidebar
+              currentPage={currentPage}
               onClose={() => setIsSidebarOpen(false)}
+              isStaff={isStaff}
+              staffData={staffData}
+              settings={settings}
             />
           </div>
         )}
@@ -57,9 +72,12 @@ export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                 className="fixed inset-y-0 left-0 w-64 z-50"
               >
-                <DashboardSidebar 
-                  currentPage={currentPage} 
+                <DashboardSidebar
+                  currentPage={currentPage}
                   onClose={() => setIsSidebarOpen(false)}
+                  isStaff={isStaff}
+                  staffData={staffData}
+                  settings={settings}
                 />
               </motion.div>
             </>

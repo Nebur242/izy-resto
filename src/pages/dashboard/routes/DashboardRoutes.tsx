@@ -18,44 +18,72 @@ import { PaymentManagement } from '../pages/PaymentManagement';
 import { TrafficAnalytics } from '../pages/TrafficAnalytics';
 import { ProtectedRoute } from './ProtectedRoute';
 import { StaffMember } from '../../../types/staff';
+import { RestaurantSettings } from '../../../types';
 
 interface DashboardRoutesProps {
   isStaff: boolean;
   staffData: StaffMember | null;
+  settings: RestaurantSettings | null;
 }
 
-export function DashboardRoutes({ isStaff, staffData }: DashboardRoutesProps) {
-  const wrapComponent = (Component: React.ComponentType<any>) => (
-    <DashboardPageWrapper>
-      <Component />
-    </DashboardPageWrapper>
-  );
+const WrapComponent = ({ children }: { children: React.ReactNode }) => (
+  <DashboardPageWrapper>{children}</DashboardPageWrapper>
+);
 
+export function DashboardRoutes({
+  isStaff,
+  staffData,
+  settings,
+}: DashboardRoutesProps) {
   return (
     <Routes>
       {/* Core Operations */}
-      <Route 
-        path="/" 
+      <Route
+        path="/"
         element={
           <ProtectedRoute
-            route=""
-            element={wrapComponent(Overview)}
+            settings={settings}
+            route="dashboard"
+            element={
+              <WrapComponent>
+                <Overview />
+              </WrapComponent>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
         }
       />
-      
-      <Route path="/orders" element={wrapComponent(OrderManagement)} />
-      <Route path="/pos" element={wrapComponent(POS)} />
+
+      <Route
+        path="/orders"
+        element={
+          <WrapComponent>
+            <OrderManagement />
+          </WrapComponent>
+        }
+      />
+      <Route
+        path="/pos"
+        element={
+          <DashboardPageWrapper>
+            <POS />
+          </DashboardPageWrapper>
+        }
+      />
 
       {/* Analytics */}
-      <Route 
-        path="/traffic" 
+      <Route
+        path="/traffic"
         element={
           <ProtectedRoute
+            settings={settings}
             route="traffic"
-            element={wrapComponent(TrafficAnalytics)}
+            element={
+              <DashboardPageWrapper>
+                <TrafficAnalytics />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
@@ -63,36 +91,51 @@ export function DashboardRoutes({ isStaff, staffData }: DashboardRoutesProps) {
       />
 
       {/* Menu Management */}
-      <Route 
-        path="/menu" 
+      <Route
+        path="/menu"
         element={
           <ProtectedRoute
+            settings={settings}
             route="menu"
-            element={wrapComponent(MenuManagement)}
+            element={
+              <DashboardPageWrapper>
+                <MenuManagement />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
         }
       />
-      
-      <Route 
-        path="/categories" 
+
+      <Route
+        path="/categories"
         element={
           <ProtectedRoute
+            settings={settings}
             route="categories"
-            element={wrapComponent(CategoryManagement)}
+            element={
+              <DashboardPageWrapper>
+                <CategoryManagement />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
         }
       />
-      
-      <Route 
-        path="/variants" 
+
+      <Route
+        path="/variants"
         element={
           <ProtectedRoute
+            settings={settings}
             route="variants"
-            element={wrapComponent(VariantManagement)}
+            element={
+              <DashboardPageWrapper>
+                <VariantManagement />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
@@ -100,36 +143,51 @@ export function DashboardRoutes({ isStaff, staffData }: DashboardRoutesProps) {
       />
 
       {/* Stock & Finance */}
-      <Route 
-        path="/inventory" 
+      <Route
+        path="/inventory"
         element={
           <ProtectedRoute
+            settings={settings}
             route="inventory"
-            element={wrapComponent(InventoryManagement)}
+            element={
+              <DashboardPageWrapper>
+                <InventoryManagement />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
         }
       />
-      
-      <Route 
-        path="/accounting" 
+
+      <Route
+        path="/accounting"
         element={
           <ProtectedRoute
+            settings={settings}
             route="accounting"
-            element={wrapComponent(AccountingManagement)}
+            element={
+              <DashboardPageWrapper>
+                <AccountingManagement />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
         }
       />
-      
-      <Route 
-        path="/payments" 
+
+      <Route
+        path="/payments"
         element={
           <ProtectedRoute
+            settings={settings}
             route="payments"
-            element={wrapComponent(PaymentManagement)}
+            element={
+              <DashboardPageWrapper>
+                <PaymentManagement />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
@@ -137,51 +195,78 @@ export function DashboardRoutes({ isStaff, staffData }: DashboardRoutesProps) {
       />
 
       {/* Customer Experience */}
-      <Route 
-        path="/customers" 
+      <Route
+        path="/customers"
         element={
           <ProtectedRoute
+            settings={settings}
             route="customers"
-            element={wrapComponent(CustomerManagement)}
+            element={
+              <DashboardPageWrapper>
+                <CustomerManagement />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
         }
       />
-      
-      <Route path="/qr-code" element={wrapComponent(QRCodeManagement)} />
+
+      <Route
+        path="/qr-code"
+        element={
+          <DashboardPageWrapper>
+            <QRCodeManagement />
+          </DashboardPageWrapper>
+        }
+      />
 
       {/* Administration */}
-      <Route 
-        path="/staff" 
+      <Route
+        path="/staff"
         element={
           <ProtectedRoute
+            settings={settings}
             route="staff"
-            element={wrapComponent(StaffManagement)}
+            element={
+              <DashboardPageWrapper>
+                <StaffManagement />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
         }
       />
-      
-      <Route 
-        path="/media" 
+
+      <Route
+        path="/media"
         element={
           <ProtectedRoute
+            settings={settings}
             route="media"
-            element={wrapComponent(MediaLibrary)}
+            element={
+              <DashboardPageWrapper>
+                <MediaLibrary />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />
         }
       />
-      
-      <Route 
-        path="/settings" 
+
+      <Route
+        path="/settings"
         element={
           <ProtectedRoute
+            settings={settings}
             route="settings"
-            element={wrapComponent(Settings)}
+            element={
+              <DashboardPageWrapper>
+                <Settings />
+              </DashboardPageWrapper>
+            }
             isStaff={isStaff}
             staffData={staffData}
           />

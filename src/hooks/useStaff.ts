@@ -27,7 +27,10 @@ export function useStaff() {
       await staffService.createStaffMember(data.email, data.password!, {
         name: data.name,
         role: data.role,
-        active: true
+        active: true,
+        createdAt: new Date().toDateString(),
+        updatedAt: new Date().toDateString(),
+        permissions: [],
       });
       await loadStaff(); // Refresh list
     } catch (error) {
@@ -62,6 +65,6 @@ export function useStaff() {
     createStaff,
     updateStaff,
     deleteStaff,
-    refreshStaff: loadStaff
+    refreshStaff: loadStaff,
   };
 }

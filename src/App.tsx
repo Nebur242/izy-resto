@@ -9,6 +9,7 @@ import { RestaurantClosedModal } from './components/ui/RestaurantClosedModal';
 import { CookieBanner } from './components/ui/CookieBanner';
 import { HolidayClosureModal } from './components/ui/HolidayClosureModal';
 import { ServerCartProvider } from './context/ServerCartContext';
+import { Toast } from './components/ui';
 
 export default function App() {
   // Add SEO hook to update title and favicon
@@ -25,6 +26,7 @@ export default function App() {
                 <RestaurantClosedModal />
                 <HolidayClosureModal />
                 <CookieBanner />
+                <Toast />
               </OrderProvider>
             </ServerCartProvider>
           </CartProvider>

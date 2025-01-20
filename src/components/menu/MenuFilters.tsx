@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useCategories } from '../../hooks/useCategories';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Filter } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface MenuFiltersProps {
   activeCategory: string;
@@ -13,12 +13,33 @@ export function MenuFilters({
   onCategoryChange,
 }: MenuFiltersProps) {
   const { categories, isLoading } = useCategories();
-  const [isOpen, setIsOpen] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftScroll, setShowLeftScroll] = useState(false);
+  const [showRightScroll, setShowRightScroll] = useState(false);
 
-  const activeCategoryName =
-    activeCategory === 'all'
-      ? 'Menu principal'
-      : categories.find(c => c.id === activeCategory)?.name || 'Sélectionner';
+  const checkScroll = () => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      setShowLeftScroll(container.scrollLeft > 0);
+      setShowRightScroll(
+        container.scrollLeft < container.scrollWidth - container.clientWidth - 1
+      );
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, [categories]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const scrollAmount = direction === 'left' ? -200 : 200;
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -27,54 +48,40 @@ export function MenuFilters({
   }
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto px-4">
-      {/* Mobile Filter Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden w-full px-4 py-3 bg-white dark:bg-gray-800 rounded-full shadow-sm
-                 border border-gray-200 dark:border-gray-700 flex items-center justify-between
-                 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-      >
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium">{activeCategoryName}</span>
-        </div>
-        <ChevronDown
-          className={`w-4 h-4 text-gray-500 transition-transform ${
-            isOpen ? 'rotate-180' : ''
-          }`}
-        />
-      </button>
-
-      {/* Desktop Categories */}
-      <div className="hidden lg:flex flex-wrap items-center justify-center gap-2 w-full overflow-x-auto py-2">
-        <div className="inline-flex flex-wrap items-center justify-center gap-2 min-w-0">
-          <motion.button
-            onClick={() => onCategoryChange('all')}
-            className={`
-              px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
-              transition-all duration-200 hover:scale-105
-              ${
-                activeCategory === 'all'
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-              }
-            `}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Menu principal
-          </motion.button>
-
-          {categories.map(category => (
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-3xl flex items-center gap-2 px-4">
+        {/* Left Scroll Button */}
+        <AnimatePresence>
+          {showLeftScroll && (
             <motion.button
-              key={category.id}
-              onClick={() => onCategoryChange(category.id)}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              onClick={() => scroll('left')}
+              className="flex-none p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg
+                       border border-gray-200 dark:border-gray-700 hover:bg-gray-50 
+                       dark:hover:bg-gray-700/50 transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
+        {/* Scrollable Categories Container */}
+        <div
+          ref={scrollContainerRef}
+          onScroll={checkScroll}
+          className="flex-1 flex items-center justify-start gap-2 overflow-x-auto scroll-smooth
+                   [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
+          <div className="flex items-center gap-2 px-4 mx-auto">
+            <motion.button
+              onClick={() => onCategoryChange('all')}
               className={`
-                px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
+                flex-none px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
                 transition-all duration-200 hover:scale-105
                 ${
-                  activeCategory === category.id
+                  activeCategory === 'all'
                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                 }
@@ -82,75 +89,48 @@ export function MenuFilters({
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              {category.name}
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      {/* Mobile Categories Dropdown */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="lg:hidden absolute left-0 right-0 top-full mt-2 py-2 bg-white dark:bg-gray-800 
-                     rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 z-50
-                     max-h-[60vh] overflow-y-auto"
-          >
-            <button
-              onClick={() => {
-                onCategoryChange('all');
-                setIsOpen(false);
-              }}
-              className={`
-                w-full px-4 py-3 text-left text-sm transition-colors
-                ${
-                  activeCategory === 'all'
-                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                }
-              `}
-            >
               Menu principal
-            </button>
+            </motion.button>
 
             {categories.map(category => (
-              <button
+              <motion.button
                 key={category.id}
-                onClick={() => {
-                  onCategoryChange(category.id);
-                  setIsOpen(false);
-                }}
+                onClick={() => onCategoryChange(category.id)}
                 className={`
-                  w-full px-4 py-3 text-left text-sm transition-colors
+                  flex-none px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
+                  transition-all duration-200 hover:scale-105
                   ${
                     activeCategory === category.id
-                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                      : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                   }
                 `}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.95 }}
               >
                 {category.name}
-              </button>
+              </motion.button>
             ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
 
-      {/* Backdrop for mobile */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
-            onClick={() => setIsOpen(false)}
-          />
-        )}
-      </AnimatePresence>
+        {/* Right Scroll Button */}
+        <AnimatePresence>
+          {showRightScroll && (
+            <motion.button
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              onClick={() => scroll('right')}
+              className="flex-none p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg
+                       border border-gray-200 dark:border-gray-700 hover:bg-gray-50 
+                       dark:hover:bg-gray-700/50 transition-colors"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

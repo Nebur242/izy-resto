@@ -18,11 +18,11 @@ export function GridMenuItem({ item }: GridMenuItemProps) {
   const formatPrice = (price: number) => {
     switch (settings?.currency) {
       case 'EUR':
-        return `€${price.toFixed(2)}`;
+        return `€${price.toFixed(3)}`;
       case 'XOF':
         return `${price.toFixed(0)} FCFA`;
       default:
-        return `$${price.toFixed(2)}`;
+        return `$${price.toFixed(3)}`;
     }
   };
 
@@ -39,7 +39,9 @@ export function GridMenuItem({ item }: GridMenuItemProps) {
         <div className="flex items-center justify-between">
           <div className="text-white space-y-1">
             <h3 className="font-semibold text-white">{item.name}</h3>
-            <span className="font-medium text-sm">{formatPrice(item.price)}</span>
+            <span className="font-medium text-sm">
+              {formatPrice(item.price)}
+            </span>
           </div>
           <button
             onClick={() => addToCart(item)}

@@ -14,11 +14,11 @@ interface FeedbackAnalyticsProps {
   itemsPerPage?: number;
 }
 
-export function FeedbackAnalytics({ 
-  orders, 
-  currentPage, 
+export function FeedbackAnalytics({
+  orders,
+  currentPage,
   onPageChange,
-  itemsPerPage = 10 
+  itemsPerPage = 10,
 }: FeedbackAnalyticsProps) {
   const { settings } = useSettings();
 
@@ -26,9 +26,13 @@ export function FeedbackAnalytics({
   const ratedOrders = orders.filter(order => order.rating);
 
   // Calculate average rating
-  const averageRating = ratedOrders.length > 0
-    ? ratedOrders.reduce((sum, order) => sum + (order.rating?.rating || 0), 0) / ratedOrders.length
-    : 0;
+  const averageRating =
+    ratedOrders.length > 0
+      ? ratedOrders.reduce(
+          (sum, order) => sum + (order.rating?.rating || 0),
+          0
+        ) / ratedOrders.length
+      : 0;
 
   // Calculate rating distribution
   const ratingDistribution = ratedOrders.reduce((acc, order) => {
@@ -64,10 +68,10 @@ export function FeedbackAnalytics({
               </p>
               <div className="flex items-center gap-2">
                 <p className="text-2xl font-semibold">
-                  {averageRating.toFixed(1)}
+                  {averageRating.toFixed(3)}
                 </p>
                 <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
+                  {[1, 2, 3, 4, 5].map(star => (
                     <Star
                       key={star}
                       className={`w-4 h-4 ${
@@ -98,9 +102,7 @@ export function FeedbackAnalytics({
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Total avis
               </p>
-              <p className="text-2xl font-semibold">
-                {ratedOrders.length}
-              </p>
+              <p className="text-2xl font-semibold">{ratedOrders.length}</p>
             </div>
           </div>
         </motion.div>
@@ -122,7 +124,9 @@ export function FeedbackAnalytics({
               </p>
               <p className="text-2xl font-semibold">
                 {orders.length > 0
-                  ? `${((ratedOrders.length / orders.length) * 100).toFixed(1)}%`
+                  ? `${((ratedOrders.length / orders.length) * 100).toFixed(
+                      1
+                    )}%`
                   : '0%'}
               </p>
             </div>
@@ -134,12 +138,11 @@ export function FeedbackAnalytics({
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
         <h3 className="text-lg font-semibold mb-4">Distribution des notes</h3>
         <div className="space-y-3">
-          {[5, 4, 3, 2, 1].map((rating) => {
+          {[5, 4, 3, 2, 1].map(rating => {
             const count = ratingDistribution[rating] || 0;
-            const percentage = ratedOrders.length > 0
-              ? (count / ratedOrders.length) * 100
-              : 0;
-            
+            const percentage =
+              ratedOrders.length > 0 ? (count / ratedOrders.length) * 100 : 0;
+
             return (
               <div key={rating} className="flex items-center gap-4">
                 <div className="flex items-center gap-2 w-20">
@@ -157,7 +160,7 @@ export function FeedbackAnalytics({
                 </div>
                 <div className="w-20 text-right">
                   <span className="text-sm text-gray-500">
-                    {count} ({percentage.toFixed(1)}%)
+                    {count} ({percentage.toFixed(3)}%)
                   </span>
                 </div>
               </div>
@@ -171,9 +174,9 @@ export function FeedbackAnalytics({
         <div className="p-6 border-b dark:border-gray-700">
           <h3 className="text-lg font-semibold">Avis clients</h3>
         </div>
-        
+
         <div className="divide-y dark:divide-gray-700">
-          {paginatedOrders.map((order) => (
+          {paginatedOrders.map(order => (
             <div key={order.id} className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -190,7 +193,7 @@ export function FeedbackAnalytics({
                     </div>
                   )}
                   <div className="flex items-center gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
+                    {[1, 2, 3, 4, 5].map(star => (
                       <Star
                         key={star}
                         className={`w-4 h-4 ${
@@ -204,7 +207,9 @@ export function FeedbackAnalytics({
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">
-                    {formatFirestoreTimestamp(order.rating?.createdAt || order.createdAt)}
+                    {formatFirestoreTimestamp(
+                      order.rating?.createdAt || order.createdAt
+                    )}
                   </p>
                   <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
                     {formatCurrency(order.total, settings?.currency)}

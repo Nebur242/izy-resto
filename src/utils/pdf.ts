@@ -86,7 +86,9 @@ export async function generateReceiptPDF(
         <div style="margin-bottom: 8px; ${baseStyles}">
           <div style="${baseStyles}">${formatDate(order.createdAt)}</div>
           <div style="${baseStyles}">TRANSACTION #${order.id.slice(0, 6)}</div>
-          <div style="${baseStyles}">${capitalize(order.diningOption)}</div>
+          <div style="${baseStyles}">${
+      order.diningOption === 'delivery' ? 'Livraison' : 'Sur place'
+    }</div>
           ${
             order.tableNumber
               ? `<div style="${baseStyles}">Table #${order.tableNumber}</div>`
@@ -136,30 +138,41 @@ export async function generateReceiptPDF(
 
         <div style="border-bottom: 1px dashed rgb(0, 0, 0); margin: 8px 0;"></div>
 
+       ${
+         order.subtotal > 0
+           ? `
+        
         <div style="margin-bottom: 8px; ${baseStyles}">
           <div style="display: flex; justify-content: space-between; ${baseStyles}">
             <div style="${baseStyles}">SOUS-TOTAL</div>
             <div style="${baseStyles}">${formatCurrency(
-      order.subtotal,
-      settings?.currency
-    )}</div>
+               order.subtotal,
+               settings?.currency
+             )}</div>
           </div>
+        `
+           : ''
+       } 
 
-          ${order.taxes
-            .map(
-              tax => `
+          ${
+            order.taxes?.length > 0
+              ? order.taxes
+                  ?.map(
+                    tax => `
             <div style="display: flex; justify-content: space-between; ${baseStyles}">
               <div style="${baseStyles}">${tax.name} (${Number(
-                tax.rate
-              ).toFixed(1)}%)</div>
+                      tax.rate
+                    ).toFixed(3)}%)</div>
               <div style="${baseStyles}">${formatCurrency(
-                tax.amount,
-                settings?.currency
-              )}</div>
+                      tax.amount,
+                      settings?.currency
+                    )}</div>
             </div>
           `
-            )
-            .join('')}
+                  )
+                  .join('')
+              : ''
+          }
 
           ${
             order.tip
@@ -214,7 +227,7 @@ export async function generateReceiptPDF(
 
         <div style="margin-bottom: 8px; ${baseStyles}">
           <div style="${baseStyles}">${
-      order.paymentMethod?.name || 'PAIEMENT EN ATTENTE'
+      order.paymentMethod?.name || 'PAIEMENT SUR PLACE'
     }</div>
   
         </div>
