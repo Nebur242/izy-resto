@@ -27,6 +27,7 @@ export function formatCurrency(
       if (numericAmount < 0) return `-$${Math.abs(numericAmount).toFixed(3)}`;
       return `$${numericAmount.toFixed(3)}`;
     case 'XOF':
+    case 'XAF':
       return `${numericAmount.toLocaleString()} FCFA`;
     case 'MAD':
       return `${numericAmount.toLocaleString()} DH`;

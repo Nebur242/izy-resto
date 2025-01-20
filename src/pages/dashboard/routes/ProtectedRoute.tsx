@@ -30,7 +30,14 @@ export function ProtectedRoute({
   if (PUBLIC_ROUTES.includes(route as any)) return element;
 
   // Check if route is in allowed staff routes
-  if (allowedRoutes.includes(route)) return element;
+  if (
+    allowedRoutes
+      .filter(
+        item => isStaff && staffData?.role !== 'admin' && item !== 'dashboard'
+      )
+      .includes(route)
+  )
+    return element;
 
   // Redirect to POS if not authorized
   return <Navigate to="/dashboard/pos" replace />;
