@@ -26,7 +26,6 @@ export function DashboardLayout({
   const currentPage = location.pathname.split('/dashboard/')[1] || '';
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
-  const allowedRoutes = settings?.staffPermissions || [];
 
   return (
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
