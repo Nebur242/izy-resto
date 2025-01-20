@@ -21,19 +21,30 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../../i18n/useTranslation';
+import { RestaurantSettings } from '../../../types';
+import { StaffMember } from '../../../types/staff';
 
 interface DashboardSidebarProps {
   currentPage: string;
+  isStaff: boolean;
+  staffData: StaffMember | null;
+  settings: RestaurantSettings | null;
+  onClose: VoidFunction;
 }
 
-export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
+export function DashboardSidebar({
+  currentPage,
+  isStaff,
+  settings,
+  staffData,
+}: DashboardSidebarProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
     // Core Operations
-    { id: '', icon: LayoutDashboard, label: t('dashboard.overview') },
+    { id: 'dashboard', icon: LayoutDashboard, label: t('dashboard.overview') },
     { id: 'orders', icon: ShoppingBag, label: t('dashboard.orders') },
     { id: 'pos', icon: Store, label: t('dashboard.pos') },
     { id: 'traffic', icon: BarChart, label: 'Analyses' },
@@ -79,13 +90,25 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
       {/* Navigation */}
       <div className="overflow-y-scroll flex-1 overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
         <nav className="p-3 pt-8">
-          {menuItems.map(item => (
-            <motion.div key={item.id} className="relative my-1" initial={false}>
-              <motion.button
-                whileHover={{ x: isCollapsed ? 0 : 4 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => navigate(`/dashboard/${item.id}`)}
-                className={`
+          {menuItems
+            .filter(item => {
+              if (!isStaff || staffData?.role === 'admin') return true;
+
+              if (!staffData?.active) return false;
+
+              return settings?.staffPermissions.includes(item.id);
+            })
+            .map(item => (
+              <motion.div
+                key={item.id}
+                className="relative my-1"
+                initial={false}
+              >
+                <motion.button
+                  whileHover={{ x: isCollapsed ? 0 : 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate(`/dashboard/${item.id}`)}
+                  className={`
                   w-full flex items-center space-x-3 
                   ${isCollapsed ? 'justify-center px-3 py-3' : 'px-4 py-3'}
                   rounded-lg transition-colors relative group
@@ -95,38 +118,38 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
                       : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }
                 `}
-              >
-                <div
-                  className={`
+                >
+                  <div
+                    className={`
                   relative z-10 flex items-center 
                   ${isCollapsed ? 'w-full justify-center' : ''}
                 `}
-                >
-                  <item.icon
-                    className={`
+                  >
+                    <item.icon
+                      className={`
                     relative z-10 transition-transform duration-200
                     ${isCollapsed ? 'w-6 h-6 group-hover:scale-110' : 'w-5 h-5'}
                   `}
-                  />
-                  <AnimatePresence mode="wait">
-                    {!isCollapsed && (
-                      <motion.span
-                        initial={{ opacity: 0, width: 0 }}
-                        animate={{ opacity: 1, width: 'auto' }}
-                        exit={{ opacity: 0, width: 0 }}
-                        className="relative z-10 whitespace-nowrap overflow-hidden ml-3"
-                      >
-                        {item.label}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </motion.button>
+                    />
+                    <AnimatePresence mode="wait">
+                      {!isCollapsed && (
+                        <motion.span
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: 'auto' }}
+                          exit={{ opacity: 0, width: 0 }}
+                          className="relative z-10 whitespace-nowrap overflow-hidden ml-3"
+                        >
+                          {item.label}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.button>
 
-              {/* Tooltip for collapsed state */}
-              {isCollapsed && (
-                <div
-                  className="
+                {/* Tooltip for collapsed state */}
+                {isCollapsed && (
+                  <div
+                    className="
                   absolute left-full top-1/2 -translate-y-1/2 ml-3 
                   bg-gray-800 text-white text-xs 
                   px-3 py-2 rounded-md 
@@ -137,12 +160,12 @@ export function DashboardSidebar({ currentPage }: DashboardSidebarProps) {
                   z-50
                   shadow-lg
                 "
-                >
-                  {item.label}
-                </div>
-              )}
-            </motion.div>
-          ))}
+                  >
+                    {item.label}
+                  </div>
+                )}
+              </motion.div>
+            ))}
         </nav>
       </div>
     </motion.aside>

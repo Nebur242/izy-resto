@@ -10,6 +10,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import { useSEO } from './hooks/useSEO';
 import { AppRoutes } from './routes';
 
+import { Toast } from './components/ui';
+
 export default function App() {
   // Add SEO hook to update title and favicon
   useSEO();
@@ -27,6 +29,7 @@ export default function App() {
                 <RestaurantClosedModal />
                 <HolidayClosureModal />
                 <CookieBanner />
+                <Toast />
               </OrderProvider>
             </ServerCartProvider>
           </CartProvider>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { motion } from 'framer-motion';
 import { QrCode } from 'lucide-react';
-import { appConfig } from '../../config/api.config';
 
 interface OrderQRCodeProps {
   orderId: string;

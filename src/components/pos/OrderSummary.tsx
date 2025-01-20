@@ -66,6 +66,7 @@ export function OrderSummary({ items }: OrderSummaryProps) {
         {/* Tips */}
         {settings?.tips.enabled && (
           <div className="pt-2 border-t dark:border-gray-700">
+            <span className="mb-2 block">{settings.tips.label}</span>
             <div className="flex flex-wrap gap-2 mb-2">
               {settings?.tips?.defaultPercentages
                 .map(Number)
@@ -96,7 +97,7 @@ export function OrderSummary({ items }: OrderSummaryProps) {
             {tip && (
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                 <span>
-                  {settings.tips.label} ({tip.percentage}%)
+                  Total {settings.tips.label} ({tip.percentage}%)
                 </span>
                 <span>{formatCurrency(tip.amount, settings?.currency)}</span>
               </div>

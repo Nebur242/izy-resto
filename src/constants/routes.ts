@@ -10,9 +10,11 @@ export const ADMIN_ROUTES = [
   'customers',
   'staff',
   'media',
-  'settings'
+  'settings',
+  'dashboard',
+  'traffic',
 ] as const;
 
-export type PublicRoute = typeof PUBLIC_ROUTES[number];
-export type AdminRoute = typeof ADMIN_ROUTES[number];
+export type PublicRoute = (typeof PUBLIC_ROUTES)[number];
+export type AdminRoute = (typeof ADMIN_ROUTES)[number];
 export type DashboardRoute = PublicRoute | AdminRoute | '';

@@ -12,7 +12,7 @@ interface MenuItemListProps {
 export function MenuItemList({ items, onEdit, onDelete }: MenuItemListProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((item) => (
+      {items.map(item => (
         <div
           key={item.id}
           className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden"
@@ -28,7 +28,7 @@ export function MenuItemList({ items, onEdit, onDelete }: MenuItemListProps) {
                 {item.name}
               </h3>
               <span className="text-lg font-bold text-green-600 dark:text-green-400">
-              FCFA{item.price.toFixed(2)}
+                FCFA{item.price.toFixed(3)}
               </span>
             </div>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">

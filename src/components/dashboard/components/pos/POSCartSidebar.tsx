@@ -50,14 +50,13 @@ export function POSCartSidebar({
   const { total } = useServerCart();
 
   const handleCheckout = async () => {
-    console.log(total);
     try {
       if (!amountPaid) {
         setError('Montant reçu obligatoire');
         return;
       }
       if (amountPaid < total) {
-        setError('Montant reçu doit etre supérieur au total');
+        setError('Montant reçu doit etre supérieur ou égal au total');
         return;
       }
 
@@ -111,11 +110,7 @@ export function POSCartSidebar({
 
         {/* Cart Items */}
         <div className="px-4">
-          <CartItemList
-          // items={cart}
-          // onUpdateQuantity={onUpdateQuantity}
-          // onRemoveItem={onRemoveItem}
-          />
+          <CartItemList />
         </div>
       </div>
 

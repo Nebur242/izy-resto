@@ -2,19 +2,31 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { RestaurantSettings } from '../../types';
+import { StaffMember } from '../../types/staff';
 import { DashboardHeader } from './components/DashboardHeader';
 import { DashboardSidebar } from './components/DashboardSidebar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   onLogout: () => void;
+  isStaff: boolean;
+  staffData: StaffMember | null;
+  settings: RestaurantSettings | null;
 }
 
-export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
+export function DashboardLayout({
+  children,
+  onLogout,
+  settings,
+  isStaff,
+  staffData,
+}: DashboardLayoutProps) {
   const location = useLocation();
   const currentPage = location.pathname.split('/dashboard/')[1] || '';
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
+  const allowedRoutes = settings?.staffPermissions || [];
 
   return (
     <div className="flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden h-screen text-gray-500 dark:text-gray-400 bg-[var(--bg-color)]">
@@ -56,6 +68,9 @@ export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
                 <DashboardSidebar
                   currentPage={currentPage}
                   onClose={() => setIsSidebarOpen(false)}
+                  isStaff={isStaff}
+                  staffData={staffData}
+                  settings={settings}
                 />
               </motion.div>
             </>

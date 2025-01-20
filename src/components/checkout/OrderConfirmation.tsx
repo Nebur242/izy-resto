@@ -280,6 +280,8 @@ export function OrderConfirmation({
             {/* Tips */}
             {settings?.tips.enabled && (
               <div className="pt-2 border-t dark:border-gray-700">
+                <span className="mb-2 block">{settings.tips.label}</span>
+
                 <div className="flex flex-wrap gap-2 mb-2">
                   {settings?.tips?.defaultPercentages
                     .map(Number)

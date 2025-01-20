@@ -4,10 +4,10 @@ import { OrderTimeline } from '../OrderTimeline';
 import { OrderQRCode } from '../OrderQRCode';
 import { Button } from '../../ui';
 import { useState } from 'react';
-import { generateReceiptPDF, generateUserReceipt } from '../../../utils/pdf';
+import { generateUserReceipt } from '../../../utils/pdf';
 import { useSettings } from '../../../hooks';
 import toast from 'react-hot-toast';
-import { Download } from 'lucide-react';
+import { Download, Clipboard } from 'lucide-react';
 import { useOrders } from '../../../context/OrderContext';
 
 interface OrderTrackingTimelineProps {
@@ -53,6 +53,17 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
     }
   };
 
+  const handleCopyLink = async () => {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}/order/${order.id}`
+      );
+      toast.success('Lien copié 👌');
+    } else {
+      window.open(`${window.location.origin}/order/${order.id}`, '_blank');
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
       <h2 className="text-lg font-semibold mb-4">État de la commande</h2>
@@ -75,6 +86,14 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
               Scannez ce code pour suivre votre commande
             </p>
+            <Button
+              variant="primary"
+              onClick={handleCopyLink}
+              className="w-full mt-4"
+            >
+              <Clipboard className="w-4 h-4 mr-2" />
+              Cliquer pour copier
+            </Button>
             <Button
               variant="secondary"
               onClick={handleDownloadReceipt}

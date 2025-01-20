@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { MenuItem, CartItem } from '../types';
+import { MenuItem, CartItem, OrderTip } from '../types';
 import toast from 'react-hot-toast';
 import { useSettings } from '../hooks';
 import {
@@ -18,7 +18,7 @@ interface CartContextType {
   subtotal: number;
   taxes: { id: string; name: string; rate: number; amount: number }[];
   taxTotal: number;
-  tip: { amount: number; percentage?: number } | null;
+  tip: OrderTip | null;
   setTipPercentage: (percentage: number | null) => void;
   total: number;
 }

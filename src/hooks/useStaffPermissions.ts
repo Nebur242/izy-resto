@@ -1,24 +1,28 @@
 import { useState, useEffect } from 'react';
 import { settingsService } from '../services/settings/settings.service';
+import { useSettings } from './useSettings';
 
 export function useStaffPermissions() {
+  const { settings } = useSettings();
+  console.log('settings', settings);
   const [allowedRoutes, setAllowedRoutes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadStaffPermissions();
-  }, []);
+    setAllowedRoutes(settings?.staffPermissions || []);
+  }, [settings]);
 
-  const loadStaffPermissions = async () => {
-    try {
-      const settings = await settingsService.getSettings();
-      setAllowedRoutes(settings?.staffPermissions || []);
-    } catch (error) {
-      console.error('Error loading staff permissions:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const loadStaffPermissions = async () => {
+  //   try {
+  //     const settings = await settingsService.getSettings();
+  //     console.log(settings);
+  //     setAllowedRoutes(settings.staffPermissions || []);
+  //   } catch (error) {
+  //     console.error('Error loading staff permissions:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const updateStaffPermissions = async (routes: string[]) => {
     try {
@@ -33,6 +37,6 @@ export function useStaffPermissions() {
   return {
     allowedRoutes,
     isLoading,
-    updateStaffPermissions
+    updateStaffPermissions,
   };
 }

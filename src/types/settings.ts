@@ -118,4 +118,5 @@ export interface RestaurantSettings {
   theme: {
     paletteColor: PaletteColor;
   };
+  staffPermissions: string[];
 }

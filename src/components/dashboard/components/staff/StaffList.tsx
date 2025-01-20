@@ -1,9 +1,9 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2, Mail, UserCircle, Trash2 } from 'lucide-react';
 import { StaffMember } from '../../../../types/staff';
 import { Badge } from '../../../ui/Badge';
 import { Button } from '../../../ui/Button';
+import { useAuth } from '../../../../hooks';
 
 interface StaffListProps {
   staff: StaffMember[];
@@ -12,7 +12,14 @@ interface StaffListProps {
   onDelete: (member: StaffMember) => void;
 }
 
-export function StaffList({ staff, isLoading, onEdit, onDelete }: StaffListProps) {
+export function StaffList({
+  staff,
+  isLoading,
+  onEdit,
+  onDelete,
+}: StaffListProps) {
+  const { user } = useAuth();
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -29,7 +36,7 @@ export function StaffList({ staff, isLoading, onEdit, onDelete }: StaffListProps
   return (
     <div className="space-y-4">
       <AnimatePresence mode="popLayout">
-        {staff.map((member) => (
+        {staff.map(member => (
           <motion.div
             key={member.id}
             layout
@@ -50,7 +57,9 @@ export function StaffList({ staff, isLoading, onEdit, onDelete }: StaffListProps
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Badge variant={member.role === 'admin' ? 'success' : 'default'}>
+                <Badge
+                  variant={member.role === 'admin' ? 'success' : 'default'}
+                >
                   {member.role === 'admin' ? 'Admin' : 'Staff'}
                 </Badge>
                 <Badge variant={member.active ? 'success' : 'warning'}>
@@ -64,13 +73,15 @@ export function StaffList({ staff, isLoading, onEdit, onDelete }: StaffListProps
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => onDelete(member)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  {user?.email === member.email && (
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => onDelete(member)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
