@@ -10,6 +10,9 @@ import { OrderConfirmation } from './OrderConfirmation';
 import { PaymentMethod } from '../../types/payment';
 import { useSettings } from '../../hooks';
 import { AnimatePresence, motion } from 'framer-motion';
+import { DeliveryZone } from '../../types';
+import { DeliveryZoneSelect } from './DeliveryZoneSelect';
+import { formatCurrency } from '../../utils/currency';
 
 interface CheckoutFormData {
   name?: string;
@@ -29,13 +32,23 @@ type CheckoutStep = 'form' | 'confirmation';
 
 export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   const navigate = useNavigate();
-  const { cart, total, clearCart, subtotal, tip } = useCart();
+  const {
+    cart,
+    total,
+    clearCart,
+    subtotal,
+    tip,
+    setDeliveryZone,
+    deliveryZone,
+  } = useCart();
   const { settings } = useSettings();
   // const { paymentMethods } = usePayments();
   const [diningOption, setDiningOption] = useState<DiningOption | null>(null);
 
   const [step, setStep] = useState<CheckoutStep>('form');
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+
+  // console.log(selectedZone);
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethod | null>(null);
@@ -86,6 +99,10 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
     }
 
     try {
+      // Add delivery fee to total if applicable
+
+      console.log(deliveryZone, total);
+
       const orderId = await orderService.createOrder({
         items: cart,
         status: 'pending',
@@ -102,6 +119,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
         updatedAt: new Date().toISOString(),
         paymentMethod: selectedPaymentMethod,
         taxRates: settings?.taxes.rates || [],
+        delivery: deliveryZone,
       });
 
       toast.success(
@@ -241,7 +259,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
           {/* Phone Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Téléphone {diningOption === 'dine-in' ? '(Optionnel)' : ''}
+              Téléphone {diningOption === 'dine-in' ? '(Optionnel)' : '*'}
             </label>
             <div className="relative">
               <input
@@ -299,8 +317,34 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             </div>
           ) : (
             <div>
+              {/* Delivery Zone Selection */}
+              {settings?.delivery.enabled && (
+                <>
+                  <DeliveryZoneSelect
+                    selectedZone={deliveryZone}
+                    onZoneChange={setDeliveryZone}
+                    className="mb-4"
+                  />
+
+                  {/* Delivery Fee Display */}
+                  {deliveryZone && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mb-2">
+                      <p className="text-sm text-blue-600 dark:text-blue-400 flex justify-between">
+                        <span>Frais de livraison:</span>
+                        <span className="font-medium">
+                          {formatCurrency(
+                            deliveryZone.price,
+                            settings?.currency
+                          )}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Adresse de livraison
+                Adresse de livraison *
               </label>
               <textarea
                 {...register('address', {
@@ -368,6 +412,11 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             Retour
           </Button>
           <Button
+            disabled={
+              !deliveryZone &&
+              diningOption === 'delivery' &&
+              settings?.delivery.enabled
+            }
             type="submit"
             className="px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
           >

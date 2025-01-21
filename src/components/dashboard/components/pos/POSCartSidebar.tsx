@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import { X } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { CartItem } from '../../../../types';
 import { CartItemList } from '../../../pos/CartItemList';
 import { CustomerInfoForm } from '../../../pos/CustomerInfoForm';
@@ -8,6 +8,8 @@ import { PaymentSection } from '../../../pos/PaymentSection';
 import { Button } from '../../../ui/Button';
 import toast from 'react-hot-toast';
 import { useServerCart } from '../../../../context/ServerCartContext';
+import { formatCurrency } from '../../../../utils/currency';
+import { useSettings } from '../../../../hooks';
 
 interface POSCartSidebarProps {
   onClose?: () => void;
@@ -46,6 +48,8 @@ export function POSCartSidebar({
   isSubmitting,
 }: POSCartSidebarProps) {
   const [error, setError] = useState('');
+  const [showExtras, setShowExtras] = useState(false);
+  const { settings } = useSettings();
 
   const { total } = useServerCart();
 
@@ -116,8 +120,29 @@ export function POSCartSidebar({
 
       {/* Fixed Bottom Section */}
       {cart.length > 0 && (
-        <div className="border-t dark:border-gray-700 p-4 space-y-4 bg-white dark:bg-gray-800">
-          <OrderSummary items={cart} total={total} />
+        <div className="dark:border-gray-700 p-4 space-y-4 bg-white dark:bg-gray-800">
+          <div className="flex justify-between items-center text-lg font-semibold border-t dark:border-gray-700 pt-4">
+            <span>Total</span>
+            <span className="text-blue-600 dark:text-blue-400">
+              {formatCurrency(total, settings?.currency)}
+            </span>
+          </div>
+
+          {/* Extras Section (Tax and Tips) */}
+          <div className="space-y-2">
+            <button
+              onClick={() => setShowExtras(!showExtras)}
+              className="w-full flex items-center justify-between text-sm text-gray-600 dark:text-gray-400"
+            >
+              <span>Taxes et pourboires</span>
+              {showExtras ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
+              )}
+            </button>
+            {showExtras && <OrderSummary items={cart} total={total} />}
+          </div>
 
           <PaymentSection
             total={total}

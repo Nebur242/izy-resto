@@ -52,7 +52,8 @@ export function OrderConfirmation({
   setSelectedPaymentMethod,
 }: OrderConfirmationProps) {
   const { settings } = useSettings();
-  const { subtotal, taxes, tip, total, cart, setTipPercentage } = useCart();
+  const { subtotal, taxes, tip, total, cart, setTipPercentage, deliveryZone } =
+    useCart();
 
   const { paymentMethods } = usePayments();
   const [selectedPayment, setSelectedPayment] = useState(
@@ -315,6 +316,15 @@ export function OrderConfirmation({
                     </span>
                   </div>
                 )}
+              </div>
+            )}
+
+            {deliveryZone && (
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mt-4">
+                <span>Livraison</span>
+                <span>
+                  {formatCurrency(deliveryZone.price, settings?.currency)}
+                </span>
               </div>
             )}
 

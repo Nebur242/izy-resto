@@ -47,7 +47,9 @@ export function TaxSettings() {
     );
   };
 
-  const handleAddTax = () => {
+  const handleAddTax = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
     append({
       id: crypto.randomUUID(),
       name: '',

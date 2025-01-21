@@ -13,6 +13,7 @@ import {
   DataManagement,
   LegalSettings,
   TaxSettings,
+  DeliverySettings,
 } from './settings/tabs';
 
 import toast from 'react-hot-toast';
@@ -22,6 +23,7 @@ const tabs = [
   { id: 'appearance', label: 'Apparence' },
   { id: 'business', label: 'Entreprise' },
   { id: 'tax', label: 'Taxes & Pourboires' },
+  { id: 'delivery', label: 'Livraison' },
   { id: 'seo', label: 'SEO' },
   { id: 'legal', label: 'Légal' },
   { id: 'integrations', label: 'Intégrations' },
@@ -70,6 +72,8 @@ export function Settings() {
         return <SEOSettings />;
       case 'tax':
         return <TaxSettings />;
+      case 'delivery':
+        return <DeliverySettings />;
       case 'legal':
         return <LegalSettings />;
       case 'integrations':

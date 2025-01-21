@@ -15,11 +15,11 @@ export function FastFoodMenu() {
   const formatPrice = (price: number) => {
     switch (settings?.currency) {
       case 'EUR':
-        return `€${price.toFixed(3)}`;
+        return `€${price.toFixed(2)}`;
       case 'XOF':
-        return `${price.toFixed(3)} FCFA`;
+        return `${price.toFixed(2)} FCFA`;
       default:
-        return `$${price.toFixed(3)}`;
+        return `$${price.toFixed(2)}`;
     }
   };
 

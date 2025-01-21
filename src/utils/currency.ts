@@ -21,11 +21,11 @@ export function formatCurrency(
 
   switch (currency) {
     case 'EUR':
-      return `€${numericAmount.toFixed(3)}`;
+      return `€${numericAmount.toFixed(2)}`;
     case 'CAD':
     case 'USD':
-      if (numericAmount < 0) return `-$${Math.abs(numericAmount).toFixed(3)}`;
-      return `$${numericAmount.toFixed(3)}`;
+      if (numericAmount < 0) return `-$${Math.abs(numericAmount).toFixed(2)}`;
+      return `$${numericAmount.toFixed(2)}`;
     case 'XOF':
     case 'XAF':
       return `${numericAmount.toLocaleString()} FCFA`;

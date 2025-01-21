@@ -185,7 +185,7 @@ export function TrafficAnalytics() {
                     Taux d'Annulation
                   </p>
                   <p className="text-2xl font-semibold">
-                    {metrics.cancelRate.toFixed(3)}%
+                    {metrics.cancelRate.toFixed(2)}%
                   </p>
                 </div>
               </div>
@@ -250,7 +250,7 @@ export function TrafficAnalytics() {
                     Sur Place
                   </p>
                   <p className="text-2xl font-semibold">
-                    {metrics.dineInOrders} ({metrics.dineInRate.toFixed(3)}%)
+                    {metrics.dineInOrders} ({metrics.dineInRate.toFixed(2)}%)
                   </p>
                 </div>
               </div>

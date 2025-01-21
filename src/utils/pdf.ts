@@ -113,6 +113,11 @@ export async function generateReceiptPDF(
               ? `<div style="${baseStyles}">${order.customerAddress}</div>`
               : ''
           }
+           ${
+             order.delivery
+               ? `<div style="${baseStyles}">Livraison à ${order.delivery.name}</div>`
+               : ''
+           }
           ${
             order.preference
               ? `<div style="font-size: 10px; ${baseStyles}">Note: ${order.preference}</div>`
@@ -162,7 +167,7 @@ export async function generateReceiptPDF(
             <div style="display: flex; justify-content: space-between; ${baseStyles}">
               <div style="${baseStyles}">${tax.name} (${Number(
                       tax.rate
-                    ).toFixed(3)}%)</div>
+                    ).toFixed(2)}%)</div>
               <div style="${baseStyles}">${formatCurrency(
                       tax.amount,
                       settings?.currency
@@ -189,6 +194,21 @@ export async function generateReceiptPDF(
           `
               : ''
           }
+
+
+            ${
+              order.delivery
+                ? `
+            <div style="display: flex; justify-content: space-between; ${baseStyles}">
+              <div style="${baseStyles}">Livraison</div>
+              <div style="${baseStyles}">${formatCurrency(
+                    Number(order.delivery.price),
+                    settings?.currency
+                  )}</div>
+            </div>
+          `
+                : ''
+            }
 
           <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
             <div style="${baseStyles}">TOTAL</div>
@@ -350,6 +370,13 @@ export async function generateUserReceipt(
               ? `<p style="color: #000000; margin: 0; font-size: 13px;">${order.customerAddress}</p>`
               : ''
           }
+              ${
+                order.delivery
+                  ? `
+            <p style="color: #000000; margin: 0; font-size: 13px;">Livraison à ${order.delivery.name}</p>
+          `
+                  : ''
+              }
         </div>
 
         <div style="margin-bottom: 15px;">
@@ -426,6 +453,20 @@ export async function generateUserReceipt(
           `
               : ''
           }
+          
+           ${
+             order.delivery
+               ? `
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span style="color: #000000; font-size: 13px;">Livraison</span>
+              <span style="color: #000000; font-size: 13px;">${formatCurrency(
+                order.delivery.price,
+                settings?.currency
+              )}</span>
+            </div>
+          `
+               : ''
+           }
 
           <div style="display: flex; justify-content: space-between; margin-top: 20px; border-top: 1px solid #eee;">
             <span style="color: #000000; font-size: 14px; font-weight: 600;">Total</span>

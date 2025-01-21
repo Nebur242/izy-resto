@@ -6,3 +6,4 @@ export * from './SEOSettings';
 export * from './DataManagement';
 export * from './LegalSettings';
 export * from './TaxSettings';
+export * from './DeliverySettings';

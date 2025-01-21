@@ -9,6 +9,20 @@ export interface TaxRate {
   order: number; // For controlling calculation order
 }
 
+export interface DeliveryZone {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  active: boolean;
+}
+
+export interface DeliverySettings {
+  enabled: boolean;
+  defaultZone?: string;
+  zones: DeliveryZone[];
+}
+
 export interface SocialMediaProfile {
   platform:
     | 'facebook'
@@ -94,4 +108,5 @@ export interface RestaurantSettings {
     label: string;
   };
   staffPermissions: string[];
+  delivery: DeliverySettings;
 }

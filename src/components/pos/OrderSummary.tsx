@@ -37,12 +37,12 @@ export function OrderSummary({ items }: OrderSummaryProps) {
         </div>
       </div>
 
-      <div className="flex justify-between items-center text-lg font-semibold border-t dark:border-gray-700 pt-4">
+      {/* <div className="flex justify-between items-center text-lg font-semibold border-t dark:border-gray-700 pt-4">
         <span>Total</span>
         <span className="text-blue-600 dark:text-blue-400">
           {formatCurrency(total, settings?.currency)}
         </span>
-      </div>
+      </div> */}
 
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">

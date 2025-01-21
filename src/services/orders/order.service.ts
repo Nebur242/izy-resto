@@ -16,7 +16,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase/config';
-import { Order, OrderStatus, TaxRate } from '../../types';
+import { DeliveryZone, Order, OrderStatus, TaxRate } from '../../types';
 import { accountingService } from '../accounting/accounting.service';
 import { stockUpdateService } from '../inventory/stockUpdate.service';
 import { validateOrder } from './validators';
@@ -159,6 +159,7 @@ class OrderService {
     orderData: Omit<Order, 'id'> & {
       taxRates: TaxRate[];
       tip: { amount: number; percentage?: number } | null;
+      delivery: DeliveryZone | null;
     }
   ): Promise<string> {
     try {
@@ -190,15 +191,11 @@ class OrderService {
       const order = {
         ...formatOrderData(orderData, orderData.paymentMethod),
         anonymousUid: user?.uid || null,
+        total: orderData.total,
         subtotal: orderData.subtotal,
         taxes,
         taxTotal,
         tip: orderData.tip || null,
-        total: calculateTotal(
-          orderData.subtotal,
-          taxTotal,
-          orderData.tip?.amount || 0
-        ),
       };
 
       // Format order data

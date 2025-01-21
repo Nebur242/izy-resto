@@ -63,7 +63,7 @@ export async function generateTaxReportCSV(
     csvContent += 'Résumé par type de taxe\n';
     csvContent += 'Type de taxe,Taux,Montant total\n';
     Array.from(taxTotals.entries()).forEach(([name, data]) => {
-      csvContent += `${name},${(data.rate * 100).toFixed(3)}%,${formatCurrency(
+      csvContent += `${name},${(data.rate * 100).toFixed(2)}%,${formatCurrency(
         data.amount,
         settings?.currency
       )}\n`;
@@ -79,7 +79,7 @@ export async function generateTaxReportCSV(
       const taxDetails = order.taxes
         .map(
           tax =>
-            `${tax.name} (${(tax.rate * 100).toFixed(3)}%): ${formatCurrency(
+            `${tax.name} (${(tax.rate * 100).toFixed(2)}%): ${formatCurrency(
               tax.amount,
               settings?.currency
             )}`

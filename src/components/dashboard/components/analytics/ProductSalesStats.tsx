@@ -27,7 +27,9 @@ export function ProductSalesStats({ orders }: ProductSalesStatsProps) {
     const stats = new Map<string, ProductSalesStats>();
 
     // Only consider delivered orders for accurate stats
-    const deliveredOrders = orders.filter(order => order.status === 'delivered');
+    const deliveredOrders = orders.filter(
+      order => order.status === 'delivered'
+    );
 
     deliveredOrders.forEach(order => {
       order.items.forEach(item => {
@@ -40,19 +42,24 @@ export function ProductSalesStats({ orders }: ProductSalesStatsProps) {
             id: item.id,
             name: item.name,
             quantity: item.quantity,
-            revenue: item.price * item.quantity
+            revenue: item.price * item.quantity,
           });
         }
       });
     });
 
     // Convert to array and sort by quantity sold
-    return Array.from(stats.values())
-      .sort((a, b) => b.quantity - a.quantity);
+    return Array.from(stats.values()).sort((a, b) => b.quantity - a.quantity);
   }, [orders]);
 
-  const totalQuantity = productStats.reduce((sum, stat) => sum + stat.quantity, 0);
-  const totalRevenue = productStats.reduce((sum, stat) => sum + stat.revenue, 0);
+  const totalQuantity = productStats.reduce(
+    (sum, stat) => sum + stat.quantity,
+    0
+  );
+  const totalRevenue = productStats.reduce(
+    (sum, stat) => sum + stat.revenue,
+    0
+  );
 
   // Calculate pagination
   const totalPages = Math.ceil(productStats.length / ITEMS_PER_PAGE);
@@ -96,7 +103,7 @@ export function ProductSalesStats({ orders }: ProductSalesStatsProps) {
       <div className="space-y-3">
         <AnimatePresence mode="wait">
           {paginatedStats.map((stat, index) => (
-            <motion.div 
+            <motion.div
               key={stat.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -113,7 +120,8 @@ export function ProductSalesStats({ orders }: ProductSalesStatsProps) {
                     {stat.name}
                   </h4>
                   <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                    {((stat.quantity / totalQuantity) * 100).toFixed(1)}% des ventes
+                    {((stat.quantity / totalQuantity) * 100).toFixed(2)}% des
+                    ventes
                   </p>
                 </div>
               </div>

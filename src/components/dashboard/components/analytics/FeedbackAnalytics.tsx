@@ -68,7 +68,7 @@ export function FeedbackAnalytics({
               </p>
               <div className="flex items-center gap-2">
                 <p className="text-2xl font-semibold">
-                  {averageRating.toFixed(3)}
+                  {averageRating.toFixed(1)}
                 </p>
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map(star => (
@@ -160,7 +160,7 @@ export function FeedbackAnalytics({
                 </div>
                 <div className="w-20 text-right">
                   <span className="text-sm text-gray-500">
-                    {count} ({percentage.toFixed(3)}%)
+                    {count} ({percentage.toFixed(1)}%)
                   </span>
                 </div>
               </div>

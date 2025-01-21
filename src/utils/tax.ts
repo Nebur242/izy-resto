@@ -87,7 +87,7 @@ export function calculatePriceWithoutTaxes(
  * Format tax rate with percentage
  */
 export function formatTaxRate(rate: number): string {
-  return `${Number(rate).toFixed(3)}%`;
+  return `${Number(rate).toFixed(2)}%`;
 }
 
 /**
