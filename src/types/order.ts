@@ -1,6 +1,6 @@
 import { CartItem } from './cart';
 import { PaymentMethod } from './payment';
-import { TaxRate } from './settings';
+import { DeliveryZone, TaxRate } from './settings';
 
 export interface OrderTax {
   id: string;
@@ -45,4 +45,5 @@ export interface Order {
   amountPaid?: number;
   change?: number;
   servedBy?: string;
+  delivery: DeliveryZone | null;
 }

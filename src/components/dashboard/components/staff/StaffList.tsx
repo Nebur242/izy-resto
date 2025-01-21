@@ -4,6 +4,7 @@ import { StaffMember } from '../../../../types/staff';
 import { Badge } from '../../../ui/Badge';
 import { Button } from '../../../ui/Button';
 import { useAuth } from '../../../../hooks';
+import { useStaffCheck } from '../../../../hooks/useStaffCheck';
 
 interface StaffListProps {
   staff: StaffMember[];
@@ -19,6 +20,7 @@ export function StaffList({
   onDelete,
 }: StaffListProps) {
   const { user } = useAuth();
+  const { isStaff, staffData } = useStaffCheck();
 
   if (isLoading) {
     return (
@@ -66,13 +68,16 @@ export function StaffList({
                   {member.active ? 'Actif' : 'Inactif'}
                 </Badge>
                 <div className="flex gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => onEdit(member)}
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </Button>
+                  {((isStaff && staffData?.role === 'admin') || !isStaff) && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => onEdit(member)}
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                  )}
+
                   {user?.email === member.email && (
                     <Button
                       variant="danger"

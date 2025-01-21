@@ -71,7 +71,7 @@ export function Hero() {
         <div className="mx-auto h-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-full flex-col justify-between py-8 sm:py-12">
             {/* Top Content */}
-            <div className="flex flex-1 flex-col items-center justify-center text-center px-4 -mt-16">
+            <div className="flex flex-1 flex-col items-center justify-center text-center px-4 md:mt-8 mt-0">
               <h1 className="max-w-xl mx-auto mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl lg:max-w-2xl mt-20 md:mt-0">
                 {settings?.name || 'Fine Dining Experience'}
               </h1>

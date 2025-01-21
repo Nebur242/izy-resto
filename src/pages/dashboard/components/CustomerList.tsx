@@ -54,7 +54,7 @@ export function CustomerList({ orders }: CustomerListProps) {
           </div>
           <div className="text-right">
             <p className="font-medium text-gray-900 dark:text-white">
-              ${customer.totalSpent.toFixed(3)}
+              ${customer.totalSpent.toFixed(2)}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {customer.totalOrders} orders

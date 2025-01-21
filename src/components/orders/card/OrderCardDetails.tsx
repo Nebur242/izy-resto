@@ -25,6 +25,9 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
               Adresse de livraison : {order.customerAddress}
             </p>
           )}
+          {order.delivery && (
+            <p className="font-medium">Livraison à {order.delivery.name}</p>
+          )}
         </div>
       </div>
 
@@ -87,6 +90,17 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
                 <span>Pourboire ({order.tip.percentage}%)</span>
                 <span>
                   {formatCurrency(order.tip.amount, settings?.currency)}
+                </span>
+              </div>
+            )}
+            {order?.delivery && (
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                <span>Livraison</span>
+                <span>
+                  {formatCurrency(
+                    Number(order.delivery.price),
+                    settings?.currency
+                  )}
                 </span>
               </div>
             )}

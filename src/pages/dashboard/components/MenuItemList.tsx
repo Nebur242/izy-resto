@@ -28,7 +28,7 @@ export function MenuItemList({ items, onEdit, onDelete }: MenuItemListProps) {
                 {item.name}
               </h3>
               <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                FCFA{item.price.toFixed(3)}
+                FCFA{item.price.toFixed(2)}
               </span>
             </div>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">

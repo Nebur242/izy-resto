@@ -28,7 +28,7 @@ export function StaffManagement() {
       toast.success('Membre du personnel créé avec succès');
     } catch (error) {
       console.error('Error creating staff:', error);
-      toast.error('Erreur lors de la création');
+      // toast.error('Erreur lors de la création');
     }
   };
 

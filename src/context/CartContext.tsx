@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { MenuItem, CartItem, OrderTip } from '../types';
+import { MenuItem, CartItem, OrderTip, DeliveryZone } from '../types';
 import toast from 'react-hot-toast';
 import { useSettings } from '../hooks';
 import {
@@ -21,6 +21,8 @@ interface CartContextType {
   tip: OrderTip | null;
   setTipPercentage: (percentage: number | null) => void;
   total: number;
+  deliveryZone: DeliveryZone | null;
+  setDeliveryZone: (zone: DeliveryZone) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -28,6 +30,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [tipPercentage, setTipPercentage] = useState<number | null>(null);
+  const [deliveryZone, setDeliveryZone] = useState<DeliveryZone | null>(null);
+
   const { settings } = useSettings();
 
   // Calculate subtotal (pre-tax amount)
@@ -56,7 +60,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     : null;
 
   // Calculate total
-  const total = calculateTotal(subtotal, taxTotal, tip?.amount || 0);
+  const total = deliveryZone
+    ? calculateTotal(subtotal, taxTotal, tip?.amount || 0) +
+      Number(deliveryZone.price)
+    : calculateTotal(subtotal, taxTotal, tip?.amount || 0);
 
   const addToCart = (item: MenuItem & { quantity?: number }) => {
     setCart(currentCart => {
@@ -132,6 +139,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = () => {
     setCart([]);
     setTipPercentage(null);
+    setDeliveryZone(null);
   };
 
   // useEffect(() => {
@@ -154,6 +162,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         taxTotal,
         tip,
         setTipPercentage,
+        deliveryZone,
+        setDeliveryZone,
       }}
     >
       {children}

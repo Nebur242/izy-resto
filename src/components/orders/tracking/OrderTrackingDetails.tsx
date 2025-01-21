@@ -104,6 +104,17 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
                   </span>
                 </div>
               )}
+              {order?.delivery && (
+                <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                  <span>Livraison à {order.delivery.name}</span>
+                  <span>
+                    {formatCurrency(
+                      Number(order.delivery.price),
+                      settings?.currency
+                    )}
+                  </span>
+                </div>
+              )}
 
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                 <span>Total</span>

@@ -9,7 +9,9 @@ import { useSettings } from '../../hooks';
 import useTextColor from '../../hooks/useTextColor';
 import { orderService } from '../../services/orders/order.service';
 import { PaymentMethod } from '../../types/payment';
+import { formatCurrency } from '../../utils/currency';
 import { Button } from '../ui/Button';
+import { DeliveryZoneSelect } from './DeliveryZoneSelect';
 import { OrderConfirmation } from './OrderConfirmation';
 
 interface CheckoutFormData {
@@ -31,13 +33,23 @@ type CheckoutStep = 'form' | 'confirmation';
 export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   const textClasses = useTextColor();
   const navigate = useNavigate();
-  const { cart, total, clearCart, subtotal, tip } = useCart();
+  const {
+    cart,
+    total,
+    clearCart,
+    subtotal,
+    tip,
+    setDeliveryZone,
+    deliveryZone,
+  } = useCart();
   const { settings } = useSettings();
   // const { paymentMethods } = usePayments();
   const [diningOption, setDiningOption] = useState<DiningOption | null>(null);
 
   const [step, setStep] = useState<CheckoutStep>('form');
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+
+  // console.log(selectedZone);
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethod | null>(null);
@@ -88,6 +100,10 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
     }
 
     try {
+      // Add delivery fee to total if applicable
+
+      console.log(deliveryZone, total);
+
       const orderId = await orderService.createOrder({
         items: cart,
         status: 'pending',
@@ -104,6 +120,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
         updatedAt: new Date().toISOString(),
         paymentMethod: selectedPaymentMethod,
         taxRates: settings?.taxes.rates || [],
+        delivery: deliveryZone,
       });
 
       toast.success(
@@ -249,7 +266,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
           {/* Phone Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Téléphone {diningOption === 'dine-in' ? '(Optionnel)' : ''}
+              Téléphone {diningOption === 'dine-in' ? '(Optionnel)' : '*'}
             </label>
             <div className="relative">
               <input
@@ -307,8 +324,34 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             </div>
           ) : (
             <div>
+              {/* Delivery Zone Selection */}
+              {settings?.delivery.enabled && (
+                <>
+                  <DeliveryZoneSelect
+                    selectedZone={deliveryZone}
+                    onZoneChange={setDeliveryZone}
+                    className="mb-4"
+                  />
+
+                  {/* Delivery Fee Display */}
+                  {deliveryZone && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mb-2">
+                      <p className="text-sm text-blue-600 dark:text-blue-400 flex justify-between">
+                        <span>Frais de livraison:</span>
+                        <span className="font-medium">
+                          {formatCurrency(
+                            deliveryZone.price,
+                            settings?.currency
+                          )}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Adresse de livraison
+                Adresse de livraison *
               </label>
               <textarea
                 {...register('address', {
@@ -368,15 +411,17 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
         {/* Actions */}
         <div className="flex justify-end gap-3 pt-2">
           <Button
-            type="button"
+            disabled={
+              !deliveryZone &&
+              diningOption === 'delivery' &&
+              settings?.delivery.enabled
+            }
+            type="submit"
             variant="secondary"
             onClick={onCancel}
             className="px-4"
           >
             Retour
-          </Button>
-          <Button type="submit" variant="primary">
-            Suivant
           </Button>
         </div>
       </form>
