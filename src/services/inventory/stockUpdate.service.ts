@@ -1,13 +1,13 @@
 import { Order, CartItem } from '../../types';
 import { db } from '../../lib/firebase/config';
-import { runTransaction, doc } from 'firebase/firestore';
+import { runTransaction, doc, getDoc } from 'firebase/firestore';
 import { StockUpdateError } from './errors';
+import { stockHistoryService } from './stockHistory.service';
 
 class StockUpdateService {
   private getBaseItemId(itemId: string): string {
-    // Handle multiple variant types by taking everything before the first variant
     const parts = itemId.split('-');
-    return parts[0]; // Return the base ID before any variant info
+    return parts[0];
   }
 
   private consolidateOrderItems(items: CartItem[]): { [key: string]: number } {
@@ -27,65 +27,133 @@ class StockUpdateService {
 
   async updateStockOnDelivery(order: Order): Promise<void> {
     try {
-      await runTransaction(db, async (transaction) => {
+      await runTransaction(db, async transaction => {
         // Consolidate quantities by base item ID
         const consolidatedItems = this.consolidateOrderItems(order.items);
 
-        // Create refs for base items
-        const itemRefs = Object.entries(consolidatedItems).map(([baseId, quantity]) => ({
-          ref: doc(db, 'menu_items', baseId),
-          quantity,
-          baseId
-        }));
+        // Get all menu items first
+        const menuItemDocs = await Promise.all(
+          Object.entries(consolidatedItems).map(async ([baseId]) => {
+            const docRef = doc(db, 'menu_items', baseId);
+            const docSnap = await getDoc(docRef);
 
-        // First read all items to validate stock
-        const stockLevels = await Promise.all(
-          itemRefs.map(async ({ ref, baseId }) => {
-            const doc = await transaction.get(ref);
-            if (!doc.exists()) {
+            if (!docSnap.exists()) {
               throw new StockUpdateError(
-                'Menu item not found',
-                'stock/item-not-found',
-                { itemId: baseId }
+                `Menu item not found: ${baseId}`,
+                'stock/item-not-found'
               );
             }
+
             return {
-              ref,
-              currentStock: doc.data().stockQuantity || 0,
-              item: doc.data()
+              id: docSnap.id,
+              ref: docRef,
+              data: docSnap.data(),
+              exists: true,
             };
           })
         );
 
-        // Validate all stock levels before making any updates
-        const insufficientStock = stockLevels.map((stock, index) => {
-          const orderQuantity = itemRefs[index].quantity;
-          if (stock.currentStock < orderQuantity) {
-            return {
-              itemName: stock.item.name,
-              required: orderQuantity,
-              available: stock.currentStock
-            };
+        // Track inventory updates
+        const inventoryUpdates = new Map<
+          string,
+          {
+            deduction: number;
+            currentStock: number;
+            ref: any;
+            itemName: string;
+            cost: number;
           }
-          return null;
-        }).filter(Boolean);
+        >();
 
-        if (insufficientStock.length > 0) {
-          throw new StockUpdateError(
-            'Insufficient stock for some items',
-            'stock/insufficient',
-            insufficientStock
-          );
+        // Calculate inventory deductions
+        for (const menuDoc of menuItemDocs) {
+          const orderQuantity = consolidatedItems[menuDoc.id];
+          const connections = menuDoc.data.inventoryConnections || [];
+
+          // Update menu item stock
+          const currentMenuStock = menuDoc.data.stockQuantity || 0;
+          if (currentMenuStock < orderQuantity) {
+            throw new StockUpdateError(
+              `Insufficient menu item stock for ${menuDoc.data.name}`,
+              'stock/insufficient-menu',
+              {
+                itemId: menuDoc.id,
+                required: orderQuantity,
+                available: currentMenuStock,
+              }
+            );
+          }
+
+          // Calculate inventory deductions based on connections
+          for (const connection of connections) {
+            if (!connection.itemId || !connection.ratio) continue;
+
+            const inventoryNeeded = orderQuantity / connection.ratio;
+            const currentUpdate = inventoryUpdates.get(connection.itemId);
+
+            if (currentUpdate) {
+              currentUpdate.deduction += inventoryNeeded;
+            } else {
+              const inventoryRef = doc(db, 'inventory', connection.itemId);
+              const inventorySnap = await getDoc(inventoryRef);
+
+              if (!inventorySnap.exists()) {
+                throw new StockUpdateError(
+                  `Inventory item not found: ${connection.itemId}`,
+                  'stock/inventory-not-found'
+                );
+              }
+
+              const inventoryData = inventorySnap.data();
+              inventoryUpdates.set(connection.itemId, {
+                deduction: inventoryNeeded,
+                currentStock: inventoryData.quantity || 0,
+                ref: inventoryRef,
+                itemName: inventoryData.name,
+                cost: inventoryData.price * inventoryNeeded,
+              });
+            }
+          }
+
+          // Update menu item stock
+          transaction.update(menuDoc.ref, {
+            stockQuantity: currentMenuStock - orderQuantity,
+            updatedAt: new Date().toISOString(),
+          });
         }
 
-        // All validations passed, perform updates
-        stockLevels.forEach((stock, index) => {
-          const orderQuantity = itemRefs[index].quantity;
-          transaction.update(stock.ref, {
-            stockQuantity: stock.currentStock - orderQuantity,
-            updatedAt: new Date().toISOString()
+        // Validate and update inventory
+        for (const [itemId, update] of inventoryUpdates) {
+          if (update.currentStock < update.deduction) {
+            throw new StockUpdateError(
+              'Insufficient inventory',
+              'stock/insufficient-inventory',
+              {
+                itemId,
+                required: update.deduction,
+                available: update.currentStock,
+              }
+            );
+          }
+
+          // Update inventory
+          transaction.update(update.ref, {
+            quantity: update.currentStock - update.deduction,
+            updatedAt: new Date().toISOString(),
           });
-        });
+
+          // Add to stock history
+          await stockHistoryService.addUpdate({
+            itemId,
+            itemName: update.itemName,
+            quantity: update.deduction,
+            reason: `Commande #${order.id.slice(0, 8)}`,
+            cost: update.cost,
+            type: 'order',
+            orderId: order.id,
+            date: new Date().toISOString(),
+          });
+        }
       });
     } catch (error) {
       console.error('Stock update error:', error);

@@ -27,5 +27,5 @@ export interface StockHistory {
   reason: string;
   cost: number;
   date: string;
-  createdAt: string;
+  createdAt?: string;
 }

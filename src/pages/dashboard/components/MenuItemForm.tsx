@@ -1,5 +1,5 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../../../components/ui/Button';
 import { MenuItem, MenuItemWithVariants } from '../../../types';
@@ -7,6 +7,7 @@ import { useCategories } from '../../../hooks/useCategories';
 import { useVariants } from '../../../hooks/useVariants';
 import { useSettings } from '../../../hooks/useSettings';
 import { LogoUploader } from '../../../components/settings/LogoUploader';
+import { useInventory } from '../../../hooks/useInventory';
 
 interface MenuItemFormProps {
   item?: MenuItem | null;
@@ -17,16 +18,25 @@ interface MenuItemFormProps {
 export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
   const { categories } = useCategories();
   const { settings } = useSettings();
-  
+  const { items: inventory } = useInventory();
+
   // Initialize selectedCategory with the item's categoryId if editing an existing item
-  const [selectedCategory, setSelectedCategory] = React.useState(item?.categoryId || '');
-  
+  const [selectedCategory, setSelectedCategory] = React.useState(
+    item?.categoryId || ''
+  );
+
   const { variants } = useVariants(selectedCategory);
   const [variantPrices, setVariantPrices] = React.useState(
     (item as MenuItemWithVariants)?.variantPrices || []
   );
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: item?.name || '',
       description: item?.description || '',
@@ -34,8 +44,9 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
       image: item?.image || '',
       // Ensure categoryId is set to the item's category when editing
       categoryId: item?.categoryId || '',
-      stockQuantity: item?.stockQuantity || 0
-    }
+      stockQuantity: item?.stockQuantity || 0,
+      inventoryConnections: item?.inventoryConnections || [],
+    },
   });
 
   const handleFormSubmit = (formData: any) => {
@@ -45,15 +56,21 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
       stockQuantity: Number(formData.stockQuantity),
       variantPrices: variantPrices.map(vp => ({
         ...vp,
-        price: Number(vp.price)
-      }))
+        price: Number(vp.price),
+      })),
+      inventoryConnections: formData.inventoryConnections
+        .filter((conn: any) => conn.itemId && conn.ratio)
+        .map((conn: any) => ({
+          ...conn,
+          ratio: Number(conn.ratio),
+        })),
     };
     onSave(menuItem);
   };
 
   const getVariantCombinations = () => {
     if (!variants.length) return [];
-    
+
     const combinations: string[][] = [[]];
     variants.forEach(variant => {
       const newCombinations: string[][] = [];
@@ -69,24 +86,30 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
   };
 
   const handleVariantChange = (
-    combination: string[], 
+    combination: string[],
     field: 'price' | 'image',
     value: string | number
   ) => {
     setVariantPrices(prev => {
       const existing = prev.findIndex(
-        p => JSON.stringify(p.variantCombination) === JSON.stringify(combination)
+        p =>
+          JSON.stringify(p.variantCombination) === JSON.stringify(combination)
       );
-      
+
       if (existing >= 0) {
-        return prev.map((p, i) => i === existing ? { ...p, [field]: value } : p);
+        return prev.map((p, i) =>
+          i === existing ? { ...p, [field]: value } : p
+        );
       }
-      
-      return [...prev, { 
-        variantCombination: combination, 
-        price: field === 'price' ? value as number : watch('price'),
-        image: field === 'image' ? value as string : undefined
-      }];
+
+      return [
+        ...prev,
+        {
+          variantCombination: combination,
+          price: field === 'price' ? (value as number) : watch('price'),
+          image: field === 'image' ? (value as string) : undefined,
+        },
+      ];
     });
   };
 
@@ -102,7 +125,10 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="p-6 space-y-6">
+        <form
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className="p-6 space-y-6"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium mb-1">Nom</label>
@@ -112,15 +138,21 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.name.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Catégorie</label>
+              <label className="block text-sm font-medium mb-1">
+                Catégorie
+              </label>
               <select
-                {...register('categoryId', { required: 'La catégorie est requise' })}
-                onChange={(e) => {
+                {...register('categoryId', {
+                  required: 'La catégorie est requise',
+                })}
+                onChange={e => {
                   setSelectedCategory(e.target.value);
                   // Ensure the form value is updated
                   setValue('categoryId', e.target.value, { shouldDirty: true });
@@ -137,7 +169,9 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                 ))}
               </select>
               {errors.categoryId && (
-                <p className="mt-1 text-sm text-red-500">{errors.categoryId.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.categoryId.message}
+                </p>
               )}
             </div>
 
@@ -146,14 +180,16 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
               <input
                 type="number"
                 step={settings?.currency === 'XOF' ? '1' : '0.01'}
-                {...register('price', { 
+                {...register('price', {
                   required: 'Le prix est requis',
-                  min: { value: 0, message: 'Le prix doit être positif' }
+                  min: { value: 0, message: 'Le prix doit être positif' },
                 })}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.price && (
-                <p className="mt-1 text-sm text-red-500">{errors.price.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.price.message}
+                </p>
               )}
             </div>
 
@@ -161,36 +197,127 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
               <label className="block text-sm font-medium mb-1">Stock</label>
               <input
                 type="number"
-                {...register('stockQuantity', { 
+                {...register('stockQuantity', {
                   required: 'Le stock est requis',
-                  min: { value: 0, message: 'Le stock doit être positif' }
+                  min: { value: 0, message: 'Le stock doit être positif' },
                 })}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.stockQuantity && (
-                <p className="mt-1 text-sm text-red-500">{errors.stockQuantity.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.stockQuantity.message}
+                </p>
               )}
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">Description</label>
+              <label className="block text-sm font-medium mb-1">
+                Description
+              </label>
               <textarea
-                {...register('description', { required: 'La description est requise' })}
+                {...register('description', {
+                  required: 'La description est requise',
+                })}
                 rows={3}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.description.message}
+                </p>
               )}
             </div>
 
             <div className="md:col-span-2">
               <LogoUploader
                 value={watch('image')}
-                onChange={(url) => setValue('image', url, { shouldDirty: true })}
+                onChange={url => setValue('image', url, { shouldDirty: true })}
                 label="Image du produit"
                 description="Format recommandé: JPG ou PNG en haute résolution (1920x1080px minimum)"
               />
+            </div>
+          </div>
+
+          <div className="border-t dark:border-gray-700 pt-6">
+            <h3 className="text-lg font-medium mb-4">
+              Connexions à l'inventaire
+            </h3>
+            <div className="space-y-4">
+              {watch('inventoryConnections')?.map(
+                (connection: any, index: number) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium mb-1">
+                        Produit d'inventaire
+                      </label>
+                      <select
+                        {...register(`inventoryConnections.${index}.itemId`)}
+                        className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+                      >
+                        <option value="">Sélectionner un produit</option>
+                        {inventory.map(item => (
+                          <option key={item.id} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium mb-1">
+                        Ratio (1:
+                        {watch(`inventoryConnections.${index}.ratio`) || '0'})
+                      </label>
+                      <span className="text-sm">
+                        Le ratio est une règle de proportion simple entre le
+                        produit d'inventaire et le produit du menu
+                      </span>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        {...register(`inventoryConnections.${index}.ratio`)}
+                        className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+                        placeholder="Ex: 3 pour 1:3"
+                      />
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        const connections = watch('inventoryConnections');
+                        setValue(
+                          'inventoryConnections',
+                          connections.filter(
+                            (_: any, i: number) => i !== index
+                          ),
+                          { shouldDirty: true }
+                        );
+                      }}
+                      className="mt-6"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )
+              )}
+
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  const connections = watch('inventoryConnections') || [];
+                  setValue(
+                    'inventoryConnections',
+                    [...connections, { itemId: '', ratio: 1 }],
+                    { shouldDirty: true }
+                  );
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Ajouter une connexion
+              </Button>
             </div>
           </div>
 
@@ -200,7 +327,7 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
               <h3 className="text-lg font-medium mb-4">Variantes</h3>
               <div className="space-y-6">
                 {getVariantCombinations().map((combination, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg space-y-4"
                   >
@@ -217,24 +344,42 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1">Prix</label>
+                        <label className="block text-sm font-medium mb-1">
+                          Prix
+                        </label>
                         <input
                           type="number"
                           step={settings?.currency === 'XOF' ? '1' : '0.01'}
-                          value={variantPrices.find(
-                            p => JSON.stringify(p.variantCombination) === JSON.stringify(combination)
-                          )?.price || watch('price')}
-                          onChange={e => handleVariantChange(combination, 'price', parseFloat(e.target.value))}
+                          value={
+                            variantPrices.find(
+                              p =>
+                                JSON.stringify(p.variantCombination) ===
+                                JSON.stringify(combination)
+                            )?.price || watch('price')
+                          }
+                          onChange={e =>
+                            handleVariantChange(
+                              combination,
+                              'price',
+                              parseFloat(e.target.value)
+                            )
+                          }
                           className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
                         />
                       </div>
 
                       <div>
                         <LogoUploader
-                          value={variantPrices.find(
-                            p => JSON.stringify(p.variantCombination) === JSON.stringify(combination)
-                          )?.image}
-                          onChange={(url) => handleVariantChange(combination, 'image', url)}
+                          value={
+                            variantPrices.find(
+                              p =>
+                                JSON.stringify(p.variantCombination) ===
+                                JSON.stringify(combination)
+                            )?.image
+                          }
+                          onChange={url =>
+                            handleVariantChange(combination, 'image', url)
+                          }
                           label="Image de la variante (Optionnel)"
                           description="Image spécifique pour cette variante"
                         />
@@ -250,9 +395,7 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
             <Button type="button" variant="secondary" onClick={onCancel}>
               Annuler
             </Button>
-            <Button type="submit">
-              {item ? 'Mettre à jour' : 'Ajouter'}
-            </Button>
+            <Button type="submit">{item ? 'Mettre à jour' : 'Ajouter'}</Button>
           </div>
         </form>
       </div>

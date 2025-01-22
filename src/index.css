@@ -12,11 +12,6 @@
   display: none; /* Chrome, Safari, and Opera */
 }
 
-/* Par exemple, dans ton CSS global */
-body {
-  background-color: var(--dark-bg);
-}
-
 input,
 textarea {
   outline: inherit;

@@ -1,18 +1,24 @@
 import React from 'react';
-import { Truck, Plus } from 'lucide-react';
+import { Truck, Plus, AlertCircle } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 import {
   RestaurantSettings,
   DeliveryZone,
 } from '../../../../../types/settings';
 import { Button } from '../../../../../components/ui/Button';
-// import { DeliveryZoneList } from '../../../../../components/dashboard/components/delivery/DeliveryZoneList';
 import { ConfirmDialog } from '../../../../../components/ui/ConfirmDialog';
 import { DeliveryZoneForm } from '../../../components/delivery/DeliveryZoneForm';
 import { DeliveryZoneList } from '../../../components/delivery/DeliveryZoneList';
 
 export function DeliverySettings() {
-  const { watch, setValue, register } = useFormContext<RestaurantSettings>();
+  const {
+    watch,
+    setValue,
+    register,
+    formState: { errors },
+    trigger,
+  } = useFormContext<RestaurantSettings>();
+
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [editingZone, setEditingZone] = React.useState<DeliveryZone | null>(
     null
@@ -26,6 +32,26 @@ export function DeliverySettings() {
   const zones = watch('delivery.zones') || [];
   const currency = watch('currency');
 
+  // Register delivery.zones with validation
+  React.useEffect(() => {
+    register('delivery.zones', {
+      validate: value => {
+        if (deliveryEnabled && (!value || value.length === 0)) {
+          return 'Au moins une zone de livraison est requise lorsque la livraison est activée';
+        }
+        return true;
+      },
+    });
+  }, [register, deliveryEnabled]);
+
+  // Revalidate when delivery status changes
+  const handleDeliveryToggle = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setValue('delivery.enabled', e.target.checked);
+    await trigger('delivery.zones');
+  };
+
   const handleSave = (data: Omit<DeliveryZone, 'id'>) => {
     const newZones = editingZone
       ? zones.map(zone =>
@@ -33,7 +59,10 @@ export function DeliverySettings() {
         )
       : [...zones, { ...data, id: crypto.randomUUID() }];
 
-    setValue('delivery.zones', newZones, { shouldDirty: true });
+    setValue('delivery.zones', newZones, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
     setIsFormOpen(false);
     setEditingZone(null);
   };
@@ -44,7 +73,10 @@ export function DeliverySettings() {
     const newZones = zones.filter(
       zone => zone.id !== deleteConfirmation.zone?.id
     );
-    setValue('delivery.zones', newZones, { shouldDirty: true });
+    setValue('delivery.zones', newZones, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
     setDeleteConfirmation({ isOpen: false, zone: null });
   };
 
@@ -60,7 +92,9 @@ export function DeliverySettings() {
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
-            {...register('delivery.enabled')}
+            {...register('delivery.enabled', {
+              onChange: handleDeliveryToggle,
+            })}
             className="rounded border-gray-300 dark:border-gray-600"
           />
           <label className="text-sm font-medium">Activer la livraison</label>
@@ -78,6 +112,14 @@ export function DeliverySettings() {
             </Button>
           </div>
 
+          {/* Error message when no zones */}
+          {errors.delivery?.zones && (
+            <div className="flex items-center gap-2 p-4 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-lg">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <p>{errors.delivery.zones.message}</p>
+            </div>
+          )}
+
           <DeliveryZoneList
             zones={zones}
             isLoading={false}
@@ -86,12 +128,16 @@ export function DeliverySettings() {
               setEditingZone(zone);
               setIsFormOpen(true);
             }}
-            onDelete={zone =>
+            onDelete={zone => {
+              // Prevent deletion of last zone if delivery is enabled
+              if (deliveryEnabled && zones.length === 1) {
+                return;
+              }
               setDeleteConfirmation({
                 isOpen: true,
                 zone,
-              })
-            }
+              });
+            }}
           />
         </section>
       )}
@@ -112,7 +158,11 @@ export function DeliverySettings() {
       <ConfirmDialog
         isOpen={deleteConfirmation.isOpen}
         title="Supprimer la zone"
-        message={`Êtes-vous sûr de vouloir supprimer la zone "${deleteConfirmation.zone?.name}" ? Cette action est irréversible.`}
+        message={
+          deliveryEnabled && zones.length === 1
+            ? 'Impossible de supprimer la dernière zone de livraison lorsque la livraison est activée.'
+            : `Êtes-vous sûr de vouloir supprimer la zone "${deleteConfirmation.zone?.name}" ? Cette action est irréversible.`
+        }
         confirmLabel="Supprimer"
         onConfirm={handleDelete}
         onCancel={() => setDeleteConfirmation({ isOpen: false, zone: null })}

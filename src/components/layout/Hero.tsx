@@ -72,10 +72,10 @@ export function Hero() {
           <div className="flex h-full flex-col justify-between py-8 sm:py-12">
             {/* Top Content */}
             <div className="flex flex-1 flex-col items-center justify-center text-center px-4 md:mt-8 mt-0">
-              <h1 className="max-w-xl mx-auto mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl lg:max-w-2xl mt-20 md:mt-0">
+              <h1 className="max-w-xl mx-auto mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl lg:max-w-2xl mt-10 md:mt-0">
                 {settings?.name || 'Fine Dining Experience'}
               </h1>
-              <p className="mb-8 max-w-md mx-auto text-base text-gray-300/90 sm:text-lg">
+              <p className="mb-4 max-w-md mx-auto text-base text-gray-300/90 sm:text-lg">
                 {settings?.description ||
                   'Experience culinary excellence with our carefully crafted menu featuring fresh ingredients and innovative recipes.'}
               </p>
