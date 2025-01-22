@@ -39,10 +39,6 @@ export async function generateReceiptPDF(
     const baseStyles =
       'color: rgb(0, 0, 0) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;';
 
-    // Helper function to capitalize first letter
-    const capitalize = (str: string) =>
-      str.charAt(0).toUpperCase() + str.slice(1);
-
     receiptDiv.innerHTML = `
       <div style="${baseStyles} background-color: white;">
         <div style="text-align: center; ${baseStyles}">
@@ -167,7 +163,7 @@ export async function generateReceiptPDF(
             <div style="display: flex; justify-content: space-between; ${baseStyles}">
               <div style="${baseStyles}">${tax.name} (${Number(
                       tax.rate
-                    ).toFixed(2)}%)</div>
+                    ).toFixed(3)}%)</div>
               <div style="${baseStyles}">${formatCurrency(
                       tax.amount,
                       settings?.currency
