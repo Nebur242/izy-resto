@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Search, Package } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Search } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { InventoryList } from '../../../components/dashboard/components/inventory/InventoryList';
 import { InventoryForm } from '../../../components/dashboard/components/inventory/InventoryForm';
@@ -11,7 +10,11 @@ import { ConfirmDialog } from '../../../components/ui/ConfirmDialog';
 import { Tabs } from '../../../components/ui/Tabs';
 import { useInventory } from '../../../hooks/useInventory';
 import { stockHistoryService } from '../../../services/inventory/stockHistory.service';
-import toast from 'react-hot-toast';
+import {
+  InventoryItem,
+  StockUpdate,
+  StockHistory as StockHistoryType,
+} from '../../../types';
 
 const tabs = [
   { id: 'inventory', label: 'Inventaire' },
@@ -117,6 +120,7 @@ export function InventoryManagement() {
           reason: update.reason,
           cost: update.quantity * item.price,
           date: new Date().toISOString(),
+          type: '',
         });
       }
 

@@ -1,5 +1,9 @@
-import { CartItem } from './cart';
 import { VariantOption } from './variant';
+
+export interface InventoryConnection {
+  itemId: string;
+  ratio: number; // How many menu items can be made from 1 inventory item
+}
 
 export interface MenuItem {
   id: string;
@@ -10,6 +14,7 @@ export interface MenuItem {
   categoryId: string;
   stockQuantity: number;
   variants?: VariantOption[];
+  inventoryConnections?: InventoryConnection[]; // Add inventory connections
 }
 
 export interface MenuFilters {
@@ -21,7 +26,7 @@ export interface MenuItemVariantPrice {
   variantCombination: string[];
   price: number;
   image?: string;
-  stockQuantity?: number; // Add stock quantity for variants
+  stockQuantity?: number;
 }
 
 export interface MenuItemWithVariants extends MenuItem {

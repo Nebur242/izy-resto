@@ -6,7 +6,12 @@ import { SocialMediaSettings } from './SocialMediaSettings';
 import { allCurrencies } from '../../../../../constants/defaultSettings';
 
 export function GeneralSettings() {
-  const { register, watch, setValue } = useFormContext<RestaurantSettings>();
+  const {
+    register,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext<RestaurantSettings>();
 
   // Mark form as dirty when images change
   const handleImageChange = (field: 'logo' | 'coverImage', value: string) => {
@@ -35,9 +40,18 @@ export function GeneralSettings() {
             </label>
             <input
               type="text"
-              {...register('name', { required: true })}
-              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+              {...register('name', {
+                required: 'Le nom du restaurant est requis',
+              })}
+              className={`w-full rounded-lg border p-2 dark:bg-gray-700 ${
+                errors.name
+                  ? 'border-red-500 dark:border-red-500'
+                  : 'dark:border-gray-600'
+              }`}
             />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+            )}
           </div>
 
           <div>
@@ -45,19 +59,53 @@ export function GeneralSettings() {
               Description
             </label>
             <textarea
-              {...register('description', { required: true })}
+              {...register('description', {
+                required: 'La description est requise',
+                maxLength: {
+                  value: 150,
+                  message: 'La description ne peut pas dépasser 150 caractères',
+                },
+                minLength: {
+                  value: 10,
+                  message:
+                    'La description doit contenir au moins 10 caractères',
+                },
+              })}
               rows={3}
-              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+              className={`w-full rounded-lg border p-2 dark:bg-gray-700 ${
+                errors.description
+                  ? 'border-red-500 dark:border-red-500'
+                  : 'dark:border-gray-600'
+              }`}
             />
+            {errors.description && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.description.message}
+              </p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
-              type="text"
-              {...register('email')}
-              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+              type="email"
+              {...register('email', {
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Adresse email invalide',
+                },
+              })}
+              className={`w-full rounded-lg border p-2 dark:bg-gray-700 ${
+                errors.email
+                  ? 'border-red-500 dark:border-red-500'
+                  : 'dark:border-gray-600'
+              }`}
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div>
@@ -79,13 +127,27 @@ export function GeneralSettings() {
           <div>
             <label className="block text-sm font-medium mb-1">Devise</label>
             <select
-              {...register('currency')}
-              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+              {...register('currency', {
+                required: 'La devise est requise',
+              })}
+              className={`w-full rounded-lg border p-2 dark:bg-gray-700 ${
+                errors.currency
+                  ? 'border-red-500 dark:border-red-500'
+                  : 'dark:border-gray-600'
+              }`}
             >
               {allCurrencies.map(currency => (
-                <option value={currency.value}>{currency.label}</option>
+                <option key={currency.value} value={currency.value}>
+                  {currency.label}
+                </option>
               ))}
             </select>
+            {errors.currency && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.currency.message}
+              </p>
+            )}
+
             <div
               className="flex mt-4 items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800"
               role="alert"
@@ -117,24 +179,6 @@ export function GeneralSettings() {
                   </span>
                 ))}
             </div>
-            {/* {currencyObject?.infos && (
-              <div
-                className="flex mt-4 items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800"
-                role="alert"
-              >
-                <svg
-                  className="flex-shrink-0 inline w-4 h-4 me-3"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <span className="sr-only">Info</span>
-                <div>{currencyObject.infos}</div>
-              </div>
-            )} */}
           </div>
         </div>
       </section>
@@ -152,10 +196,24 @@ export function GeneralSettings() {
             </label>
             <input
               type="number"
-              {...register('rateLimits.maxOrders')}
-              min="1"
-              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+              {...register('rateLimits.maxOrders', {
+                required: 'Ce champ est requis',
+                min: {
+                  value: 1,
+                  message: 'La valeur minimum est 1',
+                },
+              })}
+              className={`w-full rounded-lg border p-2 dark:bg-gray-700 ${
+                errors.rateLimits?.maxOrders
+                  ? 'border-red-500 dark:border-red-500'
+                  : 'dark:border-gray-600'
+              }`}
             />
+            {errors.rateLimits?.maxOrders && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.rateLimits.maxOrders.message}
+              </p>
+            )}
             <p className="mt-1 text-sm text-gray-500">
               Nombre maximum de commandes par période
             </p>
@@ -167,10 +225,24 @@ export function GeneralSettings() {
             </label>
             <input
               type="number"
-              {...register('rateLimits.timeWindowHours')}
-              min="1"
-              className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
+              {...register('rateLimits.timeWindowHours', {
+                required: 'Ce champ est requis',
+                min: {
+                  value: 1,
+                  message: 'La valeur minimum est 1',
+                },
+              })}
+              className={`w-full rounded-lg border p-2 dark:bg-gray-700 ${
+                errors.rateLimits?.timeWindowHours
+                  ? 'border-red-500 dark:border-red-500'
+                  : 'dark:border-gray-600'
+              }`}
             />
+            {errors.rateLimits?.timeWindowHours && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.rateLimits.timeWindowHours.message}
+              </p>
+            )}
             <p className="mt-1 text-sm text-gray-500">
               Durée de la période de limitation
             </p>

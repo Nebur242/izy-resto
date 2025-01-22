@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui/Button';
 import { MenuItem, MenuItemWithVariants } from '../../types';
@@ -8,6 +8,7 @@ import { useVariants } from '../../hooks/useVariants';
 import { useSettings } from '../../hooks/useSettings';
 import { LogoUploader } from '../settings/LogoUploader';
 import { VariantManager } from './variants/VariantManager';
+import { useInventory } from '../../hooks/useInventory';
 
 interface MenuItemFormProps {
   item?: MenuItem | null;
@@ -21,6 +22,7 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
   const [selectedCategory, setSelectedCategory] = useState(
     item?.categoryId || ''
   );
+  const { items: inventory } = useInventory();
   const { variants } = useVariants(selectedCategory);
   const [variantPrices, setVariantPrices] = useState(
     (item as MenuItemWithVariants)?.variantPrices || []
@@ -40,6 +42,7 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
       image: item?.image || '',
       categoryId: item?.categoryId || '',
       stockQuantity: item?.stockQuantity || 0,
+      inventoryConnections: item?.inventoryConnections || [],
     },
   });
 
@@ -65,6 +68,12 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
         ...vp,
         price: Number(vp.price),
       })),
+      inventoryConnections: formData.inventoryConnections
+        .filter((conn: any) => conn.itemId && conn.ratio)
+        .map((conn: any) => ({
+          ...conn,
+          ratio: Number(conn.ratio),
+        })),
     };
     onSave(menuItem);
   };
@@ -76,6 +85,70 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
     if (value !== item?.categoryId) {
       setVariantPrices([]);
     }
+  };
+  const ProductSelect = ({ index }: { index: number }) => {
+    const currentValue = watch(`inventoryConnections.${index}.itemId`);
+
+    return (
+      <div
+        key={index}
+        className="grid grid-cols-[1fr,1fr,auto] gap-4 items-start"
+      >
+        <div className="flex flex-col">
+          <label className="block text-sm font-medium mb-2">
+            Produit d'inventaire
+          </label>
+          <select
+            value={currentValue}
+            {...register(`inventoryConnections.${index}.itemId`)}
+            className="w-full rounded-lg border dark:border-gray-600 p-2.5 dark:bg-gray-700 h-10"
+          >
+            <option value="">Sélectionner un produit</option>
+            {inventory.map(item => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="mb-2">
+            <label className="block text-sm font-medium">
+              Ratio (1:{watch(`inventoryConnections.${index}.ratio`) || '0'})
+            </label>
+          </div>
+          <input
+            type="number"
+            step="0.1"
+            min="1"
+            {...register(`inventoryConnections.${index}.ratio`)}
+            className="w-full rounded-lg border dark:border-gray-600 p-2.5 dark:bg-gray-700 h-10"
+            placeholder="Ex: 3 pour 1:3"
+          />
+          <span className="text-xs mt-1 text-gray-500 dark:text-gray-400">
+            Le ratio est une règle de proportion simple entre le produit
+            d'inventaire et le produit du menu
+          </span>
+        </div>
+
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => {
+            const connections = watch('inventoryConnections');
+            setValue(
+              'inventoryConnections',
+              connections.filter((_: any, i: number) => i !== index),
+              { shouldDirty: true }
+            );
+          }}
+          className="self-center mb-0.5"
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+    );
   };
 
   return (
@@ -245,6 +318,36 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                     label="Image du produit"
                     description="Format recommandé: JPG ou PNG en haute résolution (1920x1080px minimum)"
                   />
+                </div>
+              </div>
+
+              {/* Inventory Connections */}
+              <div className="border-t dark:border-gray-700 pt-6">
+                <h3 className="text-lg font-medium mb-4">
+                  Connexions à l'inventaire
+                </h3>
+                <div className="space-y-4">
+                  {watch('inventoryConnections')?.map(
+                    (connection: any, index: number) => (
+                      <ProductSelect index={index} key={index} />
+                    )
+                  )}
+
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => {
+                      const connections = watch('inventoryConnections') || [];
+                      setValue(
+                        'inventoryConnections',
+                        [...connections, { itemId: '', ratio: 1 }],
+                        { shouldDirty: true }
+                      );
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Ajouter une connexion
+                  </Button>
                 </div>
               </div>
 
