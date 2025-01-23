@@ -3,22 +3,22 @@ import { InventoryItem } from '../types/inventory';
 import { inventoryService } from '../services/inventory/inventory.service';
 import toast from 'react-hot-toast';
 
-export function useInventory() {
+export function useInventory(dateRange?: { startDate: Date; endDate: Date }) {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadItems();
-  }, []);
+  }, [dateRange?.startDate, dateRange?.endDate]);
 
   const loadItems = async () => {
     try {
       setIsLoading(true);
-      const fetchedItems = await inventoryService.getAll();
+      const fetchedItems = await inventoryService.getAll(dateRange);
       setItems(fetchedItems);
     } catch (error) {
       console.error('Error loading inventory items:', error);
-      toast.error('Erreur lors du chargement de l\'inventaire');
+      toast.error("Erreur lors du chargement de l'inventaire");
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +32,7 @@ export function useInventory() {
       return id;
     } catch (error) {
       console.error('Error adding inventory item:', error);
-      toast.error('Erreur lors de l\'ajout du produit');
+      toast.error("Erreur lors de l'ajout du produit");
       throw error;
     }
   };
@@ -40,9 +40,9 @@ export function useInventory() {
   const updateItem = async (id: string, data: Partial<InventoryItem>) => {
     try {
       await inventoryService.update(id, data);
-      setItems(prev => prev.map(item => 
-        item.id === id ? { ...item, ...data } : item
-      ));
+      setItems(prev =>
+        prev.map(item => (item.id === id ? { ...item, ...data } : item))
+      );
       toast.success('Produit mis à jour avec succès');
     } catch (error) {
       console.error('Error updating inventory item:', error);
@@ -69,6 +69,6 @@ export function useInventory() {
     addItem,
     updateItem,
     deleteItem,
-    refreshItems: loadItems
+    refreshItems: loadItems,
   };
 }

@@ -184,7 +184,7 @@ class StockHistoryService {
         pdf.text(update.itemName, xPos, yPos);
         xPos += colWidths[1];
 
-        pdf.text(update.quantity.toString(), xPos, yPos);
+        pdf.text(Number(update.quantity).toFixed(2).toString(), xPos, yPos);
         xPos += colWidths[2];
 
         pdf.text(update.reason, xPos, yPos);
@@ -204,7 +204,11 @@ class StockHistoryService {
       );
 
       pdf.setFontSize(11);
-      pdf.text(`Total des mouvements: ${totalQuantity}`, 10, yPos);
+      pdf.text(
+        `Total des mouvements: ${Number(totalQuantity).toFixed(2)}`,
+        10,
+        yPos
+      );
       pdf.text(
         `Coût total: ${formatCurrency(totalCost)}`,
         pageWidth - 60,

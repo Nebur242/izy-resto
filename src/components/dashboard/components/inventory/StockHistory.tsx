@@ -117,7 +117,7 @@ export function StockHistory({
                         </span>
                         <span>•</span>
                         <span className="text-red-500 dark:text-red-400 font-medium">
-                          -{update.quantity} unités
+                          -{Number(update.quantity).toFixed(2)} unités
                         </span>
                         <span>•</span>
                         <span className="font-medium">

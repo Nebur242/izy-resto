@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Calendar, Plus, Search } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { InventoryList } from '../../../components/dashboard/components/inventory/InventoryList';
 import { InventoryForm } from '../../../components/dashboard/components/inventory/InventoryForm';
@@ -15,6 +15,7 @@ import {
   StockUpdate,
   StockHistory as StockHistoryType,
 } from '../../../types';
+import { DateFilter } from '../../../components/dashboard/components/accounting/DateFilter';
 
 const tabs = [
   { id: 'inventory', label: 'Inventaire' },
@@ -43,15 +44,20 @@ export function InventoryManagement() {
     updates: [],
     totalPages: 0,
   });
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(new Date().setDate(1)), // First day of current month
+    endDate: new Date(),
+  });
 
-  const { items, isLoading, addItem, updateItem, deleteItem } = useInventory();
+  const { items, isLoading, addItem, updateItem, deleteItem } =
+    useInventory(dateRange);
 
   // Load stock history when tab changes or page changes
   useEffect(() => {
     if (activeTab === 'history') {
       loadStockHistory();
     }
-  }, [activeTab, currentPage]);
+  }, [activeTab, currentPage, dateRange]);
 
   const loadStockHistory = async () => {
     try {
@@ -59,7 +65,10 @@ export function InventoryManagement() {
       const { updates, totalCount } = await stockHistoryService.getHistory({
         page: currentPage,
         pageSize: 10,
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
       });
+      console.log(dateRange, updates, totalCount);
 
       setStockHistory({
         updates,
@@ -135,6 +144,11 @@ export function InventoryManagement() {
     }
   };
 
+  const handleDateChange = (start: Date, end: Date) => {
+    setDateRange({ startDate: start, endDate: end });
+    setCurrentPage(1); // Reset to first page when date range changes
+  };
+
   const filteredItems = items.filter(item => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -177,6 +191,16 @@ export function InventoryManagement() {
 
       {/* Tabs */}
       <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+
+      {/* Date Range Filter - Always visible */}
+      <div className="flex items-center gap-4">
+        <Calendar className="w-5 h-5 text-gray-500" />
+        <DateFilter
+          startDate={dateRange.startDate}
+          endDate={dateRange.endDate}
+          onDateChange={handleDateChange}
+        />
+      </div>
 
       {activeTab === 'inventory' ? (
         <>

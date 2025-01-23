@@ -15,6 +15,8 @@ import { useSettings } from '../../hooks/useSettings';
 import { SocialMediaProfile } from '../../types/settings';
 import packageJson from '../../../package.json';
 import { Link } from 'react-router-dom';
+import Whatsapp from '../svg/whatsapp';
+import Tiktok from '../svg/Tiktok';
 
 interface SocialMediaIconProps {
   profile: SocialMediaProfile;
@@ -26,8 +28,8 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
     instagram: Instagram,
     twitter: Twitter,
     youtube: Youtube,
-    tiktok: Hash,
-    whatsapp: MessageCircle,
+    tiktok: Tiktok,
+    whatsapp: Whatsapp,
   };
 
   const Icon = icons[profile.platform];
