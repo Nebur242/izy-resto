@@ -101,9 +101,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
 
     try {
       // Add delivery fee to total if applicable
-
-      console.log(deliveryZone, total);
-
       const orderId = await orderService.createOrder({
         items: cart,
         status: 'pending',

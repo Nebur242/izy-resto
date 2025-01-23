@@ -6,6 +6,7 @@ import { LoginPage } from '../pages/auth/LoginPage';
 import { Home } from '../pages/home';
 import { OrderReceipt } from '../pages/OrderReceipt';
 import OrderTracking from '../pages/OrderTracking'; // Updated import
+import PendingTransaction from '../pages/payments/pending';
 import PaymentFailure from '../pages/paytech/FailedPage';
 import PaymentSuccess from '../pages/paytech/SuccessPage';
 import { TermsOfService } from '../pages/TermsOfService';
@@ -31,6 +32,7 @@ export function AppRoutes() {
       <Route path="/receipt" element={<OrderReceipt />} />
       <Route path="/paytech/success" element={<PaymentSuccess />} />
       <Route path="/paytech/failed" element={<PaymentFailure />} />
+      <Route path="/payment/pending" element={<PendingTransaction />} />
       <Route path="/terms" element={<TermsOfService />} />
       {/* Auth Routes */}
       <Route

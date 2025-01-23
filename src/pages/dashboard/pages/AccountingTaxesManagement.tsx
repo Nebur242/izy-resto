@@ -124,8 +124,6 @@ export const AccountingTaxesManagement = () => {
   const [loading, setLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  console.log(orders);
-
   const { getDateOrders } = useOrders();
   const [currentPage, setCurrentPage] = useState(1);
 

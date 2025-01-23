@@ -153,6 +153,14 @@ export function TransactionList({
                         <Button
                           variant="ghost"
                           size="sm"
+                          onClick={() => setEditingTransaction(transaction)}
+                          className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() =>
                             setDeleteConfirmation({
                               isOpen: true,

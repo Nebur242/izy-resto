@@ -25,6 +25,7 @@ import { formatCurrency } from '../../utils/currency';
 import { formatTaxRate } from '../../utils/tax';
 import { Button } from '../ui/Button';
 import { CinetPayPayment } from './CinetPayPayment';
+import { MoneyFusionPaymentButton } from './MoneyFusionPaymentButton';
 import { QRCodeModal } from './QRCodeModal';
 import { StripePayment } from './StripePayment';
 
@@ -72,7 +73,6 @@ export function OrderConfirmation({
 
   const getPaymentUrl = () => {
     if (!selectedPaymentMethod?.url) return '';
-    console.log(`${selectedPaymentMethod.url}?amount=${total}`);
     return selectedPaymentMethod.name?.toLowerCase() === 'wave'
       ? `${selectedPaymentMethod.url}?amount=${total}`
       : '#';
@@ -496,7 +496,7 @@ export function OrderConfirmation({
 
       {/* Actions */}
       <div className="flex flex-col justify-end gap-4">
-        {(!['paytech', 'stripe', 'cinetpay'].includes(
+        {(!['paytech', 'stripe', 'cinetpay', 'money fusion'].includes(
           selectedPaymentMethod?.name.toLowerCase() || ''
         ) ||
           hasPaid) && (
@@ -552,6 +552,27 @@ export function OrderConfirmation({
                 apiSecret: `${selectedPaymentMethod.apiSecret}`,
               }}
               currency={settings.currency}
+            />
+          )}
+
+        {/* Add MoneyFusion Payment Button */}
+        {selectedPaymentMethod?.name.toLowerCase() === 'money fusion' &&
+          !hasPaid &&
+          settings?.currency && (
+            <MoneyFusionPaymentButton
+              onConfirm={handleOrderConfirm}
+              total={total}
+              cart={cart}
+              paymentMethod={{
+                apiKey: `${selectedPaymentMethod.apiKey}`,
+                url: `${selectedPaymentMethod.url}`,
+              }}
+              currency={settings.currency}
+              customerData={{
+                name: customerData.name,
+                phone: customerData.phone,
+                email: customerData.email,
+              }}
             />
           )}
 

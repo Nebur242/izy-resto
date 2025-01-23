@@ -60,10 +60,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     : null;
 
   // Calculate total
-  const total = deliveryZone
-    ? calculateTotal(subtotal, taxTotal, tip?.amount || 0) +
-      Number(deliveryZone.price)
-    : calculateTotal(subtotal, taxTotal, tip?.amount || 0);
+  const total = (
+    deliveryZone
+      ? calculateTotal(subtotal, taxTotal, tip?.amount || 0) +
+        Number(deliveryZone.price)
+      : calculateTotal(subtotal, taxTotal, tip?.amount || 0)
+  ).toFixed(2);
 
   const addToCart = (item: MenuItem & { quantity?: number }) => {
     setCart(currentCart => {
