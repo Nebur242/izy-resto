@@ -15,37 +15,6 @@
     @apply transition-colors duration-200;
   }
 
-  /* Safe area padding utility classes */
-  .safe-area-p {
-    padding: var(--safe-area-top) var(--safe-area-right) var(--safe-area-bottom) var(--safe-area-left);
-  }
-
-  .safe-area-px {
-    padding-left: max(1rem, var(--safe-area-left));
-    padding-right: max(1rem, var(--safe-area-right));
-  }
-
-  .safe-area-py {
-    padding-top: max(1rem, var(--safe-area-top));
-    padding-bottom: max(1rem, var(--safe-area-bottom));
-  }
-
-  .safe-area-pt {
-    padding-top: max(1rem, var(--safe-area-top));
-  }
-
-  .safe-area-pb {
-    padding-bottom: max(1rem, var(--safe-area-bottom));
-  }
-
-  .safe-area-pl {
-    padding-left: max(1rem, var(--safe-area-left));
-  }
-
-  .safe-area-pr {
-    padding-right: max(1rem, var(--safe-area-right));
-  }
-
   /* Base body styles */
   body {
     @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
@@ -81,10 +50,7 @@
     @apply text-gray-700 dark:text-gray-300;
   }
 
-  /* Buttons */
-  button {
-    @apply text-gray-700 dark:text-gray-300 disabled:text-gray-400 dark:disabled:text-gray-600;
-  }
+
 
   /* Custom scrollbar */
   ::-webkit-scrollbar {

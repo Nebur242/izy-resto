@@ -100,13 +100,17 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
 
     try {
       // Add delivery fee to total if applicable
+      const name =
+        !data.name && !data.tableNumber
+          ? ''
+          : data.name || `Table ${data.tableNumber}`;
       const orderId = await orderService.createOrder({
         items: cart,
         status: 'pending',
         subtotal,
         total,
         tip,
-        customerName: data.name || `Table ${data.tableNumber}`,
+        customerName: name,
         customerPhone: data.phone,
         customerAddress: diningOption === 'delivery' ? data.address : undefined,
         tableNumber: diningOption === 'dine-in' ? data.tableNumber : undefined,
@@ -415,6 +419,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
               settings?.delivery.enabled
             }
             type="submit"
+            spanClassName="text-white"
             className="px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
           >
             Suivant

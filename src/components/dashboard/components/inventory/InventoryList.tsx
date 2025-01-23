@@ -112,7 +112,7 @@ export function InventoryList({
                         isLowStock ? 'text-red-500' : ''
                       }`}
                     >
-                      {item.quantity.toFixed(2)} {item.unit}
+                      {Number(item.quantity).toFixed(2)} {item.unit}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">

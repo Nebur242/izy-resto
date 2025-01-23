@@ -35,14 +35,14 @@ export function ProductSalesStats({ orders }: ProductSalesStatsProps) {
       order.items.forEach(item => {
         const existing = stats.get(item.id);
         if (existing) {
-          existing.quantity += item.quantity;
-          existing.revenue += item.price * item.quantity;
+          existing.quantity += Number(item.quantity);
+          existing.revenue += Number(item.price) * Number(item.quantity);
         } else {
           stats.set(item.id, {
             id: item.id,
             name: item.name,
-            quantity: item.quantity,
-            revenue: item.price * item.quantity,
+            quantity: Number(item.quantity),
+            revenue: Number(item.price) * Number(item.quantity),
           });
         }
       });

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
 
@@ -9,12 +8,20 @@ interface AnalyticCardProps {
   color: 'blue' | 'green' | 'purple' | 'orange';
 }
 
-export function AnalyticCard({ title, value, icon: Icon, color }: AnalyticCardProps) {
+export function AnalyticCard({
+  title,
+  value,
+  icon: Icon,
+  color,
+}: AnalyticCardProps) {
   const colors = {
     blue: 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400',
-    green: 'bg-green-50 text-green-600 dark:bg-green-900/50 dark:text-green-400',
-    purple: 'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400',
-    orange: 'bg-orange-50 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400'
+    green:
+      'bg-green-50 text-green-600 dark:bg-green-900/50 dark:text-green-400',
+    purple:
+      'bg-purple-50 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400',
+    orange:
+      'bg-orange-50 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400',
   };
 
   return (

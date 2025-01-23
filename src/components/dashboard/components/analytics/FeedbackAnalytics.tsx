@@ -1,6 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, MessageSquare, User, Calendar, Phone } from 'lucide-react';
+import { Star, MessageSquare, User, Phone } from 'lucide-react';
 import { Order } from '../../../../types';
 import { useSettings } from '../../../../hooks/useSettings';
 import { formatCurrency } from '../../../../utils/currency';
