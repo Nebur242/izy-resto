@@ -12,8 +12,6 @@ interface OrderReceiptDetailsProps {
 export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
   const { settings } = useSettings();
 
-  console.log(order);
-
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 sm:p-8">
       {/* Order Header */}
