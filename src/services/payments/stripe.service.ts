@@ -1,20 +1,6 @@
 import axios from 'axios';
-
-export const createIntent = async (data: {
-  amount: number;
-  currency: string;
-  apiSecret: string;
-}) => {
-  const response = await axios.post<{
-    data: {
-      clientSecret: string;
-    };
-  }>(`http://localhost:3000/api/v1/payments/create-intent`, data);
-
-  if (!response.data) return null;
-
-  return response.data.data.clientSecret;
-};
+import { encryptData } from '../../utils/functions';
+import { apiConfig, secretKeys } from '../../config/api.config';
 
 export const processPayment = async (data: {
   amount: number;
@@ -23,6 +9,7 @@ export const processPayment = async (data: {
   paymentMethodId: string;
   return_url: string;
 }) => {
+  const encryptedData = encryptData(data, secretKeys.secret);
   const response = await axios.post<{
     data:
       | {
@@ -32,7 +19,7 @@ export const processPayment = async (data: {
           requiresAction: boolean;
           paymentIntentClientSecret: string;
         };
-  }>(`http://localhost:3000/api/v1/payments/process-payment`, data);
+  }>(`${apiConfig.baseUri}/payments/process-payment`, { data: encryptedData });
 
   if (!response.data) return null;
 

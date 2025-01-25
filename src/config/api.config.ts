@@ -18,3 +18,15 @@ export const cloudinaryConfig = {
 export const appConfig = {
   baseUrl: import.meta.env.VITE_APP_URL || 'https://restaurant-5ba0f.web.app',
 };
+
+export const secretKeys = {
+  secret: '_[kX/hgy^75R*XDg7AT',
+};
+
+export const apiConfig = {
+  baseUri: `${
+    window.location.hostname.includes('localhost')
+      ? 'http://localhost:3000'
+      : 'https://restaurants-project-backend-solitary-brook-2574.fly.dev'
+  }/api/v1`,
+};

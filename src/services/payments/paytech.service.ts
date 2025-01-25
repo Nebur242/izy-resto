@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { API_URI } from '../../constants/defaultSettings';
+import { apiConfig, secretKeys } from '../../config/api.config';
+import { encryptData } from '../../utils/functions';
 
 export const createPayment = async (data: {
   ref: string;
@@ -8,7 +9,11 @@ export const createPayment = async (data: {
   apiKey: string;
   type: 'paytech' | 'cinetpay';
 }) => {
-  const response = await axios.post(`${API_URI}/payments`, data);
+  const encryptedData = encryptData(data, secretKeys.secret);
+
+  const response = await axios.post(`${apiConfig.baseUri}/payments`, {
+    data: encryptedData,
+  });
 
   return response.data;
 };
@@ -16,7 +21,7 @@ export const createPayment = async (data: {
 export const getOrderByRef = async (ref: string) => {
   const response = await axios.get<{
     data: { status: 'sale_complete' | 'sale_canceled' | 'pending' | 'VAL' }[];
-  }>(`${API_URI}/payments?ref=${ref}`);
+  }>(`${apiConfig.baseUri}/payments?ref=${ref}`);
 
   const data = response.data.data;
 

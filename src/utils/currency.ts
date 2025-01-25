@@ -15,7 +15,6 @@ export function formatCurrency(
 
   // Validate the amount is a number
   if (isNaN(numericAmount)) {
-    console.log('amount', amount);
     console.error('Invalid amount provided to formatCurrency:', amount);
     return '0';
   }
