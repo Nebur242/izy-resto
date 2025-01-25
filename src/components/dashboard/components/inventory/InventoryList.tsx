@@ -78,7 +78,8 @@ export function InventoryList({
           </thead>
           <tbody>
             {paginatedItems.map(item => {
-              const isLowStock = item.quantity <= item.minQuantity;
+              const isLowStock =
+                Number(item.quantity) <= Number(item.minQuantity);
               const numericPrice =
                 typeof item.price === 'string'
                   ? parseFloat(item.price)

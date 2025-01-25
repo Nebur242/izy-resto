@@ -119,7 +119,13 @@ type AllCurrency = {
   value: string;
   infos: string;
   display: string;
-  acceptedPaymentMethods: ('PayTech' | 'Wave' | 'Stripe' | 'CinetPay')[];
+  acceptedPaymentMethods: (
+    | 'PayTech'
+    | 'Wave'
+    | 'Stripe'
+    | 'CinetPay'
+    | 'Money Fusion'
+  )[];
 };
 
 export const allCurrencies: AllCurrency[] = [
@@ -128,21 +134,21 @@ export const allCurrencies: AllCurrency[] = [
     value: 'XOF',
     display: 'FCFA',
     infos: '',
-    acceptedPaymentMethods: ['PayTech', 'Wave', 'CinetPay'],
+    acceptedPaymentMethods: ['PayTech', 'Wave', 'CinetPay', 'Money Fusion'],
   },
   {
     label: 'XAF (FCFA)',
     value: 'XAF',
     display: 'FCFA',
     infos: '',
-    acceptedPaymentMethods: ['PayTech', 'CinetPay'],
+    acceptedPaymentMethods: ['PayTech', 'CinetPay', 'Money Fusion'],
   },
   {
     label: 'CVE (CVE)',
     value: 'CVE',
     display: 'CVE',
     infos: '',
-    acceptedPaymentMethods: ['PayTech', 'Wave'],
+    acceptedPaymentMethods: ['PayTech', 'Wave', 'Money Fusion'],
   },
   {
     label: 'MRU (UM)',
@@ -156,7 +162,7 @@ export const allCurrencies: AllCurrency[] = [
     value: 'MAD',
     display: 'DH',
     infos: '',
-    acceptedPaymentMethods: ['PayTech', 'Stripe'],
+    acceptedPaymentMethods: ['PayTech', 'Stripe', 'Money Fusion'],
   },
   {
     label: 'GMD (GMD)',
@@ -192,21 +198,21 @@ export const allCurrencies: AllCurrency[] = [
     value: 'USD',
     infos: '',
     display: 'USD',
-    acceptedPaymentMethods: ['Stripe', 'PayTech', 'CinetPay'],
+    acceptedPaymentMethods: ['Stripe', 'PayTech', 'CinetPay', 'Money Fusion'],
   },
   {
     label: 'EUR (€)',
     value: 'EUR',
     infos: '',
     display: '€',
-    acceptedPaymentMethods: ['Stripe', 'PayTech'],
+    acceptedPaymentMethods: ['Stripe', 'PayTech', 'Money Fusion'],
   },
   {
     label: 'CAD ($)',
     value: 'CAD',
     infos: '',
     display: '$',
-    acceptedPaymentMethods: ['Stripe', 'PayTech'],
+    acceptedPaymentMethods: ['Stripe', 'PayTech', 'Money Fusion'],
   },
   {
     label: 'GBP (£)',

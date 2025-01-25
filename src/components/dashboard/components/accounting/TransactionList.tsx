@@ -88,13 +88,10 @@ export function TransactionList({
                   Référence
                 </th>
                 <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">
-                  Débit
+                  Débit (HT)
                 </th>
                 <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">
-                  Crédit
-                </th>
-                <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">
-                  Brut
+                  Crédit (HT)
                 </th>
                 <th className="px-6 py-3 text-xs font-medium text-gray-500"></th>
               </tr>
@@ -145,9 +142,9 @@ export function TransactionList({
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-right">
+                    {/* <td className="px-6 py-4 text-sm font-medium text-right">
                       {formatCurrency(transaction.gross, settings?.currency)}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2">
                         <Button

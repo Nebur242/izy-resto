@@ -10,6 +10,7 @@ import {
   doc,
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase/config';
+import { orderService } from '../orders/order.service';
 
 class AccountingService extends FirestoreService<Transaction> {
   constructor() {
@@ -28,13 +29,23 @@ class AccountingService extends FirestoreService<Transaction> {
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        debit: Number(doc.data().debit || 0),
-        credit: Number(doc.data().credit || 0),
-        gross: Number(doc.data().gross || 0),
-      })) as Transaction[];
+      const transactions = await Promise.all(
+        snapshot.docs.map(async doc => {
+          let credit = doc.data().credit || 0;
+          if (doc.data().source === 'orders' && !doc.data().hasSubtotal) {
+            const order = await orderService.getOrderById(doc.data().reference);
+            credit = order?.subtotal || 0;
+          }
+          return {
+            id: doc.id,
+            ...doc.data(),
+            debit: Number(doc.data().debit || 0),
+            credit: Number(credit),
+            gross: Number(doc.data().gross || 0),
+          };
+        })
+      );
+      return transactions as Transaction[];
     } catch (error) {
       console.error('Error fetching transactions:', error);
       throw error;
@@ -55,10 +66,11 @@ class AccountingService extends FirestoreService<Transaction> {
           }`,
           reference: order.id,
           debit: 0,
-          credit: order.total,
-          gross: order.total,
+          credit: order.subtotal,
+          gross: order.subtotal,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          hasSubtotal: true,
         };
 
         transaction.set(docRef, newTransaction);
@@ -125,6 +137,7 @@ class AccountingService extends FirestoreService<Transaction> {
           credit,
           gross,
           updatedAt: new Date().toISOString(),
+          ...(data.source === 'orders' ? { hasSubtotal: true } : {}),
         };
 
         transaction.update(docRef, updatedTransaction);

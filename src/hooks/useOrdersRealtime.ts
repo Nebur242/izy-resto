@@ -10,15 +10,23 @@ export function useOrdersRealtime() {
 
   useEffect(() => {
     setIsLoading(true);
-    
+
     const unsubscribe = orderService.subscribeToOrders(
-      (updatedOrders) => {
+      updatedOrders => {
         // Update orders without animation
-        setOrders(updatedOrders);
+        const formattedOrders = updatedOrders.map(o => ({
+          ...o,
+          total: Number(o.total),
+          subtotal: Number(o.subtotal),
+          taxTotal: Number(o.taxTotal),
+          amountPaid: o.amountPaid ? Number(o.amountPaid) : 0,
+          change: o.change ? Number(o.change) : 0,
+        }));
+        setOrders(formattedOrders);
         setIsLoading(false);
         setError(null);
       },
-      (error) => {
+      error => {
         console.error('Error in orders subscription:', error);
         setError(error);
         setIsLoading(false);
@@ -32,10 +40,10 @@ export function useOrdersRealtime() {
     };
   }, []);
 
-  return { 
-    orders, 
+  return {
+    orders,
     isLoading,
     error,
-    isError: !!error
+    isError: !!error,
   };
 }
