@@ -9,7 +9,6 @@ export function useRestaurantStatus() {
 
   useEffect(() => {
     checkRestaurantStatus();
-    // Check every minute
     const interval = setInterval(checkRestaurantStatus, 60000);
     return () => clearInterval(interval);
   }, [settings]);
@@ -25,8 +24,7 @@ export function useRestaurantStatus() {
     if (
       !settings?.holidayClosure?.enabled ||
       !settings?.holidayClosure?.startDate ||
-      !settings?.holidayClosure?.endDate ||
-      !settings?.openingHours?.timezone
+      !settings?.holidayClosure?.endDate
     ) {
       return false;
     }
@@ -34,7 +32,6 @@ export function useRestaurantStatus() {
     const startDate = new Date(settings.holidayClosure.startDate);
     const endDate = new Date(settings.holidayClosure.endDate);
 
-    // Set time to start of day for start date and end of day for end date
     const startDateTime = new Date(startDate);
     startDateTime.setHours(0, 0, 0, 0);
     const endDateTime = new Date(endDate);
@@ -55,20 +52,15 @@ export function useRestaurantStatus() {
   };
 
   const normalizeTime = (minutes: number): number => {
-    // Handle times past midnight by adding 24 hours worth of minutes
     return minutes < 0 ? minutes + 24 * 60 : minutes;
   };
 
   const checkRestaurantStatus = () => {
-    if (!settings?.openingHours?.timezone || !settings.hasOpeningHours) {
-      return;
-    }
-
-    const timezone = settings.openingHours.timezone;
+    const timezone = settings?.openingHours?.timezone || 'UTC';
     const now = new Date();
     const restaurantTime = getDateInRestaurantTimezone(now, timezone);
 
-    // Check holiday closure first
+    // Check holiday closure first, regardless of opening hours
     if (checkHolidayClosure(restaurantTime, timezone)) {
       setIsOpen(false);
       setIsHoliday(true);
@@ -78,7 +70,14 @@ export function useRestaurantStatus() {
 
     setIsHoliday(false);
 
-    // Get current and previous day
+    // If no opening hours defined, keep open when not in holiday closure
+    if (!settings?.openingHours?.timezone || !settings.hasOpeningHours) {
+      setIsOpen(true);
+      setShowModal(false);
+      return;
+    }
+
+    // Regular opening hours check
     const currentDay = restaurantTime
       .toLocaleDateString('en-US', {
         weekday: 'long',
@@ -110,13 +109,11 @@ export function useRestaurantStatus() {
 
     let restaurantIsOpen = false;
 
-    // Check if we're still in previous day's opening period (for times after midnight)
     if (!previousDaySchedule.closed) {
       const prevDayOpenTime = parseTimeToMinutes(previousDaySchedule.open);
       const prevDayCloseTime = parseTimeToMinutes(previousDaySchedule.close);
 
       if (prevDayCloseTime < prevDayOpenTime) {
-        // Previous day's closing time is after midnight
         const normalizedCurrentTime = normalizeTime(currentTimeInMinutes);
         const normalizedCloseTime = normalizeTime(prevDayCloseTime);
 
@@ -126,16 +123,13 @@ export function useRestaurantStatus() {
       }
     }
 
-    // Check current day's schedule if we're not open from previous day
     if (!restaurantIsOpen && !todaySchedule.closed) {
       const openingTime = parseTimeToMinutes(todaySchedule.open);
       const closingTime = parseTimeToMinutes(todaySchedule.close);
 
       if (closingTime < openingTime) {
-        // Closing time is after midnight
         restaurantIsOpen = currentTimeInMinutes >= openingTime;
       } else {
-        // Normal same-day schedule
         restaurantIsOpen =
           currentTimeInMinutes >= openingTime &&
           currentTimeInMinutes < closingTime;

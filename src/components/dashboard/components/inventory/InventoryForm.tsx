@@ -128,6 +128,8 @@ export function InventoryForm({ item, onSave, onCancel }: InventoryFormProps) {
                   <option value="ml">Millilitres</option>
                   <option value="cartons">Cartons</option>
                   <option value="packs">Packs</option>
+                  <option value="lb">Lb</option>
+                  <option value="oz">Oz</option>
                 </select>
               </div>
 

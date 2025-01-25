@@ -89,14 +89,14 @@ export function ProductSalesStats({ orders }: ProductSalesStatsProps) {
             </p>
           </div>
         </div>
-        <div className="text-right">
+        {/* <div className="text-right">
           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
             Revenu total
           </p>
           <p className="text-base sm:text-lg font-semibold text-blue-600 dark:text-blue-400">
             {formatCurrency(totalRevenue, settings?.currency)}
           </p>
-        </div>
+        </div> */}
       </div>
 
       {/* Stats Grid */}

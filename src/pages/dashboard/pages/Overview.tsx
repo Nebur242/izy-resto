@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from '../../../i18n/useTranslation';
 import { motion } from 'framer-motion';
 import { useIsMobile } from '../../../hooks/useIsMobile';
@@ -20,7 +20,7 @@ export function Overview() {
     endDate: new Date(),
   });
 
-  const { orders, isLoading } = useOrdersRealtime();
+  const { orders } = useOrdersRealtime();
 
   // Filter orders based on date range
   const filteredOrders = useMemo(() => {
@@ -47,16 +47,16 @@ export function Overview() {
     );
 
     // Calculate daily order rate
-    const dailyOrderRate = filteredOrders.length / daysDiff;
+    const dailyOrderRate = deliveredOrders.length / daysDiff;
 
     return {
       totalRevenue: deliveredOrders.reduce(
         (sum, order) => sum + order.total,
         0
       ),
-      totalOrders: filteredOrders.length,
+      totalOrders: deliveredOrders.length,
       uniqueCustomers: new Set(
-        filteredOrders.map(order => order.customerEmail || order.customerPhone)
+        deliveredOrders.map(order => order.customerEmail || order.customerPhone)
       ).size,
       dailyOrderRate: Math.round(dailyOrderRate * 10) / 10, // Round to 1 decimal place
     };
@@ -76,10 +76,10 @@ export function Overview() {
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
           <h3 className="text-lg font-semibold mb-4">Commandes Récentes</h3>
-          <PaginatedRecentOrders orders={filteredOrders} itemsPerPage={5} />
+          <PaginatedRecentOrders orders={deliveredOrders} itemsPerPage={5} />
         </div>
         <AnalyticsGrid {...analytics} />
-        <ProductSalesStats orders={filteredOrders} />
+        <ProductSalesStats orders={deliveredOrders} />
       </div>
     );
   }
@@ -102,7 +102,7 @@ export function Overview() {
       <AnalyticsGrid {...analytics} />
 
       {/* Product Sales Stats */}
-      <ProductSalesStats orders={filteredOrders} />
+      <ProductSalesStats orders={deliveredOrders} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div
@@ -123,7 +123,7 @@ export function Overview() {
         >
           <h3 className="text-lg font-semibold mb-4">État des commandes</h3>
           <AnalyticsChart
-            data={filteredOrders.reduce((acc, order) => {
+            data={deliveredOrders.reduce((acc, order) => {
               acc[order.status] = (acc[order.status] || 0) + 1;
               return acc;
             }, {} as Record<string, number>)}
@@ -138,7 +138,7 @@ export function Overview() {
           className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm"
         >
           <h3 className="text-lg font-semibold mb-4">{t('orders.recent')}</h3>
-          <PaginatedRecentOrders orders={filteredOrders} itemsPerPage={5} />
+          <PaginatedRecentOrders orders={deliveredOrders} itemsPerPage={5} />
         </motion.div>
 
         <motion.div
@@ -148,7 +148,7 @@ export function Overview() {
         >
           <h3 className="text-lg font-semibold mb-4">Meilleurs clients</h3>
           <PaginatedCustomerList
-            orders={filteredOrders.filter(order => !!order.customerPhone)}
+            orders={deliveredOrders.filter(order => !!order.customerPhone)}
             itemsPerPage={5}
           />
         </motion.div>

@@ -24,7 +24,7 @@ import { formatOrderData } from './formatters';
 import { OrderServiceError } from './errors';
 import type { OrderFilters } from './types';
 import { anonymousAuthService } from '../auth/anonymousAuth.service';
-import { calculateTaxes, calculateTotal } from '../../utils/tax';
+import { calculateTaxes } from '../../utils/tax';
 
 class OrderService {
   private collection = 'orders';

@@ -43,7 +43,8 @@ export function TrafficAnalytics() {
     });
 
     const totalRevenue = filteredOrders.reduce(
-      (sum, order) => (order.status === 'delivered' ? sum + order.total : sum),
+      (sum, order) =>
+        order.status === 'delivered' ? sum + Number(order.total) : sum,
       0
     );
 

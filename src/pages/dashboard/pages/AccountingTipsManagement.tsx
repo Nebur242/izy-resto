@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DateFilter } from '../../../components/dashboard/components/accounting/DateFilter';
 import { Button } from '../../../components/ui';
-import { Download, Package } from 'lucide-react';
+import { DollarSign, Download, Package } from 'lucide-react';
 import { useSettings } from '../../../hooks';
 import { useOrders } from '../../../context/OrderContext';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -134,6 +134,30 @@ export const AccountingTipsManagement = () => {
 
   return (
     <>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20`}>
+              <DollarSign
+                className={`w-6 h-6 text-blue-600 dark:text-blue-400`}
+              />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Total Taxes
+              </p>
+              <p className="text-2xl font-semibold">
+                {formatCurrency(
+                  filteredOrders.reduce((acc, curr) => {
+                    return acc + (curr.tip?.amount || 0);
+                  }, 0),
+                  settings?.currency
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <DateFilter
           startDate={dateRange.from}
