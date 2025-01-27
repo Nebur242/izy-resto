@@ -69,7 +69,7 @@ export function Footer() {
       className={`${
         `${settings?.theme?.paletteColor?.colors[0]?.darkBgColor}` ||
         'bg-white dark:bg-gray-900/90'
-      } border-t border-gray-200 dark:border-gray-800 py-8 mt-10 `}
+      } border-t border-gray-200 dark:border-gray-800 py-8 mt-10 text-gray-500 dark:text-gray-400 `}
     >
       <Container>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8">

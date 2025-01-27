@@ -1,14 +1,14 @@
 import React, { Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage } from '../pages/auth/LoginPage';
-import OrderTracking from '../pages/OrderTracking'; // Updated import
-import { OrderReceipt } from '../pages/OrderReceipt';
-import { LoadingScreen } from '../components/ui/LoadingScreen';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { AuthGuard } from '../components/auth/AuthGuard';
+import { LoadingScreen } from '../components/ui/LoadingScreen';
+import { LoginPage } from '../pages/auth/LoginPage';
+import { Home } from '../pages/home';
+import { OrderReceipt } from '../pages/OrderReceipt';
+import OrderTracking from '../pages/OrderTracking'; // Updated import
 import PaymentFailure from '../pages/paytech/FailedPage';
 import PaymentSuccess from '../pages/paytech/SuccessPage';
 import { TermsOfService } from '../pages/TermsOfService';
-import { Home } from '../pages/home';
 
 // Lazy load the Dashboard component
 const Dashboard = React.lazy(() =>
@@ -32,7 +32,6 @@ export function AppRoutes() {
       <Route path="/paytech/success" element={<PaymentSuccess />} />
       <Route path="/paytech/failed" element={<PaymentFailure />} />
       <Route path="/terms" element={<TermsOfService />} />
-
       {/* Auth Routes */}
       <Route
         path="/login"

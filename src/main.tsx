@@ -36,9 +36,7 @@ initializeTheme().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <BrowserRouter>
-        <div className="text-gray-500 dark:text-gray-400 bg-[var(--bg-color)] ">
-          <App />
-        </div>
+        <App />
       </BrowserRouter>
     </StrictMode>
   );

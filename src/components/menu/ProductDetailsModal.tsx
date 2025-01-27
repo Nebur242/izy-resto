@@ -204,7 +204,7 @@ export function ProductDetailsModal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
+      className={`fixed w-full h-full inset-0 z-50 flex items-center justify-center p-4 ${
         isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
       } bg-black/50 backdrop-blur-sm overflow-y-auto transition-all duration-300`}
       style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
@@ -214,7 +214,12 @@ export function ProductDetailsModal({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+          delay: 0.3, // Délais pour synchroniser avec l'overlay
+        }}
         className="relative w-full max-w-md rounded-2xl bg-white dark:bg-gray-900 shadow-2xl max-h-[90vh] overflow-hidden flex flex-col"
       >
         {/* Close Button */}

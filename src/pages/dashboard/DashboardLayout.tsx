@@ -17,7 +17,7 @@ export function DashboardLayout({ children, onLogout }: DashboardLayoutProps) {
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden h-screen">
+    <div className="flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden h-screen text-gray-500 dark:text-gray-400 bg-[var(--bg-color)]">
       {/* Only show header on desktop */}
       {!isMobile && (
         <DashboardHeader
