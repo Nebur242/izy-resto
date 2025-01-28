@@ -22,9 +22,9 @@ export default function App() {
           <CartProvider>
             <ServerCartProvider>
               <OrderProvider>
-                <div className="text-gray-500 dark:text-gray-400">
+                <body className="text-gray-500 dark:text-gray-400  bg-[var(--bg-color)]">
                   <AppRoutes />
-                </div>
+                </body>
                 <RestaurantClosedModal />
                 <HolidayClosureModal />
                 <CookieBanner />

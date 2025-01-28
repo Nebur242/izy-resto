@@ -42,7 +42,7 @@ export default function OrderTracking() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-[var(--bg-color)] flex flex-col items-center justify-center p-4">
+      <div className="flex flex-col items-center justify-center p-4">
         <h1 className="text-2xl font-bold mb-4">Commande introuvable</h1>
         <p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
           Cette commande n'existe plus ou a été supprimée
@@ -64,7 +64,7 @@ export default function OrderTracking() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-color)] py-8 px-4">
+    <div className="py-8 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Navigation */}
         <div className="flex justify-between items-center mb-8">

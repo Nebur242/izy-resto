@@ -8,7 +8,7 @@ export function TermsOfService() {
   const { settings } = useSettings();
 
   return (
-    <div className="min-h-screen bg-[var(--bg-color)] py-12 px-4">
+    <div className="py-12 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Back Button */}
         <Link to="/">

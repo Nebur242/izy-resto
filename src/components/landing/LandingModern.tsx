@@ -25,7 +25,6 @@ export function LandingModern() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="min-h-screen bg-[var(--bg-color)]"
           >
             <HeaderWrapper />
             <Hero />
