@@ -1,9 +1,9 @@
 import { Building2, Shield } from 'lucide-react';
-import { LogoUploader } from '../../../../../components/settings/LogoUploader';
 import { useFormContext } from 'react-hook-form';
+import { LogoUploader } from '../../../../../components/settings/LogoUploader';
+import { allCurrencies } from '../../../../../constants/defaultSettings';
 import { RestaurantSettings } from '../../../../../types';
 import { SocialMediaSettings } from './SocialMediaSettings';
-import { allCurrencies } from '../../../../../constants/defaultSettings';
 
 export function GeneralSettings() {
   const {

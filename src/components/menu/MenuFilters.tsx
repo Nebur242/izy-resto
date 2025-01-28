@@ -74,21 +74,23 @@ export function MenuFilters({
           ref={scrollContainerRef}
           onScroll={checkScroll}
           className="flex-1 flex items-center justify-start gap-2 overflow-x-auto scroll-smooth
-                   [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                   [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-full"
         >
           <div className="flex items-center gap-2 px-4 mx-auto">
             <motion.button
               onClick={() => onCategoryChange('all')}
               className={`
-                flex-none px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
+                px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
                 transition-all duration-200 hover:scale-105
                 ${
                   activeCategory === 'all'
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                    ? `${
+                        settings?.theme?.paletteColor?.colors[0]?.class ||
+                        'bg-gradient-to-r from-blue-600 to-indigo-600'
+                      } text-white`
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                 }
               `}
-              whileHover={{ y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
               Menu principal
@@ -103,11 +105,13 @@ export function MenuFilters({
                   transition-all duration-200 hover:scale-105
                   ${
                     activeCategory === category.id
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                      ? `${
+                          settings?.theme?.paletteColor?.colors[0]?.class ||
+                          'bg-gradient-to-r from-blue-600 to-indigo-600'
+                        } text-white`
                       : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                   }
                 `}
-                whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
                 {category.name}

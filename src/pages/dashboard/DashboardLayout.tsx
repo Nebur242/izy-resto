@@ -40,76 +40,59 @@ export function DashboardLayout({
       <div className="flex-1 flex">
         {/* Sidebar - Hidden on mobile by default */}
         {!isMobile && (
-          <div className="flex-none">
-            <DashboardHeader
-              onLogout={onLogout}
-              onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            />
-          </div>
+          <DashboardSidebar
+            currentPage={currentPage}
+            onClose={() => setIsSidebarOpen(false)}
+          />
         )}
 
-        <div className="flex-1 flex min-h-0">
-          {/* Sidebar - Hidden on mobile by default */}
-          {!isMobile && (
-            <div className="flex-none">
-              <DashboardSidebar
-                currentPage={currentPage}
-                onClose={() => setIsSidebarOpen(false)}
-                isStaff={isStaff}
-                staffData={staffData}
-                settings={settings}
+        {/* Mobile Sidebar */}
+        <AnimatePresence>
+          {isMobile && isSidebarOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 z-40"
+                onClick={() => setIsSidebarOpen(false)}
               />
-            </div>
-          )}
-
-          {/* Mobile Sidebar */}
-          <AnimatePresence>
-            {isMobile && isSidebarOpen && (
-              <>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black/50 z-40"
-                  onClick={() => setIsSidebarOpen(false)}
+              <motion.div
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="fixed inset-y-0 left-0 w-64 z-50"
+              >
+                <DashboardSidebar
+                  currentPage={currentPage}
+                  onClose={() => setIsSidebarOpen(false)}
+                  isStaff={isStaff}
+                  staffData={staffData}
+                  settings={settings}
                 />
-                <motion.div
-                  initial={{ x: '-100%' }}
-                  animate={{ x: 0 }}
-                  exit={{ x: '-100%' }}
-                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                  className="fixed inset-y-0 left-0 w-64 z-50"
-                >
-                  <DashboardSidebar
-                    currentPage={currentPage}
-                    onClose={() => setIsSidebarOpen(false)}
-                    isStaff={isStaff}
-                    staffData={staffData}
-                    settings={settings}
-                  />
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
-          {/* Main Content */}
-          <main className="flex-1 h-[calc(100vh-64px)] overflow-y-scroll">
-            <div className="overflow-y-scroll p-4 md:p-6">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={location.pathname}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.2 }}
-                  className="container mx-auto max-w-7xl"
-                >
-                  {children}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </main>
-        </div>
+        {/* Main Content */}
+        <main className="flex-1 h-[calc(100vh-64px)] overflow-y-scroll">
+          <div className="overflow-y-scroll p-4 md:p-6">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+                className="container mx-auto max-w-7xl"
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </main>
       </div>
     </div>
   );

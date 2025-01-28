@@ -395,7 +395,7 @@ export function OrderConfirmation({
                   ${
                     selectedPayment === method.id
                       ? `${selectedPaymentBg} bg-blue-50 dark:bg-blue-900/20`
-                      : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+                      : 'border-gray-200 dark:border-gray-700'
                   }
                 `}
                 >

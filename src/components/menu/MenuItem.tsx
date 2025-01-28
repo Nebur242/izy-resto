@@ -91,7 +91,18 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
             )}
 
             {/* Price Badge */}
-            <div className="absolute right-2 top-2 rounded-full bg-white/95 px-3 py-1 text-sm font-bold text-gray-900 shadow-lg backdrop-blur-sm dark:bg-gray-900/95 dark:text-white md:right-4 md:top-4 md:px-4 md:py-2">
+            <div
+              className={`absolute right-2 top-2 rounded-full ${
+                settings?.theme?.paletteColor?.colors[0]?.class || 'bg-white/95'
+              } px-3 py-1 text-sm font-bold ${
+                settings?.theme?.paletteColor?.colors[0]?.class
+                  ? 'text-white'
+                  : 'text-gray-900'
+              } shadow-lg backdrop-blur-sm dark:${
+                settings?.theme?.paletteColor?.colors[0]?.class ||
+                'bg-gray-900/95'
+              } dark:text-white md:right-4 md:top-4 md:px-4 md:py-2`}
+            >
               {isMobile && formatCurrency(item.price, settings?.currency)}
 
               {!isMobile &&

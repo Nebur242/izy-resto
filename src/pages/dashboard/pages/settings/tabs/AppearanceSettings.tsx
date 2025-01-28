@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 import { useTheme } from '../../../../../context/ThemeContext';
+import { useSettings } from '../../../../../hooks';
 import { RestaurantSettings } from '../../../../../types/settings';
 import { HeaderOption } from './components/HeaderOption';
 import { TemplateOption } from './components/TemplateOption';
@@ -20,6 +21,7 @@ import PaletteColor from './PaletteColor';
 export function AppearanceSettings() {
   const { register, watch, setValue } = useFormContext<RestaurantSettings>();
   const { theme, toggleTheme } = useTheme();
+  const { settings } = useSettings();
 
   const handleThemeChange = async (newTheme: 'light' | 'dark') => {
     setValue('defaultTheme', newTheme, { shouldDirty: true });
@@ -61,14 +63,16 @@ export function AppearanceSettings() {
         </div>
       </section>
 
-      <section>
-        <div className="flex items-center gap-3 mb-6">
-          <Layout className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-xl font-semibold">Palette couleur</h2>
-        </div>
+      {settings?.seo.keywords.includes('food-2025') && (
+        <section>
+          <div className="flex items-center gap-3 mb-6">
+            <Layout className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-xl font-semibold">Palette couleur</h2>
+          </div>
 
-        <PaletteColor />
-      </section>
+          <PaletteColor />
+        </section>
+      )}
 
       {/* Header Style */}
       <section className="space-y-6">

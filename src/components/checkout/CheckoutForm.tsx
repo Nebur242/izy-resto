@@ -196,10 +196,13 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
            ${
              diningOption === 'delivery'
                ? `${
-                   settings.theme.paletteColor.colors[0].borderClass ||
+                   settings?.theme?.paletteColor?.colors[0]?.borderClass ||
                    'border-blue-500'
-                 } bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20`
-               : 'border-gray-200 dark:border-gray-700  dark:hover:border-blue-600'
+                 } bg-blue-50 dark:${
+                   settings?.theme?.paletteColor?.colors[0]?.borderClass ||
+                   'border-blue-400'
+                 }  dark:bg-blue-900/20`
+               : 'border-gray-200 dark:border-gray-700  '
            }
          `}
           >
@@ -227,10 +230,13 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
              ${
                diningOption === 'dine-in'
                  ? `${
-                     settings.theme.paletteColor.colors[0].borderClass ||
+                     settings?.theme?.paletteColor?.colors[0]?.borderClass ||
                      'border-blue-500'
-                   } bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20`
-                 : 'border-gray-200 dark:border-gray-700 dark:hover:border-blue-600'
+                   } bg-blue-50 dark:${
+                     settings?.theme?.paletteColor?.colors[0]?.borderClass ||
+                     'border-blue-400'
+                   } dark:bg-blue-900/20`
+                 : 'border-gray-200 dark:border-gray-700'
              }
            `}
           >
@@ -421,14 +427,10 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             variant="secondary"
             onClick={onCancel}
             className="px-4"
-            spanClassName="text-white"
           >
             Retour
           </Button>
-          <Button
-            type="submit"
-            className="px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-          >
+          <Button type="submit" className="px-6">
             Suivant
           </Button>
         </div>

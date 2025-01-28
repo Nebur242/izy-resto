@@ -35,7 +35,9 @@ export function OpeningHoursButton() {
         className="flex w-full items-center gap-3 rounded-xl bg-white/90 p-3 shadow-lg backdrop-blur-sm transition-all hover:bg-white/95 dark:bg-white/10 dark:shadow-white/5 dark:hover:bg-white/15"
       >
         <div className="flex-shrink-0">
-          <Clock className={`h-5 w-5`} />
+          <Clock
+            className={`h-5 w-5  ${settings?.theme?.paletteColor?.colors[0]?.textPrimary}`}
+          />
         </div>
         <div className="min-w-0 flex-1 text-left">
           <h3 className="text-sm font-medium text-gray-900 dark:text-white">

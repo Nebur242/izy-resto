@@ -78,7 +78,7 @@ export function DashboardSidebar({
       {/* Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-3 z-20 rounded-full border bg-white p-1.5 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+        className="absolute -right-0 top-3 z-50 rounded-full border bg-white p-1.5 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
       >
         {isCollapsed ? (
           <ChevronRight className="h-4 w-4" />

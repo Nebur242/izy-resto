@@ -105,10 +105,10 @@ export function Cart() {
               {/* Total */}
               <div className="pt-2 border-t dark:border-gray-700 mt-2">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-gray-800 dark:text-gray-200">
-                    Total Panier
-                  </span>
-                  <span className={`text-xl font-bold ${textClasses}`}>
+                  <span>Total Panier</span>
+                  <span
+                    className={`text-xl font-bold text-neutral-700 dark:text-white`}
+                  >
                     {formatCurrency(total, settings?.currency)}
                   </span>
                 </div>
