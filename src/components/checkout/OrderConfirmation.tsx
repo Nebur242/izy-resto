@@ -12,6 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { getCurrencyObject } from '../../constants/defaultSettings';
 import { useCart } from '../../context/CartContext';
 import { usePayments } from '../../hooks/usePayments';
@@ -583,18 +584,21 @@ export function OrderConfirmation({
       </div>
 
       {/* QR Code Modal */}
-      <AnimatePresence>
-        {showQRCode && selectedPaymentMethod?.qrCode && (
-          <QRCodeModal
-            qrCode={selectedPaymentMethod.qrCode}
-            onClose={() => {
-              setShowQRCode(false);
-              setHasClickedPaymentLink(true);
-              setHasPaid(false);
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {showQRCode && selectedPaymentMethod?.qrCode && (
+            <QRCodeModal
+              qrCode={selectedPaymentMethod.qrCode}
+              onClose={() => {
+                setShowQRCode(false);
+                setHasClickedPaymentLink(true);
+                setHasPaid(false);
+              }}
+            />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </motion.div>
   );
 }
@@ -679,14 +683,20 @@ const PayTechPaymentButton = ({
 
   return (
     <>
-      <AnimatePresence>
-        {isClosed && paymentSucceeded && paymentResponse?.redirect_url && (
-          <PayTechModal
-            onClose={handleClose}
-            iframeUrl={paymentResponse?.redirect_url}
-          />
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <>
+          <AnimatePresence>
+            {isClosed && paymentSucceeded && paymentResponse?.redirect_url && (
+              <PayTechModal
+                onClose={handleClose}
+                iframeUrl={paymentResponse?.redirect_url}
+              />
+            )}
+          </AnimatePresence>
+        </>,
+        document.body
+      )}
+
       {paymentError && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -702,6 +712,7 @@ const PayTechPaymentButton = ({
         </motion.div>
       )}
       <Button
+        variant="primary"
         disabled={isPaying}
         onClick={
           paymentSucceeded

@@ -1,16 +1,17 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '../ui';
-import { useState, useEffect } from 'react';
-import { AlertCircle, X, CreditCard, Lock } from 'lucide-react';
-import { loadStripe } from '@stripe/stripe-js';
 import {
   CardElement,
+  Elements,
   useElements,
   useStripe,
-  Elements,
 } from '@stripe/react-stripe-js';
-import { processPayment } from '../../services/payments/stripe.service';
+import { loadStripe } from '@stripe/stripe-js';
 import { AxiosError } from 'axios';
+import { AnimatePresence, motion } from 'framer-motion';
+import { AlertCircle, CreditCard, Lock, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { processPayment } from '../../services/payments/stripe.service';
+import { Button } from '../ui';
 
 const useCardElementStyle = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -255,30 +256,34 @@ export const StripePayment = ({
 
   return (
     <>
-      <AnimatePresence>
-        {!isClosed && (
-          <Elements
-            stripe={stripePromise}
-            options={{
-              mode: 'payment',
-              amount: Math.round(amount * 100),
-              currency,
-            }}
-          >
-            <PaymentModal
-              apiSecret={apiSecret}
-              amount={amount}
-              currency={currency}
-              onClose={handleClose}
-              onConfirm={onConfirm}
-            />
-          </Elements>
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {!isClosed && (
+            <Elements
+              stripe={stripePromise}
+              options={{
+                mode: 'payment',
+                amount: Math.round(amount * 100),
+                currency,
+              }}
+            >
+              <PaymentModal
+                apiSecret={apiSecret}
+                amount={amount}
+                currency={currency}
+                onClose={handleClose}
+                onConfirm={onConfirm}
+              />
+            </Elements>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       <Button
         onClick={() => setIsClosed(false)}
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2.5"
+        className="py-2.5"
+        variant="primary"
       >
         <span className="flex items-center gap-2">
           <CreditCard className="w-4 h-4" />

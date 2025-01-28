@@ -20,7 +20,7 @@ export function Cart() {
   if (!cart.length) return null;
 
   return (
-    <>
+    <div className="w-full relative">
       {/* Cart Button */}
       <button
         onClick={() => setIsOpen(true)}
@@ -44,7 +44,7 @@ export function Cart() {
 
       {/* Cart Drawer */}
       <div
-        className={`fixed inset-y-0 right-0 w-full md:w-96 bg-gray-50 dark:bg-gray-800 shadow-xl z-50 flex flex-col py-5 transition-transform duration-300 ${
+        className={`fixed inset-y-0  right-0 w-full md:w-96 bg-gray-50 dark:bg-gray-800 shadow-xl z-50 flex flex-col py-5 transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -123,6 +123,6 @@ export function Cart() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
