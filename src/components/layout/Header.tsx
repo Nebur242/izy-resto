@@ -49,7 +49,7 @@ export function Header({ onDashboardOpen }: HeaderProps) {
           {/* Left Section - Theme Toggle */}
           <div className="flex items-center gap-2">
             <Button
-              variant="primary"
+              variant="secondary"
               size="sm"
               onClick={toggleTheme}
               className={`
@@ -57,17 +57,7 @@ export function Header({ onDashboardOpen }: HeaderProps) {
                hover:text-gray-900
               `}
             >
-              {theme === 'light' ? (
-                <Moon
-                  size={24}
-                  className={isScrolled ? 'text-gray-600' : 'text-gray-200'}
-                />
-              ) : (
-                <Sun
-                  size={24}
-                  className={isScrolled ? 'text-gray-200' : 'text-gray-200'}
-                />
-              )}
+              {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
             </Button>
           </div>
 
@@ -79,7 +69,7 @@ export function Header({ onDashboardOpen }: HeaderProps) {
           {/* Right Section - Dashboard/Login */}
           <div className="ml-auto flex items-center">
             <Button
-              variant="primary"
+              variant="secondary"
               size="sm"
               onClick={handleSettingsClick}
               className={`
@@ -88,15 +78,9 @@ export function Header({ onDashboardOpen }: HeaderProps) {
               `}
             >
               {theme === 'light' ? (
-                <Settings
-                  size={24}
-                  className={isScrolled ? 'text-gray-200' : 'text-gray-200'}
-                />
+                <Settings size={24} />
               ) : (
-                <Settings
-                  size={24}
-                  className={isScrolled ? 'text-gray-200' : 'text-gray-200'}
-                />
+                <Settings size={24} />
               )}
             </Button>
           </div>

@@ -21,6 +21,7 @@ interface SocialMediaIconProps {
 }
 
 function SocialMediaIcon({ profile }: SocialMediaIconProps) {
+  const { settings } = useSettings();
   const icons = {
     facebook: Facebook,
     instagram: Instagram,
@@ -29,6 +30,11 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
     tiktok: Tiktok,
     whatsapp: Whatsapp,
   };
+
+  console.log(
+    settings?.theme?.paletteColor.colors[0].textPrimary,
+    ' settings?.theme?.paletteColor.colors[0].textClass'
+  );
 
   const Icon = icons[profile.platform];
   if (!Icon) return null;
@@ -47,7 +53,11 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
       className=" hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
       aria-label={`Visit our ${profile.platform}`}
     >
-      <Icon className="w-7 h-7 text-gray-200 dark:text-gray-400" />
+      <Icon
+        className={`w-7 h-7 text-white dark:${
+          settings?.theme?.paletteColor.colors[0].textPrimary || 'text-gray-400'
+        }`}
+      />
     </a>
   );
 }
@@ -92,19 +102,34 @@ export function Footer() {
           <div className="text-center md:text-right">
             {settings?.address && (
               <p className="flex items-center justify-center md:justify-end gap-2 text-sm text-white dark:text-gray-400 mb-2">
-                <MapPin className="w-4 h-4 flex-shrink-0" />
+                <MapPin
+                  className={`w-4 h-4 flex-shrink-0  text-white  dark:${
+                    settings?.theme?.paletteColor.colors[0].textPrimary ||
+                    'text-gray-400'
+                  }`}
+                />
                 <span>{settings.address}</span>
               </p>
             )}
             {settings?.phone && (
               <p className="flex items-center justify-center md:justify-end gap-2 text-sm text-white dark:text-gray-400 mb-2">
-                <Phone className="w-4 h-4 flex-shrink-0" />
+                <Phone
+                  className={`w-4 h-4 flex-shrink-0  text-white  dark:${
+                    settings?.theme?.paletteColor.colors[0].textPrimary ||
+                    'text-gray-400'
+                  }`}
+                />
                 <span>{settings.phone}</span>
               </p>
             )}
             {settings?.email && (
               <p className="flex items-center justify-center md:justify-end gap-2 text-sm text-white dark:text-gray-400">
-                <Mail className="w-4 h-4 flex-shrink-0" />
+                <Mail
+                  className={`w-4 h-4 flex-shrink-0  text-white  dark:${
+                    settings?.theme?.paletteColor.colors[0].textPrimary ||
+                    'text-gray-400'
+                  }`}
+                />
                 <span>{settings?.email}</span>
               </p>
             )}
@@ -117,11 +142,15 @@ export function Footer() {
             to={settings?.termsOfService ? '/terms' : '#'}
             className="text-white hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center gap-1"
           >
-            <LinkIcon className="w-3 h-3" />
+            <LinkIcon
+              className={`w-3 h-3 text-white  dark:${
+                settings?.theme?.paletteColor.colors[0].textPrimary ||
+                'text-gray-400'
+              }`}
+            />
             Conditions d'utilisation
           </Link>
         </div>
-
         <div className="flex justify-between gap-2">
           <small>Tous droits réservés © {new Date().getFullYear()} - AF</small>
           <small className="text-center block">v{packageJson.version}</small>

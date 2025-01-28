@@ -14,11 +14,9 @@ function PaletteColor() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // Mémoisation du thème par défaut
   const defaultTheme = useMemo(() => colorPalettes[0], []);
   const [selectedPalette, setSelectedPalette] = useState(defaultTheme);
 
-  // Mémoisation des calculs de pagination
   const { displayedPalettes, totalPages } = useMemo(() => {
     const total = Math.ceil(colorPalettes.length / itemsPerPage);
     const start = (currentPage - 1) * itemsPerPage;
@@ -29,25 +27,21 @@ function PaletteColor() {
     };
   }, [currentPage]);
 
-  // Fonctions de navigation optimisées
   const handlePrevPage = () =>
     currentPage > 1 && setCurrentPage(prev => prev - 1);
   const handleNextPage = () =>
     currentPage < totalPages && setCurrentPage(prev => prev + 1);
 
-  // Fonction unique pour gérer la sélection de palette
   const handlePaletteColorChange = (palette: typePaletteColor) => {
     setSelectedPalette(palette);
     setValue('theme.paletteColor', palette, { shouldDirty: true });
   };
 
-  // Réinitialisation optimisée
   const resetToDefaultTheme = () => {
     setSelectedPalette(defaultTheme);
     setValue('theme.paletteColor', null, { shouldDirty: true });
   };
 
-  // Effet unique pour l'initialisation
   useEffect(() => {
     const initialTheme = settings?.theme?.paletteColor || defaultTheme;
     setSelectedPalette(initialTheme);
