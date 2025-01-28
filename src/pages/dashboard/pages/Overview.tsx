@@ -103,6 +103,7 @@ export function Overview() {
       {/* Product Sales Stats */}
 
       <ProductSalesStats orders={filteredOrders} />
+      <ProductSalesStats orders={deliveredOrders} />
 
       <ProductSalesStats orders={deliveredOrders} />
 

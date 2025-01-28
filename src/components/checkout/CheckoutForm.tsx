@@ -425,6 +425,12 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
           >
             Retour
           </Button>
+          <Button
+            type="submit"
+            className="px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+          >
+            Suivant
+          </Button>
         </div>
       </form>
     </div>
