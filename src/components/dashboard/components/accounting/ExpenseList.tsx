@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { Expense } from '../../../../types/accounting';
 import { Button } from '../../../ui/Button';

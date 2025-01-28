@@ -4,7 +4,6 @@ import { useTheme } from '../../context/ThemeContext';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Container';
 import { useSettings } from '../../hooks/useSettings';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Logo } from './Logo';
