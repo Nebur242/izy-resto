@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X, Plus, Minus, Type, Layers, List } from 'lucide-react';
 import { Button } from '../../../ui/Button';

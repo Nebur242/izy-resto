@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, Package, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Order } from '../../../../types';

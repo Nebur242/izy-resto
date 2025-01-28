@@ -1,4 +1,3 @@
-// import React from 'react';
 // import { useTranslation } from '../../../../i18n/useTranslation';
 import { NotificationBell } from '../../../../components/dashboard/notifications/NotificationBell';
 import { ThemeToggle } from './ThemeToggle';

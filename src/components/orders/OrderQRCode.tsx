@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { motion } from 'framer-motion';
 import { QrCode } from 'lucide-react';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Header } from './Header';
 import { ClassicHeader } from './ClassicHeader';
 import { useSettings } from '../../hooks/useSettings';

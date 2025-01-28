@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, Search } from 'lucide-react';
 import { useVariants } from '../../../hooks/useVariants';
 import { useCategories } from '../../../hooks/useCategories';

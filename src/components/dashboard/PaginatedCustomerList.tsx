@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Order } from '../../types';
 import { useTranslation } from '../../i18n/useTranslation';

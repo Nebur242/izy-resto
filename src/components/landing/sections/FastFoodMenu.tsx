@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useMenu } from '../../../hooks/useMenu';
 import { MenuItem } from '../../../types';

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { CustomerList } from '../../../components/dashboard/customers/CustomerList';
 import { CustomerFilters } from '../../../components/dashboard/customers/CustomerFilters';
 import { useOrdersRealtime } from '../../../hooks/useOrdersRealtime';

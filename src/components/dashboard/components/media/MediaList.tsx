@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, ExternalLink, Check } from 'lucide-react';
 import { MediaFile } from '../../../../types/media';

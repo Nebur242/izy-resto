@@ -1,4 +1,3 @@
-import React from 'react';
 import { NotificationBell } from '../../../../components/dashboard/notifications/NotificationBell';
 import { ThemeToggle } from './ThemeToggle';
 import { LogoutButton } from './LogoutButton';

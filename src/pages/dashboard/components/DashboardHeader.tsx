@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from '../../../i18n/useTranslation';
 import { BackButton } from './header/BackButton';
 import { UserSection } from './header/UserSection';

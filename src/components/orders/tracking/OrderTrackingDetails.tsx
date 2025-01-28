@@ -1,4 +1,3 @@
-import React from 'react';
 import { Phone, Mail, MapPin, Utensils, Truck } from 'lucide-react';
 import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';

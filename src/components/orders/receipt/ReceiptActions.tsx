@@ -1,4 +1,3 @@
-import React from 'react';
 import { Download, Share2, QrCode } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { Order } from '../../../types';

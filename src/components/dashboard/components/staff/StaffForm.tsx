@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X, User, Mail, Lock, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';

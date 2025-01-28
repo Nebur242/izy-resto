@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2, Trash2, Tag, Layers, ChevronRight } from 'lucide-react';
 import { Variant } from '../../../../types/variant';

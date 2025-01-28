@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Grid, List } from 'lucide-react';
 import { MediaGrid } from '../../../components/dashboard/components/media/MediaGrid';

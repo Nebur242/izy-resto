@@ -1,4 +1,3 @@
-import React from 'react';
 import { Plus, Minus, X } from 'lucide-react';
 import { CartItem as CartItemType } from '../../types';
 import { useCart } from '../../context/CartContext';

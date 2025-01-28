@@ -1,4 +1,3 @@
-import React from 'react';
 import { Utensils } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings';
 import { motion } from 'framer-motion';

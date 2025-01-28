@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, Users, Calendar } from 'lucide-react';
 import { useSettings } from '../../../hooks/useSettings';

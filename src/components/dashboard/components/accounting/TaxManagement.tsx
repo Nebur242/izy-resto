@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, AlertTriangle } from 'lucide-react';
 import { Button } from '../../../ui/Button';
 import { useSettings } from '../../../../hooks/useSettings';

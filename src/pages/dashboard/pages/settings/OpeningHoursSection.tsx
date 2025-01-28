@@ -1,4 +1,3 @@
-import React from 'react';
 import { UseFormRegister, UseFormWatch } from 'react-hook-form';
 import { Clock } from 'lucide-react';
 import { RestaurantSettings } from '../../../../types';

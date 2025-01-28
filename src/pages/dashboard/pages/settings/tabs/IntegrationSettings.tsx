@@ -1,4 +1,3 @@
-import React from 'react';
 import { Webhook, Bluetooth, X } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';

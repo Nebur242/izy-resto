@@ -1,4 +1,3 @@
-import React from 'react';
 import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';

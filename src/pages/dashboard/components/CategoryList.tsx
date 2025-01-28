@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2, Trash2, GripVertical, ChevronRight } from 'lucide-react';
 import { Category } from '../../../types';

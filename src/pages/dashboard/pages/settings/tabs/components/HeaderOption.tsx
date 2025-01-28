@@ -1,4 +1,3 @@
-import React from 'react';
 import { LucideIcon } from 'lucide-react';
 import { UseFormRegister } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../../types/settings';

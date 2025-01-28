@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
 import { Transaction } from '../../../../types/accounting';

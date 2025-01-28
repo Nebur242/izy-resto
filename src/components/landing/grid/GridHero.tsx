@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useSettings } from '../../../hooks/useSettings';
 import { Button } from '../../ui/Button';

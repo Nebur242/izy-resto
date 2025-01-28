@@ -1,4 +1,3 @@
-import React from 'react';
 import { CartSummary } from '../cart/CartSummary';
 import { Button } from '../ui/Button';
 import { useCart } from '../../context/CartContext';

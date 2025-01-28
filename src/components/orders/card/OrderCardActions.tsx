@@ -1,4 +1,3 @@
-import React from 'react';
 import { Order } from '../../../types';
 import { Button } from '../../ui/Button';
 
