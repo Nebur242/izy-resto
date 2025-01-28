@@ -16,3 +16,7 @@ input,
 textarea {
   outline: inherit;
 }
+
+body {
+  background-color: var(--dark-bg);
+}
