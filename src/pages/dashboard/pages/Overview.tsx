@@ -1,16 +1,16 @@
-import { useState, useMemo } from 'react';
-import { useTranslation } from '../../../i18n/useTranslation';
 import { motion } from 'framer-motion';
-import { useIsMobile } from '../../../hooks/useIsMobile';
-import { DateFilter } from '../../../components/dashboard/components/accounting/DateFilter';
+import { Laptop } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { AnalyticsGrid } from '../../../components/dashboard/analytics/AnalyticsGrid';
-import { AnalyticsChart } from '../components/AnalyticsChart';
+import { DateFilter } from '../../../components/dashboard/components/accounting/DateFilter';
 import { ProductSalesStats } from '../../../components/dashboard/components/analytics/ProductSalesStats';
 import { PaginatedCustomerList } from '../../../components/dashboard/PaginatedCustomerList';
 import { PaginatedRecentOrders } from '../../../components/dashboard/PaginatedRecentOrders';
 import { RevenueDetails } from '../../../components/dashboard/RevenueDetails';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import { useOrdersRealtime } from '../../../hooks/useOrdersRealtime';
-import { Laptop } from 'lucide-react';
+import { useTranslation } from '../../../i18n/useTranslation';
+import { AnalyticsChart } from '../components/AnalyticsChart';
 
 export function Overview() {
   const { t } = useTranslation();
@@ -100,8 +100,11 @@ export function Overview() {
       </div>
 
       <AnalyticsGrid {...analytics} />
-
       {/* Product Sales Stats */}
+
+      <ProductSalesStats orders={filteredOrders} />
+      <ProductSalesStats orders={deliveredOrders} />
+
       <ProductSalesStats orders={deliveredOrders} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -130,7 +133,6 @@ export function Overview() {
           />
         </motion.div>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

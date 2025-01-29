@@ -20,7 +20,7 @@ const initializeTheme = async () => {
     // If no localStorage theme, get from settings
     const settings = await settingsService.getSettings();
     const theme = settings?.defaultTheme || 'dark';
-    
+
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     }

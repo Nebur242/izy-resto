@@ -1,11 +1,12 @@
 import { forwardRef, useMemo, useState } from 'react';
-import { MenuItem as MenuItemType, MenuItemWithVariants } from '../../types';
-import { Badge } from '../ui/Badge';
 import { useCart } from '../../context/CartContext';
-import { useSettings } from '../../hooks/useSettings';
-import { ProductDetailsModal } from './ProductDetailsModal';
-import { formatCurrency } from '../../utils/currency';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { useSettings } from '../../hooks/useSettings';
+import useTextColor from '../../hooks/useTextColor';
+import { MenuItem as MenuItemType, MenuItemWithVariants } from '../../types';
+import { formatCurrency } from '../../utils/currency';
+import { Badge } from '../ui/Badge';
+import { ProductDetailsModal } from './ProductDetailsModal';
 
 interface MenuItemProps {
   item: MenuItemType;
@@ -15,6 +16,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
   ({ item }, ref) => {
     const { cart } = useCart();
     const { settings } = useSettings();
+    const textClasses = useTextColor();
     const [showModal, setShowModal] = useState(false);
     const itemInCart = cart.find(cartItem => cartItem.id === item.id);
     const isOutOfStock = item.stockQuantity === 0;
@@ -89,7 +91,18 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
             )}
 
             {/* Price Badge */}
-            <div className="absolute right-2 top-2 rounded-full bg-white/95 px-3 py-1 text-sm font-bold text-gray-900 shadow-lg backdrop-blur-sm dark:bg-gray-900/95 dark:text-white md:right-4 md:top-4 md:px-4 md:py-2">
+            <div
+              className={`absolute right-2 top-2 rounded-full ${
+                settings?.theme?.paletteColor?.colors[0]?.class || 'bg-white/95'
+              } px-3 py-1 text-sm font-bold ${
+                settings?.theme?.paletteColor?.colors[0]?.class
+                  ? 'text-white'
+                  : 'text-gray-900'
+              } shadow-lg backdrop-blur-sm dark:${
+                settings?.theme?.paletteColor?.colors[0]?.class ||
+                'bg-gray-900/95'
+              } dark:text-white md:right-4 md:top-4 md:px-4 md:py-2`}
+            >
               {isMobile && formatCurrency(item.price, settings?.currency)}
 
               {!isMobile &&
@@ -123,7 +136,15 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
           <div className="flex flex-1 flex-col justify-between p-3 md:p-5">
             {/* Title and Description */}
             <div>
-              <h3 className="mb-1 text-base font-semibold text-gray-900 line-clamp-1 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400 md:text-lg md:mb-2">
+              <h3
+                className={`mb-1 text-base font-semibold text-gray-900 line-clamp-1 transition-colors group-hover:${
+                  settings?.theme?.paletteColor?.colors[0]?.textHover ||
+                  'text-blue-600'
+                } dark:text-white dark:group-hover:${
+                  settings?.theme?.paletteColor?.colors[0]?.textHover ||
+                  'text-blue-400'
+                } md:text-lg md:mb-2`}
+              >
                 {item.name}
               </h3>
 
@@ -165,12 +186,11 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
         </div>
 
         {/* Modal */}
-        {showModal && (
-          <ProductDetailsModal
-            item={item}
-            onClose={() => setShowModal(false)}
-          />
-        )}
+        <ProductDetailsModal
+          isOpen={showModal}
+          item={item}
+          onClose={() => setShowModal(false)}
+        />
       </>
     );
   }

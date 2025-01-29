@@ -1,7 +1,7 @@
+import { ArrowDown, MapPin, Phone } from 'lucide-react';
 import React from 'react';
-import { MapPin, Phone, ArrowDown } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings';
-import { Button } from '../ui/Button';
+import { Button } from '../ui';
 import { OpeningHoursButton } from './OpeningHoursButton';
 
 interface InfoCardProps {
@@ -10,6 +10,7 @@ interface InfoCardProps {
   description: string;
   onClick?: () => void;
   isButton?: boolean;
+  className?: string;
 }
 
 function InfoCard({
@@ -19,17 +20,20 @@ function InfoCard({
   onClick,
   isButton,
 }: InfoCardProps) {
+  const { settings } = useSettings();
   const Component = isButton ? 'button' : 'div';
   const baseClassName =
     'flex items-center gap-3 rounded-xl bg-white/90 p-3 shadow-lg backdrop-blur-sm transition-all dark:bg-white/10 dark:shadow-white/5 w-full';
-  const className = isButton
+  const defaultclassName = isButton
     ? `${baseClassName} hover:bg-white/95 dark:hover:bg-white/15 active:scale-[0.98]`
     : baseClassName;
-
+  console.log(settings?.theme);
   return (
-    <Component onClick={onClick} className={className}>
+    <Component onClick={onClick} className={`${defaultclassName}`}>
       <div className="flex-shrink-0">
-        <Icon className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+        <Icon
+          className={`h-5 w-5 ${settings?.theme?.paletteColor?.colors[0]?.textPrimary}`}
+        />
       </div>
       <div className="min-w-0 flex-1 text-left">
         <h3 className="text-sm font-medium text-gray-900 dark:text-white">
@@ -80,12 +84,13 @@ export function Hero() {
               </p>
               <Button
                 onClick={scrollToMenu}
-                className="group relative rounded-full px-8 py-3 text-base font-medium transition-all hover:shadow-lg hover:opacity-90 sm:text-lg
-    bg-gradient-to-r from-gray-200 to-white text-blue-600 hover:bg-gradient-to-r hover:from-gray-200 hover:to-gray-300
-    dark:bg-gradient-to-r dark:from-blue-500 dark:to-blue-400 dark:text-white dark:hover:from-blue-600 dark:hover:to-blue-500"
+                variant="primary"
+                className=" px-8 py-3 text-base font-medium transition-all sm:text-lg"
               >
                 Voir le Menu
-                <ArrowDown className="ml-2 inline-block h-4 w-4 transition-transform group-hover:translate-y-1 group-hover:animate-bounce" />
+                <ArrowDown
+                  className={`ml-2 inline-block h-4 w-4 transition-transform group-hover:translate-y-1 group-hover:animate-bounce `}
+                />
               </Button>
             </div>
 

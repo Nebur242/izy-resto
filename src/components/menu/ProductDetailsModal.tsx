@@ -1,27 +1,31 @@
-import { useState, useRef, useEffect } from 'react';
-import { X, Plus, Minus, ShoppingBag, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { MenuItem, MenuItemWithVariants } from '../../types/menu';
-import { Button } from '../ui/Button';
+import { AlertCircle, Minus, Plus, ShoppingBag, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks/useSettings';
-import { formatCurrency } from '../../utils/currency';
+import useTextColor from '../../hooks/useTextColor';
 import { useVariants } from '../../hooks/useVariants';
+import { MenuItem, MenuItemWithVariants } from '../../types/menu';
+import { formatCurrency } from '../../utils/currency';
+import { Button } from '../ui/Button';
 
 interface ProductDetailsModalProps {
   item: MenuItemWithVariants | null;
   onClose: () => void;
   onAddToCart?: (item: MenuItem & { quantity: number }) => void;
+  isOpen: boolean;
 }
 
 export function ProductDetailsModal({
   item,
+  isOpen,
   onClose,
   onAddToCart,
 }: ProductDetailsModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const { addToCart, cart } = useCart();
   const { settings } = useSettings();
+  const textClasses = useTextColor();
   const [selectedVariants, setSelectedVariants] = useState<string[]>([]);
   const [unselectedRequiredVariantType, setUnselectedRequiredVariantType] =
     useState<string[]>([]);
@@ -199,13 +203,23 @@ export function ProductDetailsModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+    <div
+      className={`fixed w-full h-full inset-0 z-50 flex items-center justify-center p-4 ${
+        isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+      } bg-black/50 backdrop-blur-sm overflow-y-auto transition-all duration-300`}
+      style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
+    >
       <motion.div
         ref={modalRef}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+          delay: 0.3, // Délais pour synchroniser avec l'overlay
+        }}
         className="relative w-full max-w-md rounded-2xl bg-white dark:bg-gray-900 shadow-2xl max-h-[90vh] overflow-hidden flex flex-col"
       >
         {/* Close Button */}
@@ -248,7 +262,13 @@ export function ProductDetailsModal({
                   ? 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400'
                   : item.stockQuantity <= 5
                   ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
-                  : 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                  : `${
+                      settings?.theme?.paletteColor?.colors[0]?.textOpacity ||
+                      'bg-blue-50'
+                    } ${textClasses} dark:${
+                      settings?.theme?.paletteColor?.colors[0]?.textOpacity ||
+                      'bg-blue-900/30'
+                    } `
               }`}
             >
               <AlertCircle className="h-5 w-5" />
@@ -289,7 +309,10 @@ export function ProductDetailsModal({
                             transition-all duration-300 ease-in-out
                             ${
                               isSelected
-                                ? 'bg-blue-600 text-white scale-105 shadow-md'
+                                ? `${
+                                    settings?.theme?.paletteColor?.colors[0]
+                                      ?.class || 'bg-blue-600'
+                                  } text-white scale-105 shadow-md`
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 hover:scale-105'
                             }
                             disabled:opacity-50 disabled:cursor-not-allowed
@@ -307,9 +330,11 @@ export function ProductDetailsModal({
 
             {/* Cart Item Indicator */}
             {getCartItem() && (
-              <div className="bg-blue-50 dark:bg-blue-900/30 p-2 sm:p-2.5 rounded-lg text-blue-600 dark:text-blue-400 text-[10px] sm:text-xs font-medium text-center">
+              <div
+                className={`bg-blue-50 dark:bg-blue-900/30 p-2 sm:p-2.5 rounded-lg ${textClasses} text-[10px] sm:text-xs font-medium text-center`}
+              >
                 Déjà dans le panier: {getCartItem()?.quantity}{' '}
-                {getCartItem()?.quantity > 1 ? 'unités' : 'unité'}
+                {(getCartItem()?.quantity as number) > 1 ? 'unités' : 'unité'}
               </div>
             )}
           </div>
@@ -343,8 +368,8 @@ export function ProductDetailsModal({
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <div className="text-base sm:text-lg font-bold text-blue-600 dark:text-blue-400">
-              {formatCurrency(getVariantPrice() * quantity, settings?.currency)}
+            <div className={`text-base sm:text-lg font-bold ${textClasses}`}>
+              {formatCurrency(getVariantPrice() * quantity, settings?.currency)}{' '}
             </div>
           </div>
 
@@ -393,18 +418,13 @@ export function ProductDetailsModal({
           <Button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="w-full rounded-full py-2 sm:py-3 text-xs sm:text-sm font-semibold 
-                      flex items-center justify-center gap-2
-                      bg-blue-600 text-white 
-                      hover:bg-blue-700 
-                      focus:ring-2 focus:ring-blue-300 
-                      transition-all duration-300 ease-in-out
-                      disabled:bg-gray-300 disabled:cursor-not-allowed
-                      dark:bg-blue-500 dark:hover:bg-blue-600
-                      dark:disabled:bg-gray-700"
+            variant="primary"
+            className="w-full rounded-full py-2  sm:py-3 text-xs sm:text-sm font-semibold flex items-center justify-center gap-3"
           >
-            <ShoppingBag className="h-5 w-5" />
-            {isOutOfStock ? 'Rupture de stock' : 'Ajouter au Panier'}
+            <ShoppingBag className="h-5 w-5 mr-2" />
+            <span>
+              {isOutOfStock ? 'Rupture de stock' : 'Ajouter au Panier'}
+            </span>
           </Button>
         </div>
       </motion.div>

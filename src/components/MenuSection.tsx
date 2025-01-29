@@ -1,10 +1,10 @@
-import { SetStateAction, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { MenuFilters } from './menu/MenuFilters';
-import { SearchBar } from './menu/SearchBar';
-import { MenuItem } from './menu/MenuItem';
+import { SetStateAction, useState } from 'react';
 import { useMenu } from '../hooks';
+import { MenuFilters } from './menu/MenuFilters';
+import { MenuItem } from './menu/MenuItem';
+import { SearchBar } from './menu/SearchBar';
 
 export function MenuSection() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -59,7 +59,7 @@ export function MenuSection() {
       />
 
       <div className="relative min-h-[50vh]">
-        <div className="absolute inset-0 bg-gray-50 dark:bg-gray-900" />
+        <div className="absolute inset-0 bg-[var(--bg-color)]" />
 
         {isLoading ? (
           <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

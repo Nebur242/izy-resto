@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
 import { useMenu } from '../../hooks/useMenu';
-import { MenuItem } from './MenuItem';
-import { MenuFilters } from './MenuFilters';
-import { SearchBar } from './SearchBar';
 import { Pagination } from '../ui/Pagination';
+import { MenuFilters } from './MenuFilters';
+import { MenuItem } from './MenuItem';
+import { SearchBar } from './SearchBar';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -44,7 +44,7 @@ export function MenuSection() {
       />
 
       <div className="relative min-h-[50vh]">
-        <div className="absolute inset-0 bg-gray-50 dark:bg-gray-900" />
+        <div className="absolute inset-0 bg-[var(--bg-color)]" />
 
         {isLoading ? (
           <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

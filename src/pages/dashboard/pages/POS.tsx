@@ -1,16 +1,16 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useMenu } from '../../../hooks/useMenu';
-import { CartItem, Order } from '../../../types';
-import { orderService } from '../../../services/orders/order.service';
-import { useSettings } from '../../../hooks/useSettings';
-import { MenuFilters } from '../../../components/menu/MenuFilters';
-import { POSMenuGrid } from '../../../components/dashboard/components/pos/POSMenuGrid';
-import { POSCartSidebar } from '../../../components/dashboard/components/pos/POSCartSidebar';
-import { OrderConfirmationModal } from '../../../components/pos/OrderConfirmationModal';
 import toast from 'react-hot-toast';
+import { POSCartSidebar } from '../../../components/dashboard/components/pos/POSCartSidebar';
+import { POSMenuGrid } from '../../../components/dashboard/components/pos/POSMenuGrid';
+import { MenuFilters } from '../../../components/menu/MenuFilters';
+import { OrderConfirmationModal } from '../../../components/pos/OrderConfirmationModal';
 import { useServerCart } from '../../../context/ServerCartContext';
+import { useMenu } from '../../../hooks/useMenu';
+import { useSettings } from '../../../hooks/useSettings';
 import { useStaffCheck } from '../../../hooks/useStaffCheck';
+import { orderService } from '../../../services/orders/order.service';
+import { Order } from '../../../types';
 
 export function POS() {
   const { items } = useMenu();
@@ -116,7 +116,7 @@ export function POS() {
 
   return (
     <>
-      <div className="h-[calc(100vh-6rem)] flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Menu Section */}
         <div className="flex-1 flex flex-col overflow-hidden">
           <MenuFilters

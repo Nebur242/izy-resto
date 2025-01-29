@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Home, Star, XCircle } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { useOrders } from '../context/OrderContext';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { OrderRating } from '../components/orders/rating/OrderRating';
 import { OrderTrackingDetails } from '../components/orders/tracking/OrderTrackingDetails';
 import { OrderTrackingHeader } from '../components/orders/tracking/OrderTrackingHeader';
 import { OrderTrackingTimeline } from '../components/orders/tracking/OrderTrackingTimeline';
-import { OrderRating } from '../components/orders/rating/OrderRating';
-import { orderService } from '../services/orders/order.service';
+import { Button } from '../components/ui/Button';
 import { LoadingScreen } from '../components/ui/LoadingScreen';
-import toast from 'react-hot-toast';
+import { useOrders } from '../context/OrderContext';
+import { orderService } from '../services/orders/order.service';
 
 export default function OrderTracking() {
   const { orderId } = useParams();
@@ -42,7 +42,7 @@ export default function OrderTracking() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
+      <div className="flex flex-col items-center justify-center p-4">
         <h1 className="text-2xl font-bold mb-4">Commande introuvable</h1>
         <p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
           Cette commande n'existe plus ou a été supprimée
@@ -64,7 +64,7 @@ export default function OrderTracking() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div className="py-8 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Navigation */}
         <div className="flex justify-between items-center mb-8">

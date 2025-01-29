@@ -1,36 +1,35 @@
-import React from 'react';
 import { motion } from 'framer-motion';
+import { useSettings } from '../../hooks/useSettings';
+import { Cart } from '../cart/Cart';
 import { Header } from '../layout/Header';
 import { Container } from '../ui/Container';
-import { Cart } from '../cart/Cart';
-import { useSettings } from '../../hooks/useSettings';
+import { FastFoodCategories } from './sections/FastFoodCategories';
 import { FastFoodHero } from './sections/FastFoodHero';
 import { FastFoodMenu } from './sections/FastFoodMenu';
-import { FastFoodCategories } from './sections/FastFoodCategories';
 
 export function LandingFastFood() {
   const { settings } = useSettings();
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-black"
+      className="min-h-screen"
     >
       <Header />
-      
+
       {/* Hero Section with Featured Item */}
       <FastFoodHero />
 
       {/* Menu Categories */}
-      <section className="py-16 bg-black">
+      <section className="py-16">
         <Container>
           <FastFoodCategories />
         </Container>
       </section>
 
       {/* Menu Section */}
-      <section id="menu" className="py-16 bg-gradient-to-b from-black to-red-900">
+      <section id="menu" className="py-16">
         <Container>
           <FastFoodMenu />
         </Container>

@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Lock, Settings } from 'lucide-react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useRestaurantStatus } from '../../hooks/useRestaurantStatus';
 import { useSettings } from '../../hooks/useSettings';
 import { Button } from './Button';
-import { useRestaurantStatus } from '../../hooks/useRestaurantStatus';
 
 const DAYS = [
   'monday',

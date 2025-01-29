@@ -2,85 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --safe-area-top: env(safe-area-inset-top, 0px);
-    --safe-area-right: env(safe-area-inset-right, 0px);
-    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-    --safe-area-left: env(safe-area-inset-left, 0px);
-  }
-
-  /* Add smooth transitions for all theme changes */
-  * {
-    @apply transition-colors duration-200;
-  }
-
-  /* Base body styles */
-  body {
-    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
-  }
-
-  /* Improve text contrast in dark mode */
-  .dark {
-    color-scheme: dark;
-  }
-
-  /* Form elements */
-  input, select, textarea {
-    @apply bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white;
-  }
-
-  /* Headings */
-  h1, h2, h3, h4, h5, h6 {
-    @apply text-gray-900 dark:text-white font-semibold;
-  }
-
-  /* Paragraphs and general text */
-  p, span, div {
-    @apply text-gray-700 dark:text-gray-300;
-  }
-
-  /* Links */
-  a {
-    @apply text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300;
-  }
-
-  /* Labels */
-  label {
-    @apply text-gray-700 dark:text-gray-300;
-  }
-
-
-
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    @apply w-2;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-100 dark:bg-gray-800;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400 dark:bg-gray-500;
-  }
-
-  /* Toast container styles */
-  .toast-container {
-    @apply z-[1000] !important;
-  }
-}
-
 /* Hide scrollbar utility */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari, and Opera */
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+input,
+textarea {
+  outline: inherit;
+}
+
+body {
+  background-color: var(--dark-bg);
 }

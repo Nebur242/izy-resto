@@ -5,9 +5,5 @@ interface DashboardPageWrapperProps {
 }
 
 export function DashboardPageWrapper({ children }: DashboardPageWrapperProps) {
-  return (
-    <div className="py-6 md:py-8">
-      {children}
-    </div>
-  );
+  return <div className="py-6 md:py-8">{children}</div>;
 }

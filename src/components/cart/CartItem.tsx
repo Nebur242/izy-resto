@@ -1,8 +1,7 @@
-import React from 'react';
-import { Plus, Minus, X } from 'lucide-react';
-import { CartItem as CartItemType } from '../../types';
+import { Minus, Plus, X } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks/useSettings';
+import { CartItem as CartItemType } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 
 interface CartItemProps {

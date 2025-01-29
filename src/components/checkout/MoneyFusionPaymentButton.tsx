@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, X } from 'lucide-react';
-import { Button } from '../ui/Button';
-import { CartItem } from '../../types';
+import { AnimatePresence, motion } from 'framer-motion';
 import { FusionPay } from 'fusionpay';
+import { AlertCircle, X } from 'lucide-react';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { CartItem } from '../../types';
+import { Button } from '../ui/Button';
 
 interface PaymentResponse {
   statut: boolean;
@@ -139,14 +140,17 @@ export const MoneyFusionPaymentButton = ({
 
   return (
     <>
-      <AnimatePresence>
-        {isClosed && paymentResponse?.url && (
-          <MoneyFusionModal
-            onClose={handleClose}
-            iframeUrl={paymentResponse.url}
-          />
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {isClosed && paymentResponse?.url && (
+            <MoneyFusionModal
+              onClose={handleClose}
+              iframeUrl={paymentResponse.url}
+            />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {paymentError && (
         <motion.div
@@ -166,7 +170,7 @@ export const MoneyFusionPaymentButton = ({
       <Button
         disabled={isPaying}
         onClick={paymentResponse ? () => setIsClosed(true) : requestPayment}
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Payer avec MoneyFusion
       </Button>

@@ -1,11 +1,12 @@
-import { useRef, useState } from 'react';
-import { Button } from '../ui';
+import axios, { AxiosError } from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircle, X } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import toast from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { RestaurantSettings } from '../../types';
-import axios, { AxiosError } from 'axios';
-import toast from 'react-hot-toast';
+import { Button } from '../ui';
 
 const CinetPayPaymentModal = ({
   onClose,
@@ -121,11 +122,15 @@ export const CinetPayPayment = ({
 
   return (
     <>
-      <AnimatePresence>
-        {!isClosed && (
-          <CinetPayPaymentModal iframeUrl={url} onClose={handleClose} />
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {!isClosed && (
+            <CinetPayPaymentModal iframeUrl={url} onClose={handleClose} />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/20">
           <div className="flex items-center gap-3">

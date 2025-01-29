@@ -1,19 +1,19 @@
-import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { RestaurantSettings } from '../../../types';
-import { useSettings } from '../../../hooks/useSettings';
+import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Tabs } from '../../../components/ui/Tabs';
+import { useSettings } from '../../../hooks/useSettings';
+import { RestaurantSettings } from '../../../types';
 import {
-  GeneralSettings,
   AppearanceSettings,
   BusinessSettings,
-  IntegrationSettings,
-  SEOSettings,
   DataManagement,
-  LegalSettings,
-  TaxSettings,
   DeliverySettings,
+  GeneralSettings,
+  IntegrationSettings,
+  LegalSettings,
+  SEOSettings,
+  TaxSettings,
 } from './settings/tabs';
 
 import toast from 'react-hot-toast';
@@ -98,7 +98,7 @@ export function Settings() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="max-w-4xl mx-auto space-y-8 px-4 py-8"
+        className="max-w-5xl mx-auto space-y-8 px-4 py-8"
       >
         <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 

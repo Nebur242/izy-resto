@@ -1,6 +1,5 @@
-import React from 'react';
-import { Logo } from './Logo';
 import { useSettings } from '../../hooks/useSettings';
+import { Logo } from './Logo';
 
 export function DashboardLogo() {
   const { settings } = useSettings();

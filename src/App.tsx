@@ -1,15 +1,15 @@
-import { AppRoutes } from './routes';
-import { ThemeProvider } from './context/ThemeContext';
+import { Toast } from './components/ui';
+import { CookieBanner } from './components/ui/CookieBanner';
+import { HolidayClosureModal } from './components/ui/HolidayClosureModal';
+import { RestaurantClosedModal } from './components/ui/RestaurantClosedModal';
+import { ApiProvider } from './context/ApiContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { OrderProvider } from './context/OrderContext';
-import { ApiProvider } from './context/ApiContext';
-import { useSEO } from './hooks/useSEO';
-import { RestaurantClosedModal } from './components/ui/RestaurantClosedModal';
-import { CookieBanner } from './components/ui/CookieBanner';
-import { HolidayClosureModal } from './components/ui/HolidayClosureModal';
 import { ServerCartProvider } from './context/ServerCartContext';
-import { Toast } from './components/ui';
+import { ThemeProvider } from './context/ThemeContext';
+import { useSEO } from './hooks/useSEO';
+import { AppRoutes } from './routes';
 
 export default function App() {
   // Add SEO hook to update title and favicon
@@ -22,7 +22,9 @@ export default function App() {
           <CartProvider>
             <ServerCartProvider>
               <OrderProvider>
-                <AppRoutes />
+                <body className="text-gray-500 dark:text-gray-400  bg-[var(--bg-color)]">
+                  <AppRoutes />
+                </body>
                 <RestaurantClosedModal />
                 <HolidayClosureModal />
                 <CookieBanner />
