@@ -418,11 +418,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
         {/* Actions */}
         <div className="flex justify-end gap-3 pt-2">
           <Button
-            disabled={
-              !deliveryZone &&
-              diningOption === 'delivery' &&
-              settings?.delivery.enabled
-            }
             type="submit"
             variant="secondary"
             onClick={onCancel}
@@ -430,7 +425,15 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
           >
             Retour
           </Button>
-          <Button type="submit" className="px-6">
+          <Button
+            disabled={
+              !deliveryZone &&
+              diningOption === 'delivery' &&
+              settings?.delivery.enabled
+            }
+            type="submit"
+            className="px-6"
+          >
             Suivant
           </Button>
         </div>
