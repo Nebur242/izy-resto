@@ -45,6 +45,7 @@ export function DataManagement() {
         'menu_items',
         'orders',
         'inventory',
+        'stock_history',
         'media',
         'variants',
         'transactions',
@@ -216,6 +217,7 @@ export function DataManagement() {
 
                 {name !== 'settings' && (
                   <Button
+                    type="button"
                     variant="danger"
                     size="sm"
                     onClick={() =>
