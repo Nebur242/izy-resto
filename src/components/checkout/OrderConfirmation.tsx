@@ -374,9 +374,13 @@ export function OrderConfirmation({
                   currencyObject?.acceptedPaymentMethods.includes(
                     method.name as any
                   ) ||
-                  !['paytech', 'cinetpay', 'wave', 'stripe'].includes(
-                    method.name?.toLowerCase()
-                  )
+                  ![
+                    'paytech',
+                    'cinetpay',
+                    'wave',
+                    'stripe',
+                    'money fusion',
+                  ].includes(method.name?.toLowerCase())
               )
               .filter(method => {
                 if (
