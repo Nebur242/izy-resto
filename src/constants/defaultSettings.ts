@@ -263,6 +263,20 @@ export const allCurrencies: AllCurrency[] = [
     display: 'RS',
     acceptedPaymentMethods: [],
   },
+  {
+    label: 'DJF',
+    value: 'DJF',
+    infos: '',
+    display: 'Franc',
+    acceptedPaymentMethods: [],
+  },
+  {
+    label: 'Riyal',
+    value: 'SAR',
+    infos: '',
+    display: 'Riyal',
+    acceptedPaymentMethods: [],
+  },
 ];
 
 export const getCurrencyObject = (currency: string) => {
