@@ -14,6 +14,7 @@ export function CategoryManagement() {
     useCategories();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     isOpen: boolean;
@@ -24,6 +25,7 @@ export function CategoryManagement() {
 
   const handleSave = async (data: Omit<Category, 'id'>) => {
     try {
+      setIsCreating(true);
       if (editingCategory) {
         await updateCategory(editingCategory.id, data);
         toast.success('Catégorie mise à jour avec succès');
@@ -36,6 +38,8 @@ export function CategoryManagement() {
     } catch (error) {
       console.error('Error saving category:', error);
       toast.error('Une erreur est survenue');
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -202,6 +206,7 @@ export function CategoryManagement() {
       {/* Modals */}
       {isFormOpen && (
         <CategoryForm
+          isLoading={isCreating}
           category={editingCategory}
           onSave={handleSave}
           onCancel={() => {

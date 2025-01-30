@@ -68,7 +68,6 @@ export function InventoryManagement() {
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
       });
-      console.log(dateRange, updates, totalCount);
 
       setStockHistory({
         updates,

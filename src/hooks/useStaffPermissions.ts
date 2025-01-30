@@ -4,7 +4,6 @@ import { useSettings } from './useSettings';
 
 export function useStaffPermissions() {
   const { settings } = useSettings();
-  console.log('settings', settings);
   const [allowedRoutes, setAllowedRoutes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

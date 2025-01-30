@@ -75,14 +75,17 @@ export function PaymentMethodList({
               >
                 <Edit2 className="w-4 h-4" />
               </Button>
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={() => onDelete(method.id)}
-                disabled={methods.length < 2}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
+
+              {methods.length > 1 && (
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => onDelete(method.id)}
+                  disabled={methods.length < 2}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
             </div>
           </motion.div>
         ))}

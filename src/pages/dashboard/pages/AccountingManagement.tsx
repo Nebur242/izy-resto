@@ -1,10 +1,7 @@
 import { useState, useRef } from 'react';
 import { Tabs } from '../../../components/ui/Tabs';
 import { AccountingOverview } from '../../../components/dashboard/components/accounting/AccountingOverview';
-import {
-  sourceText,
-  TransactionList,
-} from '../../../components/dashboard/components/accounting/TransactionList';
+import { TransactionList } from '../../../components/dashboard/components/accounting/TransactionList';
 import { DateFilter } from '../../../components/dashboard/components/accounting/DateFilter';
 import { AssetsManagement } from '../../../components/dashboard/components/accounting/AssetsManagement';
 import { DebtsManagement } from '../../../components/dashboard/components/accounting/DebtsManagement';
@@ -14,19 +11,18 @@ import { useAccounting } from '../../../hooks/useAccounting';
 import { TransactionForm } from '../../../components/dashboard/components/accounting/TransactionForm';
 import { FinancialStatement } from '../../../components/dashboard/components/accounting/FinancialStatement';
 import { accountingService } from '../../../services/accounting/accounting.service';
-import { exportToPdf, exportToPng } from '../../../utils/export';
+import { exportToPdf } from '../../../utils/export';
 import toast from 'react-hot-toast';
 import { useSettings } from '../../../hooks';
 import { AccountingTaxesManagement } from './AccountingTaxesManagement';
 import { AccountingTipsManagement } from './AccountingTipsManagement';
-import { formatDate } from '../../../utils';
-import { Transaction } from '../../../types';
-import { formatCurrency } from '../../../utils/currency';
+import { AccountingDeliveryManagement } from './AccountingDeliveryManagement';
 
 const tabs = [
   { id: 'transactions', label: 'Transactions' },
   { id: 'tax', label: 'Taxes' },
   { id: 'tips', label: 'Pourboires' },
+  { id: 'delivery', label: 'Livraison' },
 ];
 
 export function AccountingManagement() {
@@ -142,6 +138,8 @@ export function AccountingManagement() {
         return <AccountingTaxesManagement />;
       case 'tips':
         return <AccountingTipsManagement />;
+      case 'delivery':
+        return <AccountingDeliveryManagement />;
       default:
         return (
           <>

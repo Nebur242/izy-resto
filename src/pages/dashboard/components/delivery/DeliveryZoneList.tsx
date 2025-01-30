@@ -91,14 +91,16 @@ export function DeliveryZoneList({
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => onDelete(zone)}
-                    className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  {zones.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => onDelete(zone)}
+                      className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

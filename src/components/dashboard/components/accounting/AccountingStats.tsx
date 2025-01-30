@@ -1,6 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, DollarSign, ShoppingBag } from 'lucide-react';
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  ShoppingBag,
+} from 'lucide-react';
 import { AccountingStats as AccountingStatsType } from '../../../../types/accounting';
 import { useSettings } from '../../../../hooks/useSettings';
 import { formatCurrency } from '../../../../utils/currency';
@@ -34,29 +39,29 @@ export function AccountingStats({ stats, isLoading }: AccountingStatsProps) {
       value: formatCurrency(stats.totalRevenue, settings?.currency),
       icon: DollarSign,
       color: 'text-green-600 dark:text-green-400',
-      bgColor: 'bg-green-100 dark:bg-green-900/20'
+      bgColor: 'bg-green-100 dark:bg-green-900/20',
     },
     {
       title: 'Dépenses',
       value: formatCurrency(stats.totalExpenses, settings?.currency),
       icon: TrendingDown,
       color: 'text-red-600 dark:text-red-400',
-      bgColor: 'bg-red-100 dark:bg-red-900/20'
+      bgColor: 'bg-red-100 dark:bg-red-900/20',
     },
     {
       title: 'Bénéfice Net',
       value: formatCurrency(stats.netIncome, settings?.currency),
       icon: TrendingUp,
       color: 'text-blue-600 dark:text-blue-400',
-      bgColor: 'bg-blue-100 dark:bg-blue-900/20'
+      bgColor: 'bg-blue-100 dark:bg-blue-900/20',
     },
     {
       title: 'Commandes',
       value: stats.orderCount.toString(),
       icon: ShoppingBag,
       color: 'text-purple-600 dark:text-purple-400',
-      bgColor: 'bg-purple-100 dark:bg-purple-900/20'
-    }
+      bgColor: 'bg-purple-100 dark:bg-purple-900/20',
+    },
   ];
 
   return (

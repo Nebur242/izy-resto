@@ -120,7 +120,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
         updatedAt: new Date().toISOString(),
         paymentMethod: selectedPaymentMethod,
         taxRates: settings?.taxes.rates || [],
-        delivery: deliveryZone,
+        delivery: diningOption === 'dine-in' ? null : deliveryZone,
       });
 
       toast.success(

@@ -25,6 +25,7 @@ import { OrderServiceError } from './errors';
 import type { OrderFilters } from './types';
 import { anonymousAuthService } from '../auth/anonymousAuth.service';
 import { calculateTaxes } from '../../utils/tax';
+import toast from 'react-hot-toast';
 
 class OrderService {
   private collection = 'orders';
@@ -219,6 +220,7 @@ class OrderService {
         const docSnap = await transaction.get(docRef);
 
         if (!docSnap.exists()) {
+          toast.error('Commande introuvable...');
           throw new OrderServiceError('Order not found', 'orders/not-found');
         }
 
@@ -227,6 +229,7 @@ class OrderService {
 
         // Validate status transition
         if (previousStatus === 'cancelled') {
+          toast.error('Impossible de mettre à jour la commande...');
           throw new OrderServiceError(
             'Cannot update cancelled order',
             'orders/invalid-status-transition'
@@ -234,6 +237,7 @@ class OrderService {
         }
 
         if (previousStatus === 'delivered' && status !== 'cancelled') {
+          toast.error('Impossible de mettre à jour la commande...');
           throw new OrderServiceError(
             'Cannot update delivered order',
             'orders/invalid-status-transition'
@@ -258,6 +262,7 @@ class OrderService {
     } catch (error) {
       console.error('Error updating order status:', error);
       if (error instanceof OrderServiceError) {
+        toast.error('Une erreur est survenue...');
         throw error;
       }
       throw new OrderServiceError(

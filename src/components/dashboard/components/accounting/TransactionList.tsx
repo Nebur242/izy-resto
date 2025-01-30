@@ -9,6 +9,7 @@ import { Button } from '../../../ui/Button';
 import { TransactionForm } from './TransactionForm';
 import { ConfirmationModal } from '../../../ui/ConfirmationModal';
 import { Pagination } from '../../../ui/Pagination';
+import toast from 'react-hot-toast';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -114,13 +115,14 @@ export function TransactionList({
                       {formatDate(transaction.date)}
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      {sourceText[transaction.source]}
+                      {sourceText[transaction.source] || transaction.source}
                     </td>
                     <td className="px-6 py-4 text-sm">
                       {transaction.description}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
-                      {transaction.reference}
+                      {transaction.reference ||
+                        `#${transaction.id}`.slice(0, 6)}
                     </td>
                     <td className="px-6 py-4 text-sm text-right">
                       {transaction.debit > 0 && (

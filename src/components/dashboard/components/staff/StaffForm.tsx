@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X, User, Mail, Lock, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -12,14 +11,20 @@ interface StaffFormProps {
 }
 
 export function StaffForm({ staff, onSave, onCancel }: StaffFormProps) {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<StaffFormData>({
-    defaultValues: staff ? {
-      name: staff.name,
-      email: staff.email,
-      role: staff.role,
-    } : {
-      role: 'staff',
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<StaffFormData>({
+    defaultValues: staff
+      ? {
+          name: staff.name,
+          email: staff.email,
+          role: staff.role,
+        }
+      : {
+          role: 'staff',
+        },
   });
 
   return (
@@ -48,9 +53,12 @@ export function StaffForm({ staff, onSave, onCancel }: StaffFormProps) {
               <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                {...register('name', { 
+                {...register('name', {
                   required: 'Le nom est requis',
-                  minLength: { value: 2, message: 'Le nom doit contenir au moins 2 caractères' }
+                  minLength: {
+                    value: 2,
+                    message: 'Le nom doit contenir au moins 2 caractères',
+                  },
                 })}
                 className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700"
                 placeholder="John Doe"
@@ -63,19 +71,17 @@ export function StaffForm({ staff, onSave, onCancel }: StaffFormProps) {
 
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Email
-            </label>
+            <label className="block text-sm font-medium mb-2">Email</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="email"
-                {...register('email', { 
-                  required: 'L\'email est requis',
+                {...register('email', {
+                  required: "L'email est requis",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Adresse email invalide'
-                  }
+                    message: 'Adresse email invalide',
+                  },
                 })}
                 className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700"
                 placeholder="john@example.com"
@@ -83,7 +89,9 @@ export function StaffForm({ staff, onSave, onCancel }: StaffFormProps) {
               />
             </div>
             {errors.email && (
-              <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+              <p className="mt-1 text-sm text-red-500">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
@@ -97,25 +105,29 @@ export function StaffForm({ staff, onSave, onCancel }: StaffFormProps) {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
                   type="password"
-                  {...register('password', { 
+                  {...register('password', {
                     required: 'Le mot de passe est requis',
-                    minLength: { value: 6, message: 'Le mot de passe doit contenir au moins 6 caractères' }
+                    minLength: {
+                      value: 6,
+                      message:
+                        'Le mot de passe doit contenir au moins 6 caractères',
+                    },
                   })}
                   className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-gray-600 dark:bg-gray-700"
                   placeholder="••••••••"
                 />
               </div>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.password.message}
+                </p>
               )}
             </div>
           )}
 
           {/* Role Selection */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Rôle
-            </label>
+            <label className="block text-sm font-medium mb-2">Rôle</label>
             <div className="relative">
               <Shield className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
               <select
@@ -134,7 +146,11 @@ export function StaffForm({ staff, onSave, onCancel }: StaffFormProps) {
               Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Enregistrement...' : staff ? 'Mettre à jour' : 'Créer le compte'}
+              {isSubmitting
+                ? 'Enregistrement...'
+                : staff
+                ? 'Mettre à jour'
+                : 'Créer le compte'}
             </Button>
           </div>
         </form>

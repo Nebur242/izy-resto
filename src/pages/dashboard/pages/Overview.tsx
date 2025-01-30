@@ -51,7 +51,7 @@ export function Overview() {
 
     return {
       totalRevenue: deliveredOrders.reduce(
-        (sum, order) => sum + order.total,
+        (sum, order) => sum + order.subtotal,
         0
       ),
       totalOrders: deliveredOrders.length,

@@ -24,80 +24,83 @@ export function BulkUploader({
   onClose,
   onUpload,
   maxSizeMB = 5,
-  acceptedFileTypes = ['.png', '.jpg', '.jpeg', '.gif']
+  acceptedFileTypes = ['.png', '.jpg', '.jpeg', '.gif'],
 }: BulkUploaderProps) {
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>({});
   const [isUploading, setIsUploading] = useState(false);
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return;
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
 
-    setIsUploading(true);
-    
-    // Initialize upload status for each file
-    const initialStatus: UploadStatus = {};
-    acceptedFiles.forEach(file => {
-      initialStatus[file.name] = { progress: 0 };
-    });
-    setUploadStatus(initialStatus);
+      setIsUploading(true);
 
-    try {
-      // Create an array of promises for each file upload
-      const uploadPromises = acceptedFiles.map(async (file) => {
-        // Simulate progress updates
-        const interval = setInterval(() => {
-          setUploadStatus(prev => {
-            const currentProgress = prev[file.name]?.progress || 0;
-            if (currentProgress < 90) {
-              return {
-                ...prev,
-                [file.name]: { 
-                  ...prev[file.name],
-                  progress: Math.min(currentProgress + 10, 90)
-                }
-              };
-            }
-            return prev;
-          });
-        }, 500);
-
-        try {
-          await onUpload([file]);
-          clearInterval(interval);
-          setUploadStatus(prev => ({
-            ...prev,
-            [file.name]: { progress: 100, complete: true }
-          }));
-        } catch (error) {
-          clearInterval(interval);
-          setUploadStatus(prev => ({
-            ...prev,
-            [file.name]: { 
-              progress: 0, 
-              error: 'Failed to upload file'
-            }
-          }));
-        }
+      // Initialize upload status for each file
+      const initialStatus: UploadStatus = {};
+      acceptedFiles.forEach(file => {
+        initialStatus[file.name] = { progress: 0 };
       });
+      setUploadStatus(initialStatus);
 
-      await Promise.all(uploadPromises);
-      
-      // Close after a short delay to show completion
-      setTimeout(onClose, 1500);
-    } catch (error) {
-      console.error('Upload error:', error);
-    } finally {
-      setIsUploading(false);
-    }
-  }, [onUpload, onClose]);
+      try {
+        // Create an array of promises for each file upload
+        const uploadPromises = acceptedFiles.map(async file => {
+          // Simulate progress updates
+          const interval = setInterval(() => {
+            setUploadStatus(prev => {
+              const currentProgress = prev[file.name]?.progress || 0;
+              if (currentProgress < 90) {
+                return {
+                  ...prev,
+                  [file.name]: {
+                    ...prev[file.name],
+                    progress: Math.min(currentProgress + 10, 90),
+                  },
+                };
+              }
+              return prev;
+            });
+          }, 500);
+
+          try {
+            await onUpload([file]);
+            clearInterval(interval);
+            setUploadStatus(prev => ({
+              ...prev,
+              [file.name]: { progress: 100, complete: true },
+            }));
+          } catch (error) {
+            clearInterval(interval);
+            setUploadStatus(prev => ({
+              ...prev,
+              [file.name]: {
+                progress: 0,
+                error: 'Failed to upload file',
+              },
+            }));
+          }
+        });
+
+        await Promise.all(uploadPromises);
+
+        // Close after a short delay to show completion
+        setTimeout(onClose, 1500);
+      } catch (error) {
+        console.error('Upload error:', error);
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [onUpload, onClose]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': acceptedFileTypes
+      'image/*': acceptedFileTypes,
     },
     maxSize: maxSizeMB * 1024 * 1024,
-    disabled: isUploading
+    disabled: isUploading,
   });
 
   return (
@@ -115,42 +118,46 @@ export function BulkUploader({
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-xl font-semibold mb-6">
-          Ajouter des médias
-        </h2>
+        <h2 className="text-xl font-semibold mb-6">Ajouter des médias</h2>
 
         <div
           {...getRootProps()}
           className={`
             relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8
             transition-all
-            ${isDragActive
-              ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-              : 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'
+            ${
+              isDragActive
+                ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
+                : 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'
             }
             ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}
           `}
         >
           <input {...getInputProps()} />
-          
-          <Upload className={`h-12 w-12 mb-4 ${
-            isDragActive ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400'
-          }`} />
-          
+
+          <Upload
+            className={`h-12 w-12 mb-4 ${
+              isDragActive
+                ? 'text-blue-500 dark:text-blue-400'
+                : 'text-gray-400'
+            }`}
+          />
+
           <p className="text-center text-gray-900 dark:text-gray-100">
             {isDragActive ? (
               'Déposez les fichiers ici...'
             ) : (
               <>
-                Glissez et déposez plusieurs fichiers ici, ou<br />
+                Glissez et déposez plusieurs fichiers ici, ou
+                <br />
                 <span className="text-blue-500 dark:text-blue-400">
                   cliquez pour sélectionner
                 </span>
               </>
             )}
           </p>
-          
-          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+
+          <p className="text-sm text-amber-700 dark:text-amber-300 font-bold">
             PNG, JPG, GIF jusqu'à {maxSizeMB}MB
           </p>
         </div>
@@ -179,8 +186,8 @@ export function BulkUploader({
                       <span className="text-gray-500">{status.progress}%</span>
                     )}
                   </div>
-                  <ProgressBar 
-                    progress={status.progress} 
+                  <ProgressBar
+                    progress={status.progress}
                     isComplete={status.complete}
                   />
                 </div>

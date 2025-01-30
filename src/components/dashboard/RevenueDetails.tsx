@@ -18,7 +18,7 @@ export function RevenueDetails({ orders, dateRange }: RevenueDetailsProps) {
   // Calculate metrics
   const totalRevenue = orders
     .filter(order => order.status === 'delivered')
-    .reduce((sum, order) => sum + Number(order.total), 0);
+    .reduce((sum, order) => sum + Number(order.subtotal), 0);
   const averageOrder = orders.length > 0 ? totalRevenue / orders.length : 0;
   const ordersCount = orders.length;
 
@@ -33,6 +33,7 @@ export function RevenueDetails({ orders, dateRange }: RevenueDetailsProps) {
           (1000 * 60 * 60 * 24)
       )
     );
+
     return totalRevenue / days;
   }, [dateRange, totalRevenue]);
 

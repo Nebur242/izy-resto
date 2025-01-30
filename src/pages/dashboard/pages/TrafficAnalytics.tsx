@@ -39,12 +39,16 @@ export function TrafficAnalytics() {
   const metrics = useMemo(() => {
     const filteredOrders = orders.filter(order => {
       const orderDate = new Date(order.createdAt.seconds * 1000);
-      return orderDate >= dateRange.start && orderDate <= dateRange.end;
+      return (
+        order.status === 'delivered' &&
+        orderDate >= dateRange.start &&
+        orderDate <= dateRange.end
+      );
     });
 
     const totalRevenue = filteredOrders.reduce(
       (sum, order) =>
-        order.status === 'delivered' ? sum + Number(order.total) : sum,
+        order.status === 'delivered' ? sum + Number(order.subtotal) : sum,
       0
     );
 

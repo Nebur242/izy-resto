@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, Users, Calendar } from 'lucide-react';
 import { useSettings } from '../../../hooks/useSettings';
@@ -21,7 +20,7 @@ export function AnalyticsGrid({
 
   const stats = [
     {
-      title: 'Revenu Total (TTC)',
+      title: 'Revenu Total (HT) (Sans Livraison)',
       value: formatCurrency(totalRevenue, settings?.currency),
       icon: DollarSign,
       color: 'green',

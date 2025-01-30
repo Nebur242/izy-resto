@@ -3,6 +3,7 @@ import { db } from '../../lib/firebase/config';
 import { runTransaction, doc, getDoc } from 'firebase/firestore';
 import { StockUpdateError } from './errors';
 import { stockHistoryService } from './stockHistory.service';
+import toast from 'react-hot-toast';
 
 class StockUpdateService {
   private getBaseItemId(itemId: string): string {
@@ -38,6 +39,8 @@ class StockUpdateService {
             const docSnap = await getDoc(docRef);
 
             if (!docSnap.exists()) {
+              toast.error('Produit de menu introuvable...');
+
               throw new StockUpdateError(
                 `Menu item not found: ${baseId}`,
                 'stock/item-not-found'
@@ -73,6 +76,7 @@ class StockUpdateService {
           // Update menu item stock
           const currentMenuStock = menuDoc.data.stockQuantity || 0;
           if (currentMenuStock < orderQuantity) {
+            toast.error('Quantité insuffisante...');
             throw new StockUpdateError(
               `Insufficient menu item stock for ${menuDoc.data.name}`,
               'stock/insufficient-menu',
@@ -98,6 +102,7 @@ class StockUpdateService {
               const inventorySnap = await getDoc(inventoryRef);
 
               if (!inventorySnap.exists()) {
+                toast.error("Produit Connexion d'inventaire introuvable...");
                 throw new StockUpdateError(
                   `Inventory item not found: ${connection.itemId}`,
                   'stock/inventory-not-found'
@@ -125,6 +130,7 @@ class StockUpdateService {
         // Validate and update inventory
         for (const [itemId, update] of inventoryUpdates) {
           if (update.currentStock < update.deduction) {
+            toast.error('Quantité insuffisante...');
             throw new StockUpdateError(
               'Insufficient inventory',
               'stock/insufficient-inventory',
@@ -160,6 +166,7 @@ class StockUpdateService {
       if (error instanceof StockUpdateError) {
         throw error;
       }
+      toast.error('Une erreur est survenue...');
       throw new StockUpdateError(
         'Failed to update stock levels',
         'stock/update-failed',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import { Button } from '../../../ui/Button';
@@ -11,27 +11,44 @@ interface TransactionFormProps {
   onCancel: () => void;
 }
 
-export function TransactionForm({ transaction, onSave, onCancel }: TransactionFormProps) {
+export function TransactionForm({
+  transaction,
+  onSave,
+  onCancel,
+}: TransactionFormProps) {
   const { settings } = useSettings();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: transaction || {
       date: new Date().toISOString().split('T')[0],
       source: '',
       description: '',
       reference: '',
       debit: 0,
-      credit: 0
-    }
+      credit: 0,
+    },
   });
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = async (data: any) => {
     // Ensure debit and credit are numbers
-    const formattedData = {
-      ...data,
-      debit: parseFloat(data.debit) || 0,
-      credit: parseFloat(data.credit) || 0
-    };
-    onSave(formattedData);
+    try {
+      setIsLoading(true);
+      const formattedData = {
+        ...data,
+        debit: parseFloat(data.debit) || 0,
+        credit: parseFloat(data.credit) || 0,
+      };
+      await onSave(formattedData);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,7 +63,10 @@ export function TransactionForm({ transaction, onSave, onCancel }: TransactionFo
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="p-6 space-y-4">
+        <form
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className="p-6 space-y-4"
+        >
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">Date</label>
@@ -56,7 +76,9 @@ export function TransactionForm({ transaction, onSave, onCancel }: TransactionFo
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
               {errors.date && (
-                <p className="mt-1 text-sm text-red-500">{errors.date.message}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.date.message}
+                </p>
               )}
             </div>
 
@@ -70,10 +92,14 @@ export function TransactionForm({ transaction, onSave, onCancel }: TransactionFo
             </div>
 
             <div className="col-span-2">
-              <label className="block text-sm font-medium mb-1">Description</label>
+              <label className="block text-sm font-medium mb-1">
+                Description
+              </label>
               <input
                 type="text"
-                {...register('description', { required: 'La description est requise' })}
+                {...register('description', {
+                  required: 'La description est requise',
+                })}
                 className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
               />
             </div>
@@ -99,7 +125,9 @@ export function TransactionForm({ transaction, onSave, onCancel }: TransactionFo
             </div>
 
             <div className="col-span-2">
-              <label className="block text-sm font-medium mb-1">Référence</label>
+              <label className="block text-sm font-medium mb-1">
+                Référence
+              </label>
               <input
                 type="text"
                 {...register('reference')}
@@ -112,7 +140,7 @@ export function TransactionForm({ transaction, onSave, onCancel }: TransactionFo
             <Button type="button" variant="secondary" onClick={onCancel}>
               Annuler
             </Button>
-            <Button type="submit">
+            <Button type="submit" disabled={isLoading}>
               {transaction ? 'Mettre à jour' : 'Ajouter'}
             </Button>
           </div>

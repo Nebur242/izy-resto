@@ -86,7 +86,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       toast.success('Statut mis à jour');
     } catch (error) {
       console.error('Error updating order status:', error);
-      toast.error('Échec de la mise à jour');
+      // toast.error('Échec de la mise à jour');
       throw error;
     }
   };

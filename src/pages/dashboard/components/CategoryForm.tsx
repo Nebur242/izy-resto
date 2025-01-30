@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X, Hash, Type, AlignLeft } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
@@ -8,12 +7,14 @@ interface CategoryFormProps {
   category: Category | null;
   onSave: (data: Omit<Category, 'id'>) => void;
   onCancel: () => void;
+  isLoading: boolean;
 }
 
 export function CategoryForm({
   category,
   onSave,
   onCancel,
+  isLoading,
 }: CategoryFormProps) {
   const {
     register,
@@ -143,7 +144,7 @@ export function CategoryForm({
             </Button>
             <Button
               type="submit"
-              disabled={!isDirty}
+              disabled={!isDirty || isLoading}
               className="px-6 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
             >
               {category ? 'Mettre à jour' : 'Ajouter'}

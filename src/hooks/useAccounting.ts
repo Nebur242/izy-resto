@@ -1,5 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Transaction, AccountingStats, AccountingPeriod } from '../types/accounting';
+import {
+  Transaction,
+  AccountingStats,
+  AccountingPeriod,
+} from '../types/accounting';
 import { accountingService } from '../services/accounting/accounting.service';
 import toast from 'react-hot-toast';
 
@@ -9,10 +13,12 @@ export function useAccounting(period: AccountingPeriod) {
 
   // Calculate stats from transactions with proper type handling and validation
   const stats = useMemo<AccountingStats>(() => {
-    const validTransactions = transactions.filter(t => 
-      // Ensure we only process transactions with valid numbers
-      (typeof t.debit === 'number' || typeof t.credit === 'number') &&
-      !isNaN(t.debit || 0) && !isNaN(t.credit || 0)
+    const validTransactions = transactions.filter(
+      t =>
+        // Ensure we only process transactions with valid numbers
+        (typeof t.debit === 'number' || typeof t.credit === 'number') &&
+        !isNaN(t.debit || 0) &&
+        !isNaN(t.credit || 0)
     );
 
     const totalDebit = validTransactions.reduce((sum, t) => {
@@ -21,7 +27,8 @@ export function useAccounting(period: AccountingPeriod) {
     }, 0);
 
     const totalCredit = validTransactions.reduce((sum, t) => {
-      const creditAmount = typeof t.credit === 'number' ? Math.abs(t.credit) : 0;
+      const creditAmount =
+        typeof t.credit === 'number' ? Math.abs(t.credit) : 0;
       return sum + creditAmount;
     }, 0);
 
@@ -36,7 +43,7 @@ export function useAccounting(period: AccountingPeriod) {
       netAmount,
       transactionCount: validTransactions.length,
       // Add validation info for debugging
-      invalidTransactions: transactions.length - validTransactions.length
+      invalidTransactions: transactions.length - validTransactions.length,
     };
   }, [transactions]);
 
@@ -47,29 +54,33 @@ export function useAccounting(period: AccountingPeriod) {
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const fetchedTransactions = await accountingService.getTransactions(period);
-      
+      const fetchedTransactions = await accountingService.getTransactions(
+        period
+      );
+
       // Validate and clean transactions before setting
       const cleanedTransactions = fetchedTransactions.map(t => ({
         ...t,
         debit: typeof t.debit === 'number' ? t.debit : 0,
-        credit: typeof t.credit === 'number' ? t.credit : 0
+        credit: typeof t.credit === 'number' ? t.credit : 0,
       }));
 
       setTransactions(cleanedTransactions);
 
       // Log validation info
-      const invalidCount = fetchedTransactions.filter(t => 
-        (typeof t.debit !== 'number' && t.debit !== null) || 
-        (typeof t.credit !== 'number' && t.credit !== null) ||
-        isNaN(t.debit || 0) || 
-        isNaN(t.credit || 0)
+      const invalidCount = fetchedTransactions.filter(
+        t =>
+          (typeof t.debit !== 'number' && t.debit !== null) ||
+          (typeof t.credit !== 'number' && t.credit !== null) ||
+          isNaN(t.debit || 0) ||
+          isNaN(t.credit || 0)
       ).length;
 
       if (invalidCount > 0) {
-        console.warn(`Found ${invalidCount} transactions with invalid debit/credit values`);
+        console.warn(
+          `Found ${invalidCount} transactions with invalid debit/credit values`
+        );
       }
-
     } catch (error) {
       console.error('Error loading accounting data:', error);
       toast.error('Erreur lors du chargement des données comptables');
@@ -82,6 +93,6 @@ export function useAccounting(period: AccountingPeriod) {
     transactions,
     stats,
     isLoading,
-    refreshData: loadData
+    refreshData: loadData,
   };
 }
