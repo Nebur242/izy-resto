@@ -19,7 +19,9 @@ export function RevenueDetails({ orders, dateRange }: RevenueDetailsProps) {
   const totalRevenue = orders
     .filter(order => order.status === 'delivered')
     .reduce((sum, order) => sum + Number(order.subtotal), 0);
-  const averageOrder = orders.length > 0 ? totalRevenue / orders.length : 0;
+
+  const averageOrder =
+    orders.length > 0 ? Number(totalRevenue) / orders.length : 0;
   const ordersCount = orders.length;
 
   // Calculate daily revenue only if we have valid dates
@@ -34,19 +36,19 @@ export function RevenueDetails({ orders, dateRange }: RevenueDetailsProps) {
       )
     );
 
-    return totalRevenue / days;
+    return Number(totalRevenue) / days;
   }, [dateRange, totalRevenue]);
 
   const stats = [
     {
       label: t('dashboard.stats.totalRevenue'),
-      value: formatCurrency(totalRevenue, settings?.currency),
+      value: formatCurrency(Number(totalRevenue), settings?.currency),
       icon: DollarSign,
       color: 'text-green-600 dark:text-green-400',
     },
     {
       label: t('dashboard.stats.avgOrderValue'),
-      value: formatCurrency(averageOrder, settings?.currency),
+      value: formatCurrency(Number(averageOrder), settings?.currency),
       icon: TrendingUp,
       color: 'text-blue-600 dark:text-blue-400',
     },

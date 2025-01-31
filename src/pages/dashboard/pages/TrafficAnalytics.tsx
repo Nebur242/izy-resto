@@ -14,7 +14,10 @@ import { useOrdersRealtime } from '../../../hooks/useOrdersRealtime';
 import { useTrafficStats } from '../../../hooks/useTrafficStats';
 import { DateFilter } from '../../../components/dashboard/components/accounting/DateFilter';
 import { useSettings } from '../../../hooks/useSettings';
-import { formatCurrency } from '../../../utils/currency';
+import {
+  formatCurrency,
+  formatNumberByLanguage,
+} from '../../../utils/currency';
 import { Tabs } from '../../../components/ui/Tabs';
 import { FeedbackAnalytics } from '../../../components/dashboard/components/analytics/FeedbackAnalytics';
 
@@ -55,10 +58,10 @@ export function TrafficAnalytics() {
     const averageOrderValue =
       filteredOrders.length > 0 ? totalRevenue / filteredOrders.length : 0;
 
-    const canceledOrders = filteredOrders.filter(o => o.status === 'cancelled');
+    const canceledOrders = orders.filter(o => o.status === 'cancelled');
     const cancelRate =
       filteredOrders.length > 0
-        ? (canceledOrders.length / filteredOrders.length) * 100
+        ? (canceledOrders.length / orders.length) * 100
         : 0;
 
     const dineInOrders = filteredOrders.filter(
@@ -190,7 +193,11 @@ export function TrafficAnalytics() {
                     Taux d'Annulation
                   </p>
                   <p className="text-2xl font-semibold">
-                    {metrics.cancelRate.toFixed(2)}%
+                    {formatNumberByLanguage(
+                      Number(metrics.cancelRate.toFixed(2)),
+                      'fr-FR'
+                    )}
+                    %
                   </p>
                 </div>
               </div>
@@ -255,7 +262,12 @@ export function TrafficAnalytics() {
                     Sur Place
                   </p>
                   <p className="text-2xl font-semibold">
-                    {metrics.dineInOrders} ({metrics.dineInRate.toFixed(2)}%)
+                    {metrics.dineInOrders} (
+                    {formatNumberByLanguage(
+                      Number(metrics.dineInRate.toFixed(2)),
+                      'fr-FR'
+                    )}
+                    %)
                   </p>
                 </div>
               </div>

@@ -64,8 +64,8 @@ export function Footer() {
     ) || [];
 
   return (
-    <>
-      <footer className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-8">
+    <footer className="mb-8">
+      <div className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-8">
         <Container>
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8">
             {/* Restaurant Info */}
@@ -117,13 +117,13 @@ export function Footer() {
             </Link>
           </div>
         </Container>
-      </footer>
+      </div>
       <Container>
         <div className="flex justify-between gap-2">
           <small>Tous droits réservés © {new Date().getFullYear()} - AF</small>
           <small className="text-center block">v{packageJson.version}</small>
         </div>
       </Container>
-    </>
+    </footer>
   );
 }

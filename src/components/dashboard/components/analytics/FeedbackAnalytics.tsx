@@ -2,7 +2,10 @@ import { motion } from 'framer-motion';
 import { Star, MessageSquare, User, Phone } from 'lucide-react';
 import { Order } from '../../../../types';
 import { useSettings } from '../../../../hooks/useSettings';
-import { formatCurrency } from '../../../../utils/currency';
+import {
+  formatCurrency,
+  formatNumberByLanguage,
+} from '../../../../utils/currency';
 import { formatFirestoreTimestamp } from '../../../../utils/date';
 import { Pagination } from '../../../ui/Pagination';
 
@@ -123,8 +126,11 @@ export function FeedbackAnalytics({
               </p>
               <p className="text-2xl font-semibold">
                 {orders.length > 0
-                  ? `${((ratedOrders.length / orders.length) * 100).toFixed(
-                      1
+                  ? `${formatNumberByLanguage(
+                      Number(
+                        ((ratedOrders.length / orders.length) * 100).toFixed(1)
+                      ),
+                      'fr-FR'
                     )}%`
                   : '0%'}
               </p>

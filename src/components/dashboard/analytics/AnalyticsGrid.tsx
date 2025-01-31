@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, Users, Calendar } from 'lucide-react';
 import { useSettings } from '../../../hooks/useSettings';
-import { formatCurrency } from '../../../utils/currency';
+import {
+  formatCurrency,
+  formatNumberByLanguage,
+} from '../../../utils/currency';
 
 interface AnalyticsGridProps {
   totalRevenue: number;
@@ -21,7 +24,7 @@ export function AnalyticsGrid({
   const stats = [
     {
       title: 'Revenu Total (HT) (Sans Livraison)',
-      value: formatCurrency(totalRevenue, settings?.currency),
+      value: formatCurrency(Number(totalRevenue), settings?.currency),
       icon: DollarSign,
       color: 'green',
     },
@@ -39,7 +42,7 @@ export function AnalyticsGrid({
     },
     {
       title: 'Commandes/Jour',
-      value: dailyOrderRate.toFixed(1),
+      value: formatNumberByLanguage(Number(dailyOrderRate.toFixed(1)), 'fr-FR'),
       icon: Calendar,
       color: 'orange',
     },

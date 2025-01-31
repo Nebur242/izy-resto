@@ -257,6 +257,7 @@ export function InventoryManagement() {
           currentPage={currentPage}
           totalPages={stockHistory.totalPages}
           onPageChange={setCurrentPage}
+          dateRange={dateRange}
         />
       )}
 

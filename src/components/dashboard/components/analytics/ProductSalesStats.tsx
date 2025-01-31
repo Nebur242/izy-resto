@@ -3,7 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, Package, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Order } from '../../../../types';
 import { useSettings } from '../../../../hooks/useSettings';
-import { formatCurrency } from '../../../../utils/currency';
+import {
+  formatCurrency,
+  formatNumberByLanguage,
+} from '../../../../utils/currency';
 import { Button } from '../../../ui/Button';
 
 interface ProductSalesStats {
@@ -120,8 +123,13 @@ export function ProductSalesStats({ orders }: ProductSalesStatsProps) {
                     {stat.name}
                   </h4>
                   <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                    {((stat.quantity / totalQuantity) * 100).toFixed(2)}% des
-                    ventes
+                    {formatNumberByLanguage(
+                      Number(
+                        ((stat.quantity / totalQuantity) * 100).toFixed(2)
+                      ),
+                      'fr-FR'
+                    )}
+                    % des ventes
                   </p>
                 </div>
               </div>

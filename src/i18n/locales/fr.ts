@@ -14,11 +14,11 @@ export const fr = {
     darkMode: 'Mode sombre',
     lightMode: 'Mode clair',
     previous: 'Précédent',
-    next: 'Suivant'
+    next: 'Suivant',
   },
   dashboard: {
     title: 'Tableau de bord',
-    overview: 'Vue d\'ensemble',
+    overview: "Vue d'ensemble",
     categories: 'Catégories',
     menu: 'Menu',
     orders: 'Commandes',
@@ -29,20 +29,20 @@ export const fr = {
       totalOrders: 'Commandes totales',
       uniqueCustomers: 'Clients uniques',
       averageOrder: 'Panier moyen',
-      dailyRevenue: 'Revenu journalier',
+      dailyRevenue: 'Revenu moyen journalier',
       growth: 'Croissance',
       avgOrderValue: 'Valeur moyenne',
-      ordersCount: 'Nombre de commandes'
-    }
+      ordersCount: 'Nombre de commandes',
+    },
   },
   analytics: {
     revenue: 'Revenus',
     period: {
-      today: 'Aujourd\'hui',
+      today: "Aujourd'hui",
       lastWeek: '7 derniers jours',
       lastMonth: '30 derniers jours',
-      custom: 'Période personnalisée'
-    }
+      custom: 'Période personnalisée',
+    },
   },
   orders: {
     status: {
@@ -51,12 +51,12 @@ export const fr = {
       preparing: 'En préparation',
       ready: 'Prêt',
       delivered: 'Livré',
-      cancelled: 'Annulé'
+      cancelled: 'Annulé',
     },
     recent: 'Commandes récentes',
     orderNumber: 'Commande n°',
     date: 'Date',
-    total: 'Total'
+    total: 'Total',
   },
   customers: {
     title: 'Clients',
@@ -64,6 +64,6 @@ export const fr = {
     name: 'Nom',
     email: 'Email',
     orders: 'commandes',
-    totalSpent: 'Total dépensé'
-  }
+    totalSpent: 'Total dépensé',
+  },
 };

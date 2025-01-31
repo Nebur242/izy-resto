@@ -17,8 +17,8 @@ export function useOrdersRealtime() {
         const formattedOrders = updatedOrders.map(o => ({
           ...o,
           total: Number(o.total),
-          subtotal: Number(o.subtotal),
-          taxTotal: Number(o.taxTotal),
+          subtotal: o.subtotal ? Number(o.subtotal) : o.total,
+          taxTotal: o.taxTotal ? Number(o.taxTotal) : 0,
           amountPaid: o.amountPaid ? Number(o.amountPaid) : 0,
           change: o.change ? Number(o.change) : 0,
         }));

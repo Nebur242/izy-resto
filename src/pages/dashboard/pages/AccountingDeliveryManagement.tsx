@@ -229,7 +229,7 @@ export const AccountingDeliveryManagement = () => {
         {!loading && paginatedOrders.length < 1 && (
           <div className="text-center py-8">
             <Package className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-            <p className="text-gray-500">Pas de pourboires trouvés</p>
+            <p className="text-gray-500">Pas de livraisons trouvées</p>
           </div>
         )}
 

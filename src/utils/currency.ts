@@ -1,5 +1,9 @@
 import { Currency } from '../types';
 
+export const formatNumberByLanguage = (number: number, lang: 'fr-FR') => {
+  return new Intl.NumberFormat('fr-FR').format(Number(number));
+};
+
 export function formatCurrency(
   amount: number | string | null | undefined,
   currency?: Currency
@@ -19,24 +23,28 @@ export function formatCurrency(
     return '0';
   }
 
+  const formatNumber = formatNumberByLanguage(
+    Number(numericAmount.toFixed(2)),
+    'fr-FR'
+  );
+
   switch (currency) {
     case 'EUR':
-      return `€${numericAmount.toFixed(2)}`;
+      if (numericAmount < 0) return `-€${formatNumber.replace('-', '')}`;
+      return `€${formatNumber}`;
     case 'CAD':
     case 'USD':
-      if (numericAmount < 0) return `-$${Math.abs(numericAmount).toFixed(2)}`;
-      return `$${numericAmount.toFixed(2)}`;
+      if (numericAmount < 0) return `-$${formatNumber.replace('-', '')}`;
+      return `$${formatNumber}`;
     case 'XOF':
     case 'XAF':
-      return `${numericAmount.toLocaleString()} FCFA`;
+      return `${formatNumber} FCFA`;
     case 'MAD':
-      return `${numericAmount.toLocaleString()} DH`;
+      return `${formatNumber} DH`;
     case 'UM':
-      return `${numericAmount.toLocaleString()} MRU`;
+      return `${formatNumber} MRU`;
     default:
-      return currency
-        ? `${numericAmount.toLocaleString()} ${currency}`
-        : `${numericAmount.toLocaleString()}`;
+      return currency ? `${formatNumber} ${currency}` : `${formatNumber}`;
   }
 }
 
