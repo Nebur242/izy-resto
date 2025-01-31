@@ -29,6 +29,7 @@ export default {
         'fade-in': 'fadeIn 0.5s ease-out',
         'slide-in': 'slideIn 0.5s ease-out',
         'bounce-slow': 'bounce 2s infinite',
+        'move-horizontal': 'move-horizontal 3s ease-in-out infinite',
       },
       keyframes: {
         slideUp: {
@@ -42,6 +43,11 @@ export default {
         slideIn: {
           '0%': { transform: 'translateX(100%)', opacity: 0 },
           '100%': { transform: 'translateX(0)', opacity: 1 },
+        },
+        'move-horizontal': {
+          '0%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(20px)' },
+          '100%': { transform: 'translateX(0)' },
         },
       },
     },
