@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from '../pages/auth/LoginPage';
-import OrderTracking from '../pages/OrderTracking'; // Updated import
+import OrderTracking from '../pages/OrderTracking';
 import { OrderReceipt } from '../pages/OrderReceipt';
 import { LoadingScreen } from '../components/ui/LoadingScreen';
 import { AuthGuard } from '../components/auth/AuthGuard';
@@ -11,7 +11,6 @@ import { TermsOfService } from '../pages/TermsOfService';
 import { Home } from '../pages/home';
 import PendingTransaction from '../pages/payments/pending';
 
-// Lazy load the Dashboard component
 const Dashboard = React.lazy(() =>
   import('../pages/dashboard/Dashboard')
     .then(module => ({ default: module.default }))
@@ -22,11 +21,8 @@ const Dashboard = React.lazy(() =>
 );
 
 export function AppRoutes() {
-  // const { settings } = useSettings();
-
   return (
     <Routes>
-      {/* Public Routes */}
       <Route path="/" element={<Home />} />
       <Route path="/order/:orderId" element={<OrderTracking />} />
       <Route path="/receipt" element={<OrderReceipt />} />
@@ -35,7 +31,6 @@ export function AppRoutes() {
       <Route path="/payment/pending" element={<PendingTransaction />} />
       <Route path="/terms" element={<TermsOfService />} />
 
-      {/* Auth Routes */}
       <Route
         path="/login"
         element={
@@ -45,7 +40,6 @@ export function AppRoutes() {
         }
       />
 
-      {/* Protected Routes */}
       <Route
         path="/dashboard/*"
         element={
@@ -57,7 +51,6 @@ export function AppRoutes() {
         }
       />
 
-      {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

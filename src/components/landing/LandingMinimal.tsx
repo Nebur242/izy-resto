@@ -3,13 +3,11 @@ import { HeaderWrapper } from '../layout/HeaderWrapper';
 import { MinimalMenuSection } from '../menu/minimal/MinimalMenuSection';
 import { Container } from '../ui/Container';
 import { Cart } from '../cart/Cart';
-import { useSettings } from '../../hooks/useSettings';
 import { Footer } from '../layout/Footer';
 import { LoadingScreen } from '../ui/LoadingScreen';
 import { useLayoutMount } from '../../hooks/useLayoutMount';
 
 export function LandingMinimal() {
-  const { settings } = useSettings();
   const { isLoading, isLayoutMounted } = useLayoutMount();
 
   return (

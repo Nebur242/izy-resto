@@ -5,7 +5,6 @@ import { MinimalMenuItem } from './MinimalMenuItem';
 import { MinimalMenuCategories } from './MinimalMenuCategories';
 import { SearchBar } from '../SearchBar';
 import { Pagination } from '../../ui/Pagination';
-// import { useIsMobile } from '../../../hooks/useIsMobile';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -17,8 +16,6 @@ export function MinimalMenuSection() {
     activeCategory !== 'all' ? activeCategory : undefined
   );
 
-  // Filter items based on search
-  // Filter items based on both category and search
   const filteredItems = items.filter(item => {
     const matchesCategory =
       activeCategory === 'all' || item.categoryId === activeCategory;
@@ -28,25 +25,11 @@ export function MinimalMenuSection() {
     return matchesCategory && matchesSearch;
   });
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
   const paginatedItems = filteredItems.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
-  //       {[...Array(4)].map((_, i) => (
-  //         <div
-  //           key={i}
-  //           className="h-24 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse"
-  //         />
-  //       ))}
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="space-y-12">
@@ -56,7 +39,7 @@ export function MinimalMenuSection() {
         activeCategory={activeCategory}
         onCategoryChange={category => {
           setActiveCategory(category);
-          setCurrentPage(1); // Reset to first page on category change
+          setCurrentPage(1);
         }}
       />
 

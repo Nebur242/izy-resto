@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from './Button';
 
@@ -29,7 +28,6 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
       </Button>
 
       {visiblePages.map((page, index) => {
-        // Add ellipsis
         if (index > 0 && page - visiblePages[index - 1] > 1) {
           return (
             <span key={`ellipsis-${page}`} className="px-2 text-gray-500">

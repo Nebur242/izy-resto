@@ -8,7 +8,6 @@ import {
 
 export const Home = () => {
   const { settings } = useSettings();
-  // Select landing component based on settings
   const getLandingComponent = useCallback(() => {
     switch (settings?.activeLanding) {
       case 'minimal':

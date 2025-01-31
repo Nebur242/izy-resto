@@ -83,7 +83,6 @@ export function OrderConfirmation({
   const handleConfirm = async () => {
     try {
       if (selectedPaymentMethod?.url && !hasPaid) {
-        // Open payment URL in new tab
         window.open(getPaymentUrl(), '_blank', 'noopener,noreferrer');
         setHasClickedPaymentLink(true);
         return;
@@ -116,7 +115,6 @@ export function OrderConfirmation({
     }
   }, [selectedPaymentMethod]);
 
-  // Reset payment state when payment method changes
   useEffect(() => {
     setHasPaid(false);
     setShowQRCode(false);
@@ -125,9 +123,7 @@ export function OrderConfirmation({
 
   const renderPaymentButton = () => {
     const isDineInPaymentActivated = settings?.paymentOnDineInActivated;
-    // console.log('isDineInPaymentActivated', isDineInPaymentActivated);
 
-    // For dine-in, always show "Confirmer la commande"
     if (customerData.diningOption === 'dine-in' && !isDineInPaymentActivated) {
       return (
         <>
@@ -137,10 +133,8 @@ export function OrderConfirmation({
       );
     }
 
-    // For delivery
     if (!selectedPaymentMethod) return 'Confirmer la commande';
 
-    // If paid or using cash on delivery
     if (
       hasPaid ||
       selectedPaymentMethod.name.toLowerCase() === 'paiement à la livraison'

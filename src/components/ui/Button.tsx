@@ -70,14 +70,12 @@ export function Button({
     lg: 'text-base px-6 py-3 rounded-xl gap-2.5',
   };
 
-  // Add hover overlay effect for gradient buttons
   const hasGradient = variant === 'primary' || variant === 'danger';
-  const hoverOverlay = hasGradient ? (
+  const hoverOverlay = hasGradient && (
     <span className="absolute inset-0 rounded-xl bg-white/[0.08] opacity-0 group-hover:opacity-100 transition-opacity" />
-  ) : null;
+  );
 
   const content = translationKey ? t(translationKey) : children;
-
   return (
     <button
       className={`group ${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
