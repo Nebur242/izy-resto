@@ -10,7 +10,6 @@ import { OrderConfirmation } from './OrderConfirmation';
 import { PaymentMethod } from '../../types/payment';
 import { useSettings } from '../../hooks';
 import { AnimatePresence, motion } from 'framer-motion';
-import { DeliveryZone } from '../../types';
 import { DeliveryZoneSelect } from './DeliveryZoneSelect';
 import { formatCurrency } from '../../utils/currency';
 
@@ -22,15 +21,25 @@ interface CheckoutFormData {
   preference?: string;
 }
 
-interface CheckoutFormProps {
+interface ICheckoutFormProps {
   onCancel: () => void;
   onSuccess?: () => void;
+  deliveryTitleStyle?: string;
+  truckStyle?: string;
+  nextButtonStyle?: string;
 }
 
 type DiningOption = 'dine-in' | 'delivery';
 type CheckoutStep = 'form' | 'confirmation';
 
-export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
+export function CheckoutForm(props: ICheckoutFormProps) {
+  const {
+    onCancel,
+    onSuccess,
+    deliveryTitleStyle = 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20',
+    truckStyle = 'text-blue-500 dark:text-blue-400',
+    nextButtonStyle = 'px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700',
+  } = props;
   const navigate = useNavigate();
   const {
     cart,
@@ -42,13 +51,10 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
     deliveryZone,
   } = useCart();
   const { settings } = useSettings();
-  // const { paymentMethods } = usePayments();
   const [diningOption, setDiningOption] = useState<DiningOption | null>(null);
 
   const [step, setStep] = useState<CheckoutStep>('form');
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
-
-  // console.log(selectedZone);
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethod | null>(null);
@@ -99,7 +105,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
     }
 
     try {
-      // Add delivery fee to total if applicable
       const name =
         !data.name && !data.tableNumber
           ? ''
@@ -160,7 +165,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
   useEffect(() => {}, [settings]);
 
   if (diningOption === null) {
-    // Render a fallback or nothing while initializing
     return null;
   }
 
@@ -183,7 +187,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
 
   return (
     <div className="space-y-6">
-      {/* Dining Options */}
       <div className="grid grid-cols-2 gap-3">
         {settings?.canDeliver && (
           <button
@@ -194,7 +197,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
            flex flex-col items-center gap-2 relative overflow-hidden
            ${
              diningOption === 'delivery'
-               ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
+               ? deliveryTitleStyle
                : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
            }
          `}
@@ -205,7 +208,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             <Truck
               className={`w-6 h-6 ${
                 diningOption === 'delivery'
-                  ? 'text-blue-500 dark:text-blue-400'
+                  ? truckStyle
                   : 'text-gray-500 dark:text-gray-400'
               }`}
             />
@@ -244,7 +247,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-4">
-          {/* Name Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Nom (Optionnel)
@@ -256,8 +258,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
               placeholder="Votre nom"
             />
           </div>
-
-          {/* Phone Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Téléphone {diningOption === 'dine-in' ? '(Optionnel)' : '*'}
@@ -289,8 +289,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
               </p>
             )}
           </div>
-
-          {/* Conditional Fields */}
           {diningOption === 'dine-in' ? (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -318,7 +316,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             </div>
           ) : (
             <div>
-              {/* Delivery Zone Selection */}
               {settings?.delivery.enabled && (
                 <>
                   <DeliveryZoneSelect
@@ -326,8 +323,6 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
                     onZoneChange={setDeliveryZone}
                     className="mb-4"
                   />
-
-                  {/* Delivery Fee Display */}
                   {deliveryZone && (
                     <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mb-2">
                       <p className="text-sm text-blue-600 dark:text-blue-400 flex justify-between">
@@ -391,18 +386,13 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
                 <div className="flex-1 text-sm text-red-600 dark:text-red-400">
                   {rateLimitError}
                 </div>
-                <button
-                  // onClick={() => setRateLimitError(null)}
-                  className="text-red-400 hover:text-red-500 dark:text-red-500 dark:hover:text-red-400"
-                >
+                <button className="text-red-400 hover:text-red-500 dark:text-red-500 dark:hover:text-red-400">
                   <X className="w-4 h-4" />
                 </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Actions */}
         <div className="flex justify-end gap-3 pt-2">
           <Button
             type="button"
@@ -420,7 +410,7 @@ export function CheckoutForm({ onCancel, onSuccess }: CheckoutFormProps) {
             }
             type="submit"
             spanClassName="text-white"
-            className="px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            className={`${nextButtonStyle}`}
           >
             Suivant
           </Button>

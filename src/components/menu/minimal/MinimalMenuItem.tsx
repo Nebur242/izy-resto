@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MenuItem, MenuItemWithVariants } from '../../../types';
-import { useCart } from '../../../context/CartContext';
 import { useSettings } from '../../../hooks/useSettings';
 import { ProductDetailsModal } from '../ProductDetailsModal';
 import { formatCurrency } from '../../../utils/currency';
@@ -12,16 +11,13 @@ interface MinimalMenuItemProps {
 }
 
 export function MinimalMenuItem({ item }: MinimalMenuItemProps) {
-  // const { cart } = useCart();
   const { settings } = useSettings();
   const [showModal, setShowModal] = useState(false);
-  // const itemInCart = cart.find(cartItem => cartItem.id === item.id);
   const itemWithVariants = item as MenuItemWithVariants;
   const hasVariants = itemWithVariants.variantPrices?.length > 0;
 
   const isMobile = useIsMobile();
 
-  // Get price range if item has variants
   const priceRange = useMemo(() => {
     if (!itemWithVariants.variantPrices?.length) {
       return { min: item.price, max: item.price };

@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from 'lucide-react';
 import { useState } from 'react';
+import { ProductDetailsModal } from '../../../components/menu/ProductDetailsModal';
 
 interface IitemCradProps {
   title: string;
@@ -13,6 +14,7 @@ export default function ItemCard(props: IitemCradProps) {
   const { imageUrl, title, shortDescription, price, size } = props;
   const [selectedSize, setSelectedSize] = useState(size);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const priceMap: Record<'small' | 'medium' | 'large', number> = {
     small: price,
@@ -20,10 +22,22 @@ export default function ItemCard(props: IitemCradProps) {
     large: price * 1.5,
   };
 
+  const item = {
+    id: '1',
+    categoryId: '2',
+    stockQuantity: 10,
+    name: title,
+    description: shortDescription,
+    price,
+    image: imageUrl,
+    variantPrices: [],
+  };
+
   return (
     <div
       className="flex flex-col items-center w-full sm:w-[45%] md:w-[30%] lg:w-[20%] min-w-[250px] max-w-sm border border-gray-300 rounded-xl mx-3 mb-5"
       role="button"
+      onClick={() => setShowModal(true)}
     >
       <div className="relative w-[100%] h-[250px]">
         <img
@@ -43,7 +57,7 @@ export default function ItemCard(props: IitemCradProps) {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             {selectedSize}
-            <div className="bg-yellow-500 rounded-r-full px-3 py-2 flex items-center">
+            <div className="bg-[#fcb302]  rounded-r-full px-3 py-2 flex items-center">
               <ChevronDownIcon
                 className={`w-4 h-4 text-white transform transition-transform duration-200 ${
                   isDropdownOpen ? 'rotate-180' : 'rotate-0'
@@ -74,6 +88,16 @@ export default function ItemCard(props: IitemCradProps) {
           ${priceMap[selectedSize].toFixed(2)}
         </span>
       </div>
+
+      {showModal && (
+        <ProductDetailsModal
+          addProductToCartBgColor="bg-yellow-500 text-white"
+          stockAvailableBgColor="bg-[#f4ecdf] text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+          priceStyle="text-[#fcb302]"
+          item={item}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }
