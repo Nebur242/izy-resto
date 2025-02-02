@@ -115,23 +115,24 @@ export function StaffManagement() {
         }
       />
 
-      {((isStaff && staffData?.role === 'admin') || !isStaff) && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-900/20">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            <h3 className="font-medium text-amber-800 dark:text-amber-400">
-              Important
-            </h3>
+      {((isStaff && staffData?.role === 'admin') || !isStaff) &&
+        staff.length > 0 && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-900/20">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              <h3 className="font-medium text-amber-800 dark:text-amber-400">
+                Important
+              </h3>
+            </div>
+            <div className="mt-2 space-y-1">
+              <p className="text-sm text-amber-700 dark:text-amber-300 font-bold">
+                Pour supprimer un membre du personnel, connectez-vous à son
+                compte, puis cliquez sur le bouton avec l'icône de suppression
+                pour confirmer l'action.
+              </p>
+            </div>
           </div>
-          <div className="mt-2 space-y-1">
-            <p className="text-sm text-amber-700 dark:text-amber-300 font-bold">
-              Pour supprimer un membre du personnel, connectez-vous à son
-              compte, puis cliquez sur le bouton avec l'icône de suppression
-              pour confirmer l'action.
-            </p>
-          </div>
-        </div>
-      )}
+        )}
 
       {isFormOpen && (
         <StaffForm

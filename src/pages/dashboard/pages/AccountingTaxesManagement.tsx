@@ -13,11 +13,14 @@ import { Order } from '../../../types';
 const ITEMS_PER_PAGE = 8;
 
 export async function generateTaxReportCSV(
-  orders: Order[],
+  receivedOrders: Order[],
   settings?: any,
   dateRange?: { from: Date; to: Date }
 ): Promise<void> {
   try {
+    const orders = receivedOrders.sort((a, b) => {
+      return a.createdAt - b.createdAt;
+    });
     // Calculate tax totals
     const taxTotals = new Map<string, { amount: number; rate: number }>();
     let totalHT = 0;
@@ -138,7 +141,7 @@ export const AccountingTaxesManagement = () => {
   );
 
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
-    from: new Date(new Date().setDate(0)),
+    from: new Date(new Date().setHours(0, 0, 0, 0)),
     to: new Date(),
   });
 
@@ -152,7 +155,10 @@ export const AccountingTaxesManagement = () => {
       startDate: dateRange.from,
       endDate: dateRange.to,
     });
-    setOrders(response);
+    const orders = response.sort((a, b) => {
+      return b.createdAt - a.createdAt;
+    });
+    setOrders(orders);
     setLoading(false);
   };
 

@@ -45,12 +45,11 @@ export function InventoryManagement() {
     totalPages: 0,
   });
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(new Date().setDate(1)), // First day of current month
+    startDate: new Date(new Date().setHours(0, 0, 0, 0)),
     endDate: new Date(),
   });
 
-  const { items, isLoading, addItem, updateItem, deleteItem } =
-    useInventory(dateRange);
+  const { items, isLoading, addItem, updateItem, deleteItem } = useInventory();
 
   // Load stock history when tab changes or page changes
   useEffect(() => {
@@ -192,14 +191,16 @@ export function InventoryManagement() {
       <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
       {/* Date Range Filter - Always visible */}
-      <div className="flex items-center gap-4">
-        <Calendar className="w-5 h-5 text-gray-500" />
-        <DateFilter
-          startDate={dateRange.startDate}
-          endDate={dateRange.endDate}
-          onDateChange={handleDateChange}
-        />
-      </div>
+      {activeTab !== 'inventory' && (
+        <div className="flex items-center gap-4">
+          <Calendar className="w-5 h-5 text-gray-500" />
+          <DateFilter
+            startDate={dateRange.startDate}
+            endDate={dateRange.endDate}
+            onDateChange={handleDateChange}
+          />
+        </div>
+      )}
 
       {activeTab === 'inventory' ? (
         <>

@@ -19,6 +19,8 @@ export const appConfig = {
   baseUrl: import.meta.env.VITE_APP_URL || 'https://restaurant-5ba0f.web.app',
 };
 
+console.log(import.meta.env.VITE_APP_SITE_ID);
+
 export const secretKeys = {
   secret: '_[kX/hgy^75R*XDg7AT',
 };

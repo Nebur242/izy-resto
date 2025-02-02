@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { Edit2, Trash2, AlertTriangle, PackageX } from 'lucide-react';
 import { InventoryItem } from '../../../../types/inventory';
 import { Button } from '../../../ui/Button';
-import { formatCurrency } from '../../../../utils/currency';
+import {
+  formatCurrency,
+  formatNumberByLanguage,
+} from '../../../../utils/currency';
 import { formatDate } from '../../../../utils/date';
 import { useSettings } from '../../../../hooks/useSettings';
 import { Pagination } from '../../../ui/Pagination';
@@ -113,7 +116,11 @@ export function InventoryList({
                         isLowStock ? 'text-red-500' : ''
                       }`}
                     >
-                      {Number(item.quantity).toFixed(2)} {item.unit}
+                      {formatNumberByLanguage(
+                        Number(Number(item.quantity).toFixed(2)),
+                        'fr-FR'
+                      )}{' '}
+                      {item.unit}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">

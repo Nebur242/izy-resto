@@ -16,7 +16,7 @@ export function Overview() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(new Date().setDate(0)), // First day of current month
+    startDate: new Date(new Date().setHours(0, 0, 0, 0)), // First day of current month
     endDate: new Date(),
   });
 

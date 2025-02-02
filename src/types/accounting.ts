@@ -7,6 +7,8 @@ export interface Transaction {
   debit: number;
   credit: number;
   gross: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AccountingStats {

@@ -83,9 +83,13 @@ export const AccountingDeliveryManagement = () => {
   const { getDateOrders } = useOrders();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredOrders = orders.filter(
-    order => !!order.delivery && Number(order.delivery?.price || 0) !== 0
-  );
+  const filteredOrders = orders
+    .filter(
+      order => !!order.delivery && Number(order.delivery?.price || 0) !== 0
+    )
+    .sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
@@ -96,7 +100,7 @@ export const AccountingDeliveryManagement = () => {
   );
 
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
-    from: new Date(new Date().setDate(0)),
+    from: new Date(new Date().setHours(0, 0, 0, 0)),
     to: new Date(),
   });
 

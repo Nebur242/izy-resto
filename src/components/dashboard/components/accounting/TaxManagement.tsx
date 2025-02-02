@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, AlertTriangle } from 'lucide-react';
 import { Button } from '../../../ui/Button';
 import { useSettings } from '../../../../hooks/useSettings';
@@ -38,7 +38,7 @@ export function TaxManagement() {
       </div>
 
       <div className="grid gap-4">
-        {taxRecords.map((tax) => (
+        {taxRecords.map(tax => (
           <motion.div
             key={tax.id}
             layout
@@ -52,9 +52,10 @@ export function TaxManagement() {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-medium">{tax.type}</h3>
-                  {tax.status === 'pending' && new Date(tax.dueDate) < new Date() && (
-                    <AlertTriangle className="w-4 h-4 text-red-500" />
-                  )}
+                  {tax.status === 'pending' &&
+                    new Date(tax.dueDate) < new Date() && (
+                      <AlertTriangle className="w-4 h-4 text-red-500" />
+                    )}
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Échéance: {new Date(tax.dueDate).toLocaleDateString()}

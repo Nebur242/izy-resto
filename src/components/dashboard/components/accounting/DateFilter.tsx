@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Button } from '../../../ui/Button';
 import { DatePicker } from '../../../ui/DatePicker';
@@ -12,7 +12,11 @@ interface DateFilterProps {
   onDateChange: (start: Date, end: Date) => void;
 }
 
-export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps) {
+export function DateFilter({
+  startDate,
+  endDate,
+  onDateChange,
+}: DateFilterProps) {
   const [isStartPickerOpen, setIsStartPickerOpen] = useState(false);
   const [isEndPickerOpen, setIsEndPickerOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -20,7 +24,7 @@ export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps
   const presets = [
     { label: "Aujourd'hui", days: 0 },
     { label: isMobile ? '7j' : '7 derniers jours', days: 7 },
-    { label: isMobile ? '30j' : '30 derniers jours', days: 30 }
+    { label: isMobile ? '30j' : '30 derniers jours', days: 30 },
   ];
 
   const handlePresetClick = (days: number) => {
@@ -72,9 +76,18 @@ export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps
             {isStartPickerOpen && (
               <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center">
                 <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl p-4 max-w-fit mx-auto">
+                  <div className="flex justify-end mb-4 -mt-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsStartPickerOpen(false)}
+                    >
+                      ✕
+                    </Button>
+                  </div>
                   <DatePicker
                     date={startDate}
-                    onSelect={(date) => {
+                    onSelect={date => {
                       onDateChange(date, endDate);
                       setIsStartPickerOpen(false);
                     }}
@@ -82,14 +95,6 @@ export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps
                     onClose={() => setIsStartPickerOpen(false)}
                     position="center"
                   />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsStartPickerOpen(false)}
-                    className="absolute top-2 right-2"
-                  >
-                    ✕
-                  </Button>
                 </div>
               </div>
             )}
@@ -115,9 +120,19 @@ export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps
             {isEndPickerOpen && (
               <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center">
                 <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl p-4 max-w-fit mx-auto">
+                  <div className="flex justify-end mb-4 -mt-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsEndPickerOpen(false)}
+                      className=" top-2 right-2"
+                    >
+                      ✕
+                    </Button>
+                  </div>
                   <DatePicker
                     date={endDate}
-                    onSelect={(date) => {
+                    onSelect={date => {
                       onDateChange(startDate, date);
                       setIsEndPickerOpen(false);
                     }}
@@ -125,14 +140,6 @@ export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps
                     onClose={() => setIsEndPickerOpen(false)}
                     position="center"
                   />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsEndPickerOpen(false)}
-                    className="absolute top-2 right-2"
-                  >
-                    ✕
-                  </Button>
                 </div>
               </div>
             )}

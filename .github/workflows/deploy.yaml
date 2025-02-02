@@ -57,6 +57,7 @@ jobs:
             viteEnvLines.push(\`VITE_CLOUDINARY_UPLOAD_PRESET=\${data.cloudinary.uploadPreset}\`);
             viteEnvLines.push(\`VITE_CLOUDINARY_API_KEY=\${data.cloudinary.apiKey}\`);
             viteEnvLines.push(\`VITE_CLOUDINARY_API_SECRET=\${data.cloudinary.apiSecret}\`);
+            viteEnvLines.push('VITE_APP_SITE_ID=https://${{github.event.inputs.site_id}}.netlify.app')
 
             viteEnvLines.push('VITE_APP_URL=https://${{github.event.inputs.name}}.netlify.app'); // Add additional static values
             fs.writeFileSync('.env', viteEnvLines.join('\\n'));

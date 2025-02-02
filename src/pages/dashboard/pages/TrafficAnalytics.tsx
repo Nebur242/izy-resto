@@ -31,7 +31,7 @@ export function TrafficAnalytics() {
   const { settings } = useSettings();
   const [activeTab, setActiveTab] = useState('overview');
   const [dateRange, setDateRange] = useState({
-    start: new Date(new Date().setDate(1)), // First day of current month
+    start: new Date(new Date().setHours(0, 0, 0, 0)), // First day of current month
     end: new Date(),
   });
   const [currentPage, setCurrentPage] = useState(1);

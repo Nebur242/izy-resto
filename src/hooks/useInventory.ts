@@ -9,7 +9,7 @@ export function useInventory(dateRange?: { startDate: Date; endDate: Date }) {
 
   useEffect(() => {
     loadItems();
-  }, [dateRange?.startDate, dateRange?.endDate]);
+  }, []);
 
   const loadItems = async () => {
     try {

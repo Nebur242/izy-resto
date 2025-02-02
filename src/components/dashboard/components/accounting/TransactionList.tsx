@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MoreHorizontal, Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Trash2 } from 'lucide-react';
 import { Transaction } from '../../../../types/accounting';
 import { useSettings } from '../../../../hooks/useSettings';
 import { formatCurrency } from '../../../../utils/currency';
@@ -9,7 +9,6 @@ import { Button } from '../../../ui/Button';
 import { TransactionForm } from './TransactionForm';
 import { ConfirmationModal } from '../../../ui/ConfirmationModal';
 import { Pagination } from '../../../ui/Pagination';
-import toast from 'react-hot-toast';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -35,7 +34,7 @@ export function TransactionList({
   const totalPages = Math.ceil(transactions.length / ITEMS_PER_PAGE);
 
   // Initialize with the last page
-  const [currentPage, setCurrentPage] = useState(totalPages || 1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [editingTransaction, setEditingTransaction] =
     useState<Transaction | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
@@ -44,11 +43,11 @@ export function TransactionList({
   }>({ isOpen: false });
 
   // Keep currentPage in sync with data changes
-  useEffect(() => {
-    if (totalPages > 0) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages]);
+  // useEffect(() => {
+  //   if (totalPages > 0) {
+  //     setCurrentPage(totalPages);
+  //   }
+  // }, [totalPages]);
 
   // Get transactions for current page
   const paginatedTransactions = transactions.slice(

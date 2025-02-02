@@ -21,6 +21,8 @@ export default function OrderTracking() {
 
   const order = orderId ? getOrderById(orderId) : undefined;
 
+  console.log('order', order);
+
   const handleSubmitRating = async () => {
     if (!orderId || rating === 0) return;
 

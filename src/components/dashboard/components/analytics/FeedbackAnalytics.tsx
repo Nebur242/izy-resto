@@ -70,7 +70,10 @@ export function FeedbackAnalytics({
               </p>
               <div className="flex items-center gap-2">
                 <p className="text-2xl font-semibold">
-                  {averageRating.toFixed(1)}
+                  {formatNumberByLanguage(
+                    Number(averageRating.toFixed(2)),
+                    'fr-FR'
+                  )}
                 </p>
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map(star => (

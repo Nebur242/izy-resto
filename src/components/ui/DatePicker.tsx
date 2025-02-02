@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { Button } from './Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, addMonths, subMonths } from 'date-fns';
@@ -13,12 +17,12 @@ interface DatePickerProps {
   position?: 'top' | 'bottom';
 }
 
-export function DatePicker({ 
-  date, 
-  onSelect, 
-  isOpen, 
+export function DatePicker({
+  date,
+  onSelect,
+  isOpen,
   onClose,
-  position = 'bottom'
+  position = 'bottom',
 }: DatePickerProps) {
   const [viewDate, setViewDate] = useState(date);
   const today = new Date();
@@ -36,22 +40,28 @@ export function DatePicker({
   // Handle clicks outside the calendar
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     };
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      return () =>
+        document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div 
-      className={`absolute ${position === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1'} left-0 z-50`}
+    <div
+      className={` ${
+        position === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1'
+      } left-0 z-50`}
       style={{ minWidth: 'max-content' }}
     >
       <motion.div
@@ -71,7 +81,7 @@ export function DatePicker({
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          
+
           <div className="text-sm font-medium">
             {format(viewDate, 'MMMM yyyy', { locale: fr })}
           </div>
@@ -90,7 +100,10 @@ export function DatePicker({
         <div className="p-3">
           <div className="grid grid-cols-7 gap-1 mb-1">
             {weekDays.map(day => (
-              <div key={day} className="text-center text-xs font-medium text-gray-500 dark:text-gray-400 py-1">
+              <div
+                key={day}
+                className="text-center text-xs font-medium text-gray-500 dark:text-gray-400 py-1"
+              >
                 {day}
               </div>
             ))}
@@ -103,8 +116,10 @@ export function DatePicker({
 
             {days.map(day => {
               const currentDate = new Date(currentYear, currentMonth, day);
-              const isToday = currentDate.toDateString() === today.toDateString();
-              const isSelected = currentDate.toDateString() === date.toDateString();
+              const isToday =
+                currentDate.toDateString() === today.toDateString();
+              const isSelected =
+                currentDate.toDateString() === date.toDateString();
 
               return (
                 <button
@@ -116,11 +131,12 @@ export function DatePicker({
                   className={`
                     flex h-8 w-8 items-center justify-center rounded-lg text-sm transition-all
                     hover:bg-gray-100 dark:hover:bg-gray-700
-                    ${isSelected
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : isToday
-                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
-                      : ''
+                    ${
+                      isSelected
+                        ? 'bg-blue-600 text-white hover:bg-blue-700'
+                        : isToday
+                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
+                        : ''
                     }
                   `}
                 >

@@ -30,7 +30,7 @@ export function AccountingManagement() {
 
   const [activeTab, setActiveTab] = useState('transactions');
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(new Date().setDate(0)), // First day of current month
+    startDate: new Date(new Date().setHours(0, 0, 0, 0)), // First day of current month
     endDate: new Date(),
   });
   const [isDownloading, setIsDownloading] = useState(false);
@@ -39,6 +39,12 @@ export function AccountingManagement() {
 
   const { transactions, stats, isLoading, refreshData } =
     useAccounting(dateRange);
+
+  console.log(
+    transactions.sort((a, b) => {
+      return (b.createdAt as any) - (a.createdAt as any);
+    })
+  );
 
   const handleDateChange = (start: Date, end: Date) => {
     setDateRange({ startDate: start, endDate: end });
@@ -170,7 +176,12 @@ export function AccountingManagement() {
             </div>
 
             <TransactionList
-              transactions={transactions}
+              transactions={transactions.sort((a, b) => {
+                return (
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime()
+                );
+              })}
               isLoading={isLoading}
               onUpdate={handleUpdateTransaction}
               onDelete={handleDeleteTransaction}
