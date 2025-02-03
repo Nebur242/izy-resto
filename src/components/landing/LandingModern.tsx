@@ -1,6 +1,4 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from '../../i18n/useTranslation';
 import { HeaderWrapper } from '../layout/HeaderWrapper';
 import { Hero } from '../layout/Hero';
 import { MenuSection } from '../menu/MenuSection';
@@ -11,7 +9,6 @@ import { useLayoutMount } from '../../hooks/useLayoutMount';
 import { Footer } from '../layout/Footer';
 
 export function LandingModern() {
-  const { t } = useTranslation();
   const { isLoading, isLayoutMounted } = useLayoutMount();
   
   return (

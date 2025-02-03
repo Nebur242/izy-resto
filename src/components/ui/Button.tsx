@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from '../../i18n/useTranslation';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
@@ -18,8 +17,6 @@ export function Button({
   spanClassName = '',
   ...props
 }: ButtonProps) {
-  const { t } = useTranslation();
-
   const baseStyles = `
     relative inline-flex items-center justify-center
     font-medium transition-all duration-200

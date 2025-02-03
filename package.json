@@ -28,6 +28,7 @@
     "framer-motion": "^10.16.16",
     "fusionpay": "^0.0.5",
     "html2canvas": "^1.4.1",
+    "i18next": "^24.2.2",
     "jspdf": "^2.5.1",
     "lucide-react": "^0.298.0",
     "qrcode": "^1.5.3",
@@ -37,6 +38,7 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.49.2",
     "react-hot-toast": "^2.4.1",
+    "react-i18next": "^15.4.0",
     "react-router-dom": "^6.21.0",
     "uuid": "^11.0.3"
   },
