@@ -5,12 +5,12 @@ import { Button } from '../../../../components/ui/Button';
 
 export function BackButton() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   return (
     <Button variant="secondary" size="sm" onClick={() => navigate('/')}>
       <ArrowLeft className="w-4 h-4 mr-2" />
-      {t('common.goBack')}
+      {t('go-back')}
     </Button>
   );
 }

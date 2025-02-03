@@ -1,0 +1,17 @@
+{
+  "loading": "Loading...",
+  "error": "An error occurred",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "add": "Add",
+  "search": "Search",
+  "back": "Back",
+  "logout": "Logout",
+  "go-back": "Back to Restaurant",
+  "dark-mode": "Dark Mode",
+  "light-mode": "Light Mode",
+  "previous": "Previous",
+  "next": "Next"
+}

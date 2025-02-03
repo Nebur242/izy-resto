@@ -12,10 +12,9 @@ interface RevenueDetailsProps {
 }
 
 export function RevenueDetails({ orders, dateRange }: RevenueDetailsProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('dashboard');
   const { settings } = useSettings();
 
-  // Calculate metrics
   const totalRevenue = orders
     .filter(order => order.status === 'delivered')
     .reduce((sum, order) => sum + Number(order.subtotal), 0);
@@ -24,7 +23,6 @@ export function RevenueDetails({ orders, dateRange }: RevenueDetailsProps) {
     orders.length > 0 ? Number(totalRevenue) / orders.length : 0;
   const ordersCount = orders.length;
 
-  // Calculate daily revenue only if we have valid dates
   const dailyRevenue = React.useMemo(() => {
     if (!dateRange?.startDate || !dateRange?.endDate) return 0;
 
@@ -41,25 +39,25 @@ export function RevenueDetails({ orders, dateRange }: RevenueDetailsProps) {
 
   const stats = [
     {
-      label: t('dashboard.stats.totalRevenue'),
+      label: t('total-income'),
       value: formatCurrency(Number(totalRevenue), settings?.currency),
       icon: DollarSign,
       color: 'text-green-600 dark:text-green-400',
     },
     {
-      label: t('dashboard.stats.avgOrderValue'),
+      label: t('average-order-value'),
       value: formatCurrency(Number(averageOrder), settings?.currency),
       icon: TrendingUp,
       color: 'text-blue-600 dark:text-blue-400',
     },
     {
-      label: t('dashboard.stats.ordersCount'),
+      label: t('orders-count'),
       value: ordersCount.toString(),
       icon: ShoppingBag,
       color: 'text-purple-600 dark:text-purple-400',
     },
     {
-      label: t('dashboard.stats.dailyRevenue'),
+      label: t('daily-income'),
       value: formatCurrency(dailyRevenue, settings?.currency),
       icon: Calendar,
       color: 'text-orange-600 dark:text-orange-400',

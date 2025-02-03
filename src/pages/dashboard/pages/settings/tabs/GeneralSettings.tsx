@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';
 import { SocialMediaSettings } from './SocialMediaSettings';
 import { allCurrencies } from '../../../../../constants/defaultSettings';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export function GeneralSettings() {
   const {
@@ -25,7 +26,6 @@ export function GeneralSettings() {
 
   return (
     <div className="space-y-8">
-      {/* Basic Info Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
           <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -178,6 +178,8 @@ export function GeneralSettings() {
                 ))}
             </div>
           </div>
+
+          <LanguageSwitcher />
         </div>
       </section>
 

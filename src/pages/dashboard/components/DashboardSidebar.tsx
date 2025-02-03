@@ -38,30 +38,30 @@ export function DashboardSidebar({
   settings,
   staffData,
 }: DashboardSidebarProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('dashboard');
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
-    { id: 'dashboard', icon: LayoutDashboard, label: t('dashboard.overview') },
-    { id: 'orders', icon: ShoppingBag, label: t('dashboard.orders') },
-    { id: 'pos', icon: Store, label: t('dashboard.pos') },
+    { id: 'dashboard', icon: LayoutDashboard, label: t('dashboard') },
+    { id: 'orders', icon: ShoppingBag, label: t('orders') },
+    { id: 'pos', icon: Store, label: t('pos') },
     { id: 'traffic', icon: BarChart, label: 'Analyses' },
 
-    { id: 'menu', icon: UtensilsCrossed, label: t('dashboard.menu') },
-    { id: 'categories', icon: List, label: t('dashboard.categories') },
+    { id: 'menu', icon: UtensilsCrossed, label: t('menu') },
+    { id: 'categories', icon: List, label: t('categories') },
     { id: 'variants', icon: Layers, label: 'Variantes' },
 
     { id: 'inventory', icon: Package, label: 'Inventaire' },
     { id: 'payments', icon: CreditCard, label: 'Paiements' },
     { id: 'accounting', icon: Calculator, label: 'Comptabilité' },
 
-    { id: 'customers', icon: Users, label: t('customers.title') },
+    { id: 'customers', icon: Users, label: t('costumer-title') },
     { id: 'qr-code', icon: QrCode, label: 'QR Code' },
 
     { id: 'staff', icon: Users2, label: 'Personnel' },
     { id: 'media', icon: Image, label: 'Bibliothèque' },
-    { id: 'settings', icon: Settings, label: t('dashboard.settings') },
+    { id: 'settings', icon: Settings, label: t('settings') },
   ];
 
   return (
