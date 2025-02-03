@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useTranslation } from '../../../i18n/useTranslation';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
   UtensilsCrossed,
@@ -43,27 +43,22 @@ export function DashboardSidebar({
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
-    // Core Operations
     { id: 'dashboard', icon: LayoutDashboard, label: t('dashboard.overview') },
     { id: 'orders', icon: ShoppingBag, label: t('dashboard.orders') },
     { id: 'pos', icon: Store, label: t('dashboard.pos') },
     { id: 'traffic', icon: BarChart, label: 'Analyses' },
 
-    // Menu Management
     { id: 'menu', icon: UtensilsCrossed, label: t('dashboard.menu') },
     { id: 'categories', icon: List, label: t('dashboard.categories') },
     { id: 'variants', icon: Layers, label: 'Variantes' },
 
-    // Stock & Finance
     { id: 'inventory', icon: Package, label: 'Inventaire' },
     { id: 'payments', icon: CreditCard, label: 'Paiements' },
     { id: 'accounting', icon: Calculator, label: 'Comptabilité' },
 
-    // Customer Relations
     { id: 'customers', icon: Users, label: t('customers.title') },
     { id: 'qr-code', icon: QrCode, label: 'QR Code' },
 
-    // Administration
     { id: 'staff', icon: Users2, label: 'Personnel' },
     { id: 'media', icon: Image, label: 'Bibliothèque' },
     { id: 'settings', icon: Settings, label: t('dashboard.settings') },

@@ -1,6 +1,5 @@
-import React from 'react';
 import { LogOut } from 'lucide-react';
-import { useTranslation } from '../../../../i18n/useTranslation';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../../../components/ui/Button';
 
 interface LogoutButtonProps {

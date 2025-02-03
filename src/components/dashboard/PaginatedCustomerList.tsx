@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Order } from '../../types';
-import { useTranslation } from '../../i18n/useTranslation';
 import { useSettings } from '../../hooks/useSettings';
 import { formatCurrency } from '../../utils/currency';
 import { Pagination } from '../ui/Pagination';
@@ -17,7 +16,6 @@ export function PaginatedCustomerList({
   orders,
   itemsPerPage,
 }: PaginatedCustomerListProps) {
-  const { t } = useTranslation();
   const { settings } = useSettings();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState<{

@@ -248,7 +248,6 @@ export function GeneralSettings() {
         </div>
       </section>
 
-      {/* Social Media Section */}
       <SocialMediaSettings />
     </div>
   );

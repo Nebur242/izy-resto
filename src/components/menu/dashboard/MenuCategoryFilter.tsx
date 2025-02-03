@@ -1,5 +1,4 @@
-import React from 'react';
-import { useTranslation } from '../../../i18n/useTranslation';
+import { useTranslation } from 'react-i18next';
 import { useCategories } from '../../../hooks/useCategories';
 
 interface MenuCategoryFilterProps {
