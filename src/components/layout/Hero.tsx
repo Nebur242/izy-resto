@@ -3,6 +3,7 @@ import { MapPin, Phone, ArrowDown } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings';
 import { Button } from '../ui/Button';
 import { OpeningHoursButton } from './OpeningHoursButton';
+import { t } from 'i18next';
 
 interface InfoCardProps {
   icon: React.ElementType;
@@ -72,7 +73,7 @@ export function Hero() {
             {/* Top Content */}
             <div className="flex flex-1 flex-col items-center justify-center text-center px-4 md:mt-8 mt-0">
               <h1 className="max-w-xl mx-auto mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl lg:max-w-2xl mt-10 md:mt-0">
-                {settings?.name || 'Fine Dining Experience'}
+                {settings?.name || 'Fine Dining Experience'} {`${t('test')}`}
               </h1>
               <p className="mb-4 max-w-md mx-auto text-base text-gray-300/90 sm:text-lg">
                 {settings?.description ||

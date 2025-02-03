@@ -11,7 +11,6 @@ import { useLayoutMount } from '../../hooks/useLayoutMount';
 import { Footer } from '../layout/Footer';
 
 export function LandingModern() {
-  const { t } = useTranslation();
   const { isLoading, isLayoutMounted } = useLayoutMount();
   
   return (
