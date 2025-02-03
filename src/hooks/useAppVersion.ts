@@ -9,6 +9,7 @@ export const useAppVersion = () => {
   const getVersion = async () => {
     try {
       setLoading(true);
+      setErrorLoading('');
       const versionSettings = await getSettings('version');
       setVersion(versionSettings);
     } catch (error: any) {
@@ -27,5 +28,6 @@ export const useAppVersion = () => {
     loading,
     errorLoading,
     version,
+    refresh: getVersion,
   };
 };

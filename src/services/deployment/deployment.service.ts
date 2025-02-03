@@ -15,17 +15,13 @@ export const launchDeployment = async (data: {
   siteId: string;
   version: string;
 }) => {
-  const encryptedData = encryptData(
-    {
-      version: data.version,
-      password: secretKeys.secret,
-    },
-    secretKeys.secret
-  );
+  const encryptedData = encryptData(data, secretKeys.secret);
 
-  const response = await axios.get<{
+  const response = await axios.post<{
     data: Version;
-  }>(`${apiConfig.baseUri}/deploy/${data.siteId}?data=${encryptedData}`);
+  }>(`${apiConfig.baseUri}/deploy/client`, {
+    data: encryptedData,
+  });
 
   return response.data.data;
 };

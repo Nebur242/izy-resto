@@ -6,8 +6,6 @@ import {
   Phone,
   Mail,
   Youtube,
-  Hash,
-  MessageCircle,
   LinkIcon,
 } from 'lucide-react';
 import { Container } from '../ui/Container';
