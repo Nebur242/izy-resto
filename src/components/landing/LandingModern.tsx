@@ -1,6 +1,4 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from '../../i18n/useTranslation';
 import { HeaderWrapper } from '../layout/HeaderWrapper';
 import { Hero } from '../layout/Hero';
 import { MenuSection } from '../menu/MenuSection';
