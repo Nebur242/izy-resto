@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import {
   Layout,
@@ -20,7 +20,7 @@ import { useAppVersion } from '../../../../../hooks/useAppVersion';
 import { useDeployment } from '../../../../../hooks/useDeployment';
 import packageJson from '../../../../../../package.json';
 
-const COOLDOWN_DURATION = 10 * 60; // 10 minutes in seconds
+const COOLDOWN_DURATION = 6 * 60; // 10 minutes in seconds
 const DEPLOY_STORAGE_KEY = 'deploymentCooldown';
 
 interface DeploymentCooldown {
