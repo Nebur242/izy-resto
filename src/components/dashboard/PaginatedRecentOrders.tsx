@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Order } from '../../types';
-import { useTranslation } from '../../i18n/useTranslation';
+import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../hooks/useSettings';
 import { formatCurrency } from '../../utils/currency';
 import { formatFirestoreTimestamp } from '../../utils/date';
@@ -13,7 +13,10 @@ interface PaginatedRecentOrdersProps {
   itemsPerPage: number;
 }
 
-export function PaginatedRecentOrders({ orders, itemsPerPage }: PaginatedRecentOrdersProps) {
+export function PaginatedRecentOrders({
+  orders,
+  itemsPerPage,
+}: PaginatedRecentOrdersProps) {
   const { t } = useTranslation();
   const { settings } = useSettings();
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,9 +27,12 @@ export function PaginatedRecentOrders({ orders, itemsPerPage }: PaginatedRecentO
   const paginatedOrders = orders.slice(startIndex, startIndex + itemsPerPage);
 
   const statusColors = {
-    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
-    preparing: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
-    delivered: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
+    pending:
+      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+    preparing:
+      'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+    delivered:
+      'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
   };
 
   return (
@@ -53,7 +59,11 @@ export function PaginatedRecentOrders({ orders, itemsPerPage }: PaginatedRecentO
               <p className="font-medium text-gray-900 dark:text-white">
                 {formatCurrency(order.total, settings?.currency)}
               </p>
-              <span className={`inline-block px-2 py-1 text-xs rounded-full ${statusColors[order.status]}`}>
+              <span
+                className={`inline-block px-2 py-1 text-xs rounded-full ${
+                  statusColors[order.status]
+                }`}
+              >
                 {t(`orders.status.${order.status}`)}
               </span>
             </div>

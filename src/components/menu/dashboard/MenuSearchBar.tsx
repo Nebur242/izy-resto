@@ -1,6 +1,5 @@
-import React from 'react';
 import { Search } from 'lucide-react';
-import { useTranslation } from '../../../i18n/useTranslation';
+import { useTranslation } from 'react-i18next';
 
 interface MenuSearchBarProps {
   value: string;

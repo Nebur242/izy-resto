@@ -1,7 +1,6 @@
-import React from 'react';
 import { X } from 'lucide-react';
 import { Button } from './Button';
-import { useTranslation } from '../../i18n/useTranslation';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmationModalProps {
   isOpen: boolean;

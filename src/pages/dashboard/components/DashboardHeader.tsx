@@ -1,5 +1,4 @@
-import React from 'react';
-import { useTranslation } from '../../../i18n/useTranslation';
+import { useTranslation } from 'react-i18next';
 import { BackButton } from './header/BackButton';
 import { UserSection } from './header/UserSection';
 

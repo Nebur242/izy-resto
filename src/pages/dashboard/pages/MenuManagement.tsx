@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
-import { useTranslation } from '../../../i18n/useTranslation';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/Button';
 import { MenuItemForm } from '../../../components/menu/MenuItemForm';
 import { MenuItemList } from '../../../components/menu/MenuItemList';

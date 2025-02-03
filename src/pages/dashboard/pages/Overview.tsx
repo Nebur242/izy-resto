@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { useTranslation } from '../../../i18n/useTranslation';
 import { motion } from 'framer-motion';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import { DateFilter } from '../../../components/dashboard/components/accounting/DateFilter';
@@ -11,18 +10,19 @@ import { PaginatedRecentOrders } from '../../../components/dashboard/PaginatedRe
 import { RevenueDetails } from '../../../components/dashboard/RevenueDetails';
 import { useOrdersRealtime } from '../../../hooks/useOrdersRealtime';
 import { Laptop } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function Overview() {
-  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [dateRange, setDateRange] = useState({
-    startDate: new Date(new Date().setHours(0, 0, 0, 0)), // First day of current month
+    startDate: new Date(new Date().setHours(0, 0, 0, 0)),
     endDate: new Date(),
   });
 
   const { orders } = useOrdersRealtime();
 
-  // Filter orders based on date range
+  const { t } = useTranslation();
+
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
       const orderDate = new Date(order.createdAt.seconds * 1000);
@@ -30,14 +30,11 @@ export function Overview() {
     });
   }, [orders, dateRange]);
 
-  // Only consider delivered orders for revenue calculations
   const deliveredOrders = useMemo(() => {
     return filteredOrders.filter(order => order.status === 'delivered');
   }, [filteredOrders]);
 
-  // Calculate analytics
   const analytics = useMemo(() => {
-    // Calculate days between start and end date
     const daysDiff = Math.max(
       1,
       Math.ceil(
@@ -46,7 +43,6 @@ export function Overview() {
       )
     );
 
-    // Calculate daily order rate
     const dailyOrderRate = deliveredOrders.length / daysDiff;
 
     return {
@@ -58,11 +54,10 @@ export function Overview() {
       uniqueCustomers: new Set(
         deliveredOrders.map(order => order.customerEmail || order.customerPhone)
       ).size,
-      dailyOrderRate: Math.round(dailyOrderRate * 10) / 10, // Round to 1 decimal place
+      dailyOrderRate: Math.round(dailyOrderRate * 10) / 10,
     };
   }, [filteredOrders, deliveredOrders, dateRange]);
 
-  // Mobile message for limited view
   if (isMobile) {
     return (
       <div className="p-4 space-y-6">
@@ -101,7 +96,6 @@ export function Overview() {
 
       <AnalyticsGrid {...analytics} />
 
-      {/* Product Sales Stats */}
       <ProductSalesStats orders={deliveredOrders} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
