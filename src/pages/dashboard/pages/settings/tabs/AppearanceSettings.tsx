@@ -137,7 +137,7 @@ export function AppearanceSettings() {
 
   const handleRedeploy = async () => {
     try {
-      if (!version?.value) return;
+      if (!version?.value || packageJson.version === version?.value) return;
       await redeploy(version?.value);
       // Only set cooldown if deployment was successful
       setStoredCooldown(packageJson.version);
@@ -274,81 +274,86 @@ export function AppearanceSettings() {
           />
         </div>
       </section>
-      {packageJson.version !== version?.value && (
-        <section className="space-y-6">
-          <div className="flex items-center gap-3">
-            <Layout className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            <h2 className="text-xl font-semibold">Mise à jour du site</h2>
+
+      <section className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Layout className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <h2 className="text-xl font-semibold">Mise à jour du site</h2>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-6 space-y-4">
+          <div className="space-y-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Version actuelle: {packageJson.version || 'Chargement...'}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Nouvelle version: {version?.value}
+            </p>
+            {cooldownTime > 0 && (
+              <p className="text-sm text-amber-600 dark:text-amber-400">
+                Déploiement en cours, rafraichissez votre site dans exactement:{' '}
+                {formatTimeRemaining(cooldownTime)}
+              </p>
+            )}
           </div>
 
-          <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-6 space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Version actuelle: {packageJson.version || 'Chargement...'}
+          {error && (
+            <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
+              <p className="text-sm text-red-600 dark:text-red-400">
+                Erreur lors du redéploiement: {error}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Nouvelle version: {version?.value}
-              </p>
-              {cooldownTime > 0 && (
-                <p className="text-sm text-amber-600 dark:text-amber-400">
-                  Déploiement en cours, rafraichissez votre site dans
-                  exactement: {formatTimeRemaining(cooldownTime)}
-                </p>
-              )}
             </div>
+          )}
 
-            {error && (
-              <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
-                <p className="text-sm text-red-600 dark:text-red-400">
-                  Erreur lors du redéploiement: {error}
-                </p>
-              </div>
-            )}
-
-            <button
-              onClick={handleRedeploy}
-              disabled={
-                isDeploying || loading || !!errorLoading || cooldownTime > 0
-              }
-              className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors
+          <button
+            onClick={handleRedeploy}
+            disabled={
+              isDeploying ||
+              loading ||
+              !!errorLoading ||
+              cooldownTime > 0 ||
+              packageJson.version === version?.value
+            }
+            className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
                 disabled:pointer-events-none disabled:opacity-50
                 bg-blue-600 text-white hover:bg-blue-700
                 dark:bg-blue-500 dark:hover:bg-blue-600"
-            >
-              {isDeploying ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Redéploiement en cours...
-                </>
-              ) : cooldownTime > 0 ? (
-                `Disponible dans ${formatTimeRemaining(cooldownTime)}`
-              ) : (
-                'Mettre à jour le site'
-              )}
-            </button>
-          </div>
-        </section>
-      )}
+          >
+            {isDeploying ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Redéploiement en cours...
+              </>
+            ) : cooldownTime > 0 ? (
+              `Disponible dans ${formatTimeRemaining(cooldownTime)}`
+            ) : packageJson.version === version?.value ? (
+              'Votre site est à jour'
+            ) : (
+              'Mettre à jour le site'
+            )}
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

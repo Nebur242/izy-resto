@@ -13,7 +13,6 @@ export function GeneralSettings() {
     formState: { errors },
   } = useFormContext<RestaurantSettings>();
 
-  // Mark form as dirty when images change
   const handleImageChange = (field: 'logo' | 'coverImage', value: string) => {
     setValue(field, value, {
       shouldDirty: true,
