@@ -181,13 +181,13 @@ export function GeneralSettings() {
                 ))}
             </div>
           </div>
-
+          {/* 
           <LanguageSwitcher
             value={watch('language')}
             onLanguageChanged={language =>
               handleFieldChange('language', language)
             }
-          />
+          /> */}
         </div>
       </section>
 

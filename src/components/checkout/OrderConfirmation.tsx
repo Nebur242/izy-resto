@@ -498,6 +498,7 @@ export function OrderConfirmation({
             hover:from-blue-700 hover:to-indigo-700
             disabled:opacity-50 disabled:cursor-not-allowed
           `}
+            spanClassName="text-white"
           >
             {renderPaymentButton()}
           </Button>

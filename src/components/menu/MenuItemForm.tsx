@@ -54,10 +54,11 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
   }, [item?.categoryId, setValue]);
 
   const handleFormSubmit = (formData: any) => {
-    const filteredVariantPrices = variantPrices.filter(vp => {
-      return Object.values(vp.variantCombination).every(
-        value => value !== '' && value !== null && value !== undefined
-      );
+    const filteredVariantPrices = variantPrices.map(v => {
+      return {
+        ...v,
+        variantCombination: v.variantCombination.filter(Boolean),
+      };
     });
 
     const menuItem: MenuItemWithVariants = {
