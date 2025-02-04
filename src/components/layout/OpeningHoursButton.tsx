@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Clock } from 'lucide-react';
 import { OpeningHoursModal } from './OpeningHoursModal';
 import { useSettings } from '../../hooks/useSettings';
-
-const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+const DAYS = [
+  'sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+];
+import { useTranslation } from 'react-i18next';
 
 export function OpeningHoursButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { settings } = useSettings();
 
-  // Get today's hours
   const today = DAYS[new Date().getDay()];
   const todayHours = settings?.openingHours?.[today];
 
-  // Only show hours if they are set
-  const hoursText = todayHours?.closed 
-    ? "Fermé aujourd'hui"
-    : todayHours?.open && todayHours?.close 
-      ? `${todayHours.open} - ${todayHours.close}`
-      : "Horaires non définis";
+  const { t } = useTranslation('common');
+
+  const hoursText = todayHours?.closed
+    ? `${t('closed-today')}`
+    : todayHours?.open && todayHours?.close
+    ? `${todayHours.open} - ${todayHours.close}`
+    : `${t('schedules-not-defined')}`;
 
   return (
     <>
@@ -31,7 +39,7 @@ export function OpeningHoursButton() {
         </div>
         <div className="min-w-0 flex-1 text-left">
           <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-            Heures d'ouverture
+            {t('opening-hours')}
           </h3>
           <p className="text-sm text-gray-700 dark:text-gray-300 truncate">
             {hoursText}
@@ -39,7 +47,7 @@ export function OpeningHoursButton() {
         </div>
       </button>
 
-      <OpeningHoursModal 
+      <OpeningHoursModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
