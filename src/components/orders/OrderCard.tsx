@@ -25,14 +25,14 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
 
     const statusStyles = {
       pending:
-        'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-300', // Warm yellow for new order
+        'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-300',
       preparing:
-        'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300', // Fresh blue for in kitchen
+        'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300',
       ready:
-        'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-300', // Hot orange for ready to serve
+        'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-300',
       delivered:
-        'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300', // Cool teal for completed
-      cancelled: 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-300', // Standard red for cancelled
+        'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-300',
+      cancelled: 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-300',
     };
 
     const handlePrint = async () => {
@@ -62,23 +62,16 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
         }`}
       >
         <div className="space-y-6">
-          {/* Header with order info */}
           <OrderCardHeader order={order} />
 
-          {/* Order Timeline */}
           <OrderTimeline
             order={order}
             status={order.status}
             createdAt={order.createdAt}
             updatedAt={order.updatedAt}
           />
-
-          {/* Order Details */}
           <OrderCardDetails order={order} />
-
-          {/* Actions */}
           <div className="flex justify-between items-center gap-4 pt-4 border-t border-current/10">
-            {/* Status Change Button */}
             {order.status !== 'cancelled' && order.status !== 'delivered' && (
               <Button
                 onClick={() =>
@@ -94,8 +87,6 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
                   : 'Marquer comme livré'}
               </Button>
             )}
-
-            {/* Cancel Button */}
             {canCancel && onCancel && (
               <Button
                 variant="danger"
@@ -108,7 +99,7 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
           </div>
           <Button
             onClick={handlePrint}
-            disabled={isPrinting || order.status !== 'delivered'}
+            disabled={isPrinting}
             className="bg-white/90 hover:bg-white text-current px-4 py-2 rounded w-full"
           >
             <Printer className="h-4 w-4 mr-2" />
