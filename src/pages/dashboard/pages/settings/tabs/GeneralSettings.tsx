@@ -11,10 +11,8 @@ export function GeneralSettings() {
     register,
     watch,
     setValue,
-    formState: { errors, defaultValues },
+    formState: { errors },
   } = useFormContext<RestaurantSettings>();
-
-  console.log('defaultValues', defaultValues);
 
   const handleFieldChange = (
     field: 'logo' | 'coverImage' | 'language',
