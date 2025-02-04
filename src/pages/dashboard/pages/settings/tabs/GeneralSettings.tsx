@@ -4,16 +4,22 @@ import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';
 import { SocialMediaSettings } from './SocialMediaSettings';
 import { allCurrencies } from '../../../../../constants/defaultSettings';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export function GeneralSettings() {
   const {
     register,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, defaultValues },
   } = useFormContext<RestaurantSettings>();
 
-  const handleImageChange = (field: 'logo' | 'coverImage', value: string) => {
+  console.log('defaultValues', defaultValues);
+
+  const handleFieldChange = (
+    field: 'logo' | 'coverImage' | 'language',
+    value: string
+  ) => {
     setValue(field, value, {
       shouldDirty: true,
       shouldTouch: true,
@@ -25,7 +31,6 @@ export function GeneralSettings() {
 
   return (
     <div className="space-y-8">
-      {/* Basic Info Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
           <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -110,14 +115,14 @@ export function GeneralSettings() {
           <div>
             <LogoUploader
               value={watch('logo')}
-              onChange={url => handleImageChange('logo', url)}
+              onChange={url => handleFieldChange('logo', url)}
             />
           </div>
 
           <div>
             <LogoUploader
               value={watch('coverImage')}
-              onChange={url => handleImageChange('coverImage', url)}
+              onChange={url => handleFieldChange('coverImage', url)}
               label="Image de Couverture"
               description="Format recommandé: JPG ou PNG en haute résolution (1920x1080px minimum)"
             />
@@ -178,6 +183,13 @@ export function GeneralSettings() {
                 ))}
             </div>
           </div>
+
+          <LanguageSwitcher
+            value={watch('language')}
+            onLanguageChanged={language =>
+              handleFieldChange('language', language)
+            }
+          />
         </div>
       </section>
 

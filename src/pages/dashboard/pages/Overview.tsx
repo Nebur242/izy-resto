@@ -21,7 +21,7 @@ export function Overview() {
 
   const { orders } = useOrdersRealtime();
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('dashboard');
 
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
@@ -83,7 +83,7 @@ export function Overview() {
     <div className="space-y-6 p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-          {t('dashboard.overview')}
+          {t('dashboard')}
         </h2>
         <DateFilter
           startDate={dateRange.startDate}
@@ -104,9 +104,7 @@ export function Overview() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm"
         >
-          <h3 className="text-lg font-semibold mb-4">
-            {t('analytics.revenue')}
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">{t('income')}</h3>
           <RevenueDetails orders={deliveredOrders} dateRange={dateRange} />
         </motion.div>
 
@@ -131,7 +129,7 @@ export function Overview() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm"
         >
-          <h3 className="text-lg font-semibold mb-4">{t('orders.recent')}</h3>
+          <h3 className="text-lg font-semibold mb-4">{t('recent-orders')}</h3>
           <PaginatedRecentOrders orders={deliveredOrders} itemsPerPage={5} />
         </motion.div>
 

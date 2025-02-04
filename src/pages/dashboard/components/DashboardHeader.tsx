@@ -8,7 +8,7 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ onLogout }: DashboardHeaderProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('dashboard');
 
   return (
     <header className="h-16 bg-white dark:bg-gray-800 border-b border:gray-200 dark:border-gray-700">
@@ -16,7 +16,7 @@ export function DashboardHeader({ onLogout }: DashboardHeaderProps) {
         <div className="flex items-center space-x-4">
           <BackButton />
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-            {t('dashboard.title')}
+            {t('dashboard')}
           </h1>
         </div>
         <UserSection onLogout={onLogout} />

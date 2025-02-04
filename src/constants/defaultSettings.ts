@@ -109,6 +109,7 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
     enabled: false,
     zones: [],
   },
+  language: 'fr',
 };
 
 const defaultCurrencyInfo =
