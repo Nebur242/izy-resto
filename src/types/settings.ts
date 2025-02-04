@@ -46,6 +46,8 @@ export type Currency =
   | 'CDF'
   | 'UM';
 
+export type Language = 'fr' | 'en' | (string & {});
+
 export interface SEOSettings {
   title: string;
   favicon: string;
@@ -109,4 +111,5 @@ export interface RestaurantSettings {
   };
   staffPermissions: string[];
   delivery: DeliverySettings;
+  language: Language;
 }

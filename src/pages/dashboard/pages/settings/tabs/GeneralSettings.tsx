@@ -11,10 +11,15 @@ export function GeneralSettings() {
     register,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, defaultValues },
   } = useFormContext<RestaurantSettings>();
 
-  const handleImageChange = (field: 'logo' | 'coverImage', value: string) => {
+  console.log('defaultValues', defaultValues);
+
+  const handleFieldChange = (
+    field: 'logo' | 'coverImage' | 'language',
+    value: string
+  ) => {
     setValue(field, value, {
       shouldDirty: true,
       shouldTouch: true,
@@ -110,14 +115,14 @@ export function GeneralSettings() {
           <div>
             <LogoUploader
               value={watch('logo')}
-              onChange={url => handleImageChange('logo', url)}
+              onChange={url => handleFieldChange('logo', url)}
             />
           </div>
 
           <div>
             <LogoUploader
               value={watch('coverImage')}
-              onChange={url => handleImageChange('coverImage', url)}
+              onChange={url => handleFieldChange('coverImage', url)}
               label="Image de Couverture"
               description="Format recommandé: JPG ou PNG en haute résolution (1920x1080px minimum)"
             />
@@ -179,7 +184,12 @@ export function GeneralSettings() {
             </div>
           </div>
 
-          <LanguageSwitcher />
+          <LanguageSwitcher
+            value={watch('language')}
+            onLanguageChanged={language =>
+              handleFieldChange('language', language)
+            }
+          />
         </div>
       </section>
 
