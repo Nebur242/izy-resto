@@ -155,7 +155,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-[90vw] max-w-4xl h-[80vh] flex flex-col">
-        {/* Fixed Header */}
         <div className="flex justify-between items-center p-4 md:p-6 border-b dark:border-gray-700">
           <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
             {item ? 'Modifier le produit' : 'Nouveau produit'}
@@ -168,7 +167,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
           </button>
         </div>
 
-        {/* Scrollable Form */}
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
           className="flex flex-col flex-1 overflow-hidden"
@@ -176,7 +174,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
           <div className="flex-1 overflow-y-auto">
             <div className="p-4 md:p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                {/* Name */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Nom
@@ -198,7 +195,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                   )}
                 </div>
 
-                {/* Category */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Catégorie
@@ -229,7 +225,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                   )}
                 </div>
 
-                {/* Price */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Prix
@@ -260,7 +255,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                   )}
                 </div>
 
-                {/* Stock */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Stock
@@ -285,7 +279,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                   )}
                 </div>
 
-                {/* Description */}
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Description
@@ -309,7 +302,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                   )}
                 </div>
 
-                {/* Image */}
                 <div className="md:col-span-2">
                   <LogoUploader
                     value={watch('image')}
@@ -322,7 +314,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                 </div>
               </div>
 
-              {/* Inventory Connections */}
               <div className="border-t dark:border-gray-700 pt-6">
                 <h3 className="text-lg font-medium mb-4">
                   Connexions à l'inventaire
@@ -352,7 +343,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                 </div>
               </div>
 
-              {/* Variants */}
               {selectedCategory && variants.length > 0 && (
                 <div className="border-t dark:border-gray-700 pt-6">
                   <VariantManager
@@ -365,7 +355,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
             </div>
           </div>
 
-          {/* Fixed Footer */}
           <div className="p-4 md:p-6 border-t dark:border-gray-700 mt-auto">
             <div className="flex justify-end gap-4">
               <Button

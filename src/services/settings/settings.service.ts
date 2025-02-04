@@ -12,20 +12,18 @@ class SettingsService {
     try {
       const docRef = doc(db, this.collection, this.document);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
-        // Merge with default settings to ensure all fields exist
         return {
           ...DEFAULT_SETTINGS,
-          ...docSnap.data()
+          ...docSnap.data(),
         } as RestaurantSettings;
       }
-      
-      // If no settings exist, return defaults
+
       return DEFAULT_SETTINGS;
     } catch (error) {
+      console.log('Error fetching settings:', error);
       console.error('Error fetching settings:', error);
-      // Return defaults on error to ensure app continues working
       return DEFAULT_SETTINGS;
     }
   }
@@ -48,7 +46,7 @@ class SettingsService {
     try {
       const docRef = doc(db, this.collection, this.document);
       const docSnap = await getDoc(docRef);
-      
+
       if (!docSnap.exists()) {
         await setDoc(docRef, DEFAULT_SETTINGS);
       }

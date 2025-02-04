@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Search, Grid, List } from 'lucide-react';
+import { X, Search, Grid } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { MediaGrid } from '../dashboard/components/media/MediaGrid';
-import { MediaList } from '../dashboard/components/media/MediaList';
 import { MediaUploader } from '../dashboard/components/media/MediaUploader';
 import { MediaFile } from '../../types/media';
 import { Pagination } from '../ui/Pagination';
@@ -54,7 +53,6 @@ export function MediaLibraryModal({
         animate={{ opacity: 1, scale: 1 }}
         className="relative w-full max-w-4xl max-h-[80vh] rounded-xl bg-white p-6 shadow-xl dark:bg-gray-800 overflow-hidden flex flex-col"
       >
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -72,7 +70,6 @@ export function MediaLibraryModal({
           </button>
         </div>
 
-        {/* Search and View Toggle */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -80,7 +77,9 @@ export function MediaLibraryModal({
               type="text"
               placeholder="Rechercher..."
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={e => {
+                setSearchTerm(e.target.value);
+              }}
               className="w-full rounded-lg border pl-10 pr-4 py-2 dark:border-gray-700 dark:bg-gray-800"
             />
           </div>
@@ -88,21 +87,17 @@ export function MediaLibraryModal({
             <Button
               variant={isGridView ? 'primary' : 'secondary'}
               size="sm"
-              onClick={() => setIsGridView(true)}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsGridView(true);
+              }}
             >
               <Grid className="h-4 w-4" />
             </Button>
-            {/* <Button
-              variant={!isGridView ? 'primary' : 'secondary'}
-              size="sm"
-              onClick={() => setIsGridView(false)}
-            >
-              <List className="h-4 w-4" />
-            </Button> */}
           </div>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto">
           <MediaGrid
             files={paginatedFiles}
@@ -112,7 +107,6 @@ export function MediaLibraryModal({
           />
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-6 pt-6 border-t dark:border-gray-700">
             <Pagination
@@ -123,7 +117,6 @@ export function MediaLibraryModal({
           </div>
         )}
 
-        {/* Upload Modal */}
         {isUploadModalOpen && (
           <MediaUploader
             onClose={() => setIsUploadModalOpen(false)}
