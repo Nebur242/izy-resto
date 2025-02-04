@@ -7,6 +7,9 @@ import frDashboardTranslation from './locales/fr/dashboard.json';
 import enCommon from './locales/en/common.json';
 import frCommon from './locales/fr/common.json';
 
+import frMenu from './locales/fr/menu.json';
+import enMenu from './locales/en/menu.json';
+
 const lng = localStorage.getItem('language') || 'fr';
 
 i18n.use(initReactI18next).init({
@@ -14,10 +17,12 @@ i18n.use(initReactI18next).init({
     en: {
       common: enCommon,
       dashboard: enDashboardTranslation,
+      menu: enMenu,
     },
     fr: {
       common: frCommon,
       dashboard: frDashboardTranslation,
+      menu: frMenu,
     },
   },
   lng,

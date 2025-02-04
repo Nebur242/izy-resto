@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useCategories } from '../../hooks/useCategories';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface MenuFiltersProps {
   activeCategory: string;
@@ -16,6 +17,8 @@ export function MenuFilters({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
+
+  const { t } = useTranslation('menu');
 
   const checkScroll = () => {
     const container = scrollContainerRef.current;
@@ -50,7 +53,6 @@ export function MenuFilters({
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-3xl flex items-center gap-2 px-4">
-        {/* Left Scroll Button */}
         <AnimatePresence>
           {showLeftScroll && (
             <motion.button
@@ -67,7 +69,6 @@ export function MenuFilters({
           )}
         </AnimatePresence>
 
-        {/* Scrollable Categories Container */}
         <div
           ref={scrollContainerRef}
           onScroll={checkScroll}
@@ -89,7 +90,7 @@ export function MenuFilters({
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              Menu principal
+              {t('principal-menu')}
             </motion.button>
 
             {categories.map(category => (
@@ -108,13 +109,12 @@ export function MenuFilters({
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {category.name}
+                {t(category.name)}
               </motion.button>
             ))}
           </div>
         </div>
 
-        {/* Right Scroll Button */}
         <AnimatePresence>
           {showRightScroll && (
             <motion.button
