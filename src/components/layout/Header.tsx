@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Sun, Moon, Settings } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { Button } from '../ui/Button';
@@ -49,7 +49,6 @@ export function Header(props: IHeaderProps) {
     >
       <Container>
         <div className="relative flex h-24 items-center">
-          {/* Left Section - Theme Toggle */}
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -68,12 +67,10 @@ export function Header(props: IHeaderProps) {
             </Button>
           </div>
 
-          {/* Center Section - Logo & Name */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <Logo isScrolled={isScrolled} />
           </div>
 
-          {/* Right Section - Dashboard/Login */}
           <div className="ml-auto flex items-center">
             <Button
               variant="ghost"

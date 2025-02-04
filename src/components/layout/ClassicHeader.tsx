@@ -1,9 +1,7 @@
-import React from 'react';
 import { Sun, Moon, Settings } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Container';
-import { useSettings } from '../../hooks/useSettings';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Logo } from './Logo';
@@ -11,7 +9,6 @@ import { Logo } from './Logo';
 export function ClassicHeader() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const { settings } = useSettings();
   const { user } = useAuth();
 
   const handleSettingsClick = () => {
@@ -26,7 +23,6 @@ export function ClassicHeader() {
     <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
       <Container>
         <div className="flex h-20 items-center justify-between">
-          {/* Left Section - Theme Toggle */}
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -41,12 +37,10 @@ export function ClassicHeader() {
             </Button>
           </div>
 
-          {/* Center Section - Logo & Name */}
           <div className="flex-1 flex justify-center">
             <Logo />
           </div>
 
-          {/* Right Section - Dashboard/Login */}
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"

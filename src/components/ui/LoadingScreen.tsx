@@ -44,7 +44,6 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
   const [isVisible, setIsVisible] = useState(false);
   const { settings } = useSettings();
 
-  // Delay showing the loading screen to prevent flash
   useEffect(() => {
     let showTimeout: NodeJS.Timeout;
     if (isLoading) {
@@ -55,7 +54,6 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
     return () => clearTimeout(showTimeout);
   }, [isLoading]);
 
-  // Rotate through messages
   useEffect(() => {
     if (isVisible) {
       const interval = setInterval(() => {
@@ -74,15 +72,12 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 dark:bg-gray-900/90 backdrop-blur-md"
         >
-          {/* Background Pattern */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-tr from-orange-50/30 via-transparent to-blue-50/30 dark:from-orange-900/10 dark:via-transparent dark:to-blue-900/10" />
             <div className="absolute inset-0 bg-grid-slate-900/[0.02] dark:bg-grid-slate-100/[0.02]" />
           </div>
 
-          {/* Main Loader */}
           <div className="relative z-10 flex flex-col items-center gap-8">
-            {/* Restaurant Logo */}
             <motion.div
               animate={{
                 scale: [1, 1.05, 1],
@@ -123,7 +118,6 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
               )}
             </motion.div>
 
-            {/* Loading Bar */}
             <div className="w-56 flex flex-col items-center gap-4">
               <div className="h-1 w-full overflow-hidden rounded-full bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800">
                 <motion.div
@@ -135,7 +129,6 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
                 />
               </div>
 
-              {/* Loading Message */}
               <div className="h-6 relative flex items-center justify-center min-w-[200px]">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -166,7 +159,6 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
             </div>
           </div>
 
-          {/* Floating Icons */}
           {ANIMATION_ELEMENTS.map(
             ({ Icon, position, animation, duration, size }, index) => (
               <motion.div
