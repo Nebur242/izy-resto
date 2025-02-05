@@ -13,6 +13,7 @@ import frDashboardTranslation from './locales/fr/dashboard.json';
 import enFooter from './locales/en/footer.json';
 import frFooter from './locales/fr/footer.json';
 
+
 import enHero from './locales/en/hero.json';
 import frHero from './locales/fr/hero.json';
 
