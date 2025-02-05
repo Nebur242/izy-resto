@@ -1,7 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
 import { useCategories } from '../../../hooks/useCategories';
 import { Button } from '../../ui/Button';
+import { useTranslation } from 'react-i18next';
 
 interface MinimalMenuCategoriesProps {
   activeCategory: string;
@@ -10,6 +9,7 @@ interface MinimalMenuCategoriesProps {
 
 export function MinimalMenuCategories({ activeCategory, onCategoryChange }: MinimalMenuCategoriesProps) {
   const { categories, isLoading } = useCategories();
+  const { t } = useTranslation('menu');
 
   if (isLoading) {
     return (
@@ -26,7 +26,7 @@ export function MinimalMenuCategories({ activeCategory, onCategoryChange }: Mini
         onClick={() => onCategoryChange('all')}
         className="relative"
       >
-        All Items
+        {t('all-items')}
       </Button>
       {categories.map(category => (
         <Button
@@ -35,7 +35,7 @@ export function MinimalMenuCategories({ activeCategory, onCategoryChange }: Mini
           onClick={() => onCategoryChange(category.id)}
           className="relative"
         >
-          {category.name}
+          {t(category.name)}
         </Button>
       ))}
     </div>
