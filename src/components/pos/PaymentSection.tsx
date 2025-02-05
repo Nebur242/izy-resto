@@ -35,7 +35,6 @@ export function PaymentSection({
             className="w-full rounded-lg border dark:border-gray-700 p-2"
             min={0}
             step={getCurrencyStep(settings?.currency)}
-            required
           />
         </div>
         <div>
