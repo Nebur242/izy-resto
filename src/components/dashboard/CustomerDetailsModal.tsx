@@ -31,7 +31,7 @@ export function CustomerDetailsModal({
   orders,
   onClose,
 }: CustomerDetailsModalProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['dashboard', 'common']);
   const { settings } = useSettings();
 
   const stats = React.useMemo(() => {
@@ -61,10 +61,9 @@ export function CustomerDetailsModal({
         exit={{ opacity: 0, scale: 0.95 }}
         className="relative w-full max-w-2xl max-h-[90vh] bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden flex flex-col"
       >
-        {/* Header - Fixed */}
         <div className="flex items-start justify-between p-4 border-b dark:border-gray-700">
           <div className="space-y-1">
-            <h2 className="text-xl font-bold">{customer.name}</h2>
+            <h2 className="text-xl font-bold">{t(customer.name)}</h2>
             <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               {customer.email && (
                 <span className="flex items-center">
@@ -86,15 +85,13 @@ export function CustomerDetailsModal({
           </button>
         </div>
 
-        {/* Content - Scrollable */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
-          {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
               <div className="flex items-center gap-2 mb-1">
                 <CreditCard className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 <span className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('customers.totalSpent')}
+                  {t('costumer-total-spent')}
                 </span>
               </div>
               <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
@@ -106,7 +103,7 @@ export function CustomerDetailsModal({
               <div className="flex items-center gap-2 mb-1">
                 <ShoppingBag className="w-4 h-4 text-green-600 dark:text-green-400" />
                 <span className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('customers.orders')}
+                  {t('orders')}
                 </span>
               </div>
               <p className="text-lg font-semibold text-green-600 dark:text-green-400">
@@ -118,7 +115,7 @@ export function CustomerDetailsModal({
               <div className="flex items-center gap-2 mb-1">
                 <TrendingUp className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                 <span className="text-xs text-gray-600 dark:text-gray-400">
-                  {t('dashboard.stats.avgOrderValue')}
+                  {t('average-order-value')}
                 </span>
               </div>
               <p className="text-lg font-semibold text-purple-600 dark:text-purple-400">
@@ -127,10 +124,9 @@ export function CustomerDetailsModal({
             </div>
           </div>
 
-          {/* Order History */}
           <div>
             <h3 className="text-sm font-medium mb-3 text-gray-900 dark:text-white">
-              Historique des clients
+              {t('costumer-history')}
             </h3>
             <div className="space-y-2">
               {orders.map(order => (
@@ -151,7 +147,7 @@ export function CustomerDetailsModal({
                       {formatCurrency(order.total, settings?.currency)}
                     </p>
                     <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {order.items.length} {t('orders.items')}
+                      {order.items.length} {t('orders-items')}
                     </p>
                   </div>
                 </div>
@@ -159,13 +155,12 @@ export function CustomerDetailsModal({
             </div>
           </div>
 
-          {/* Customer History */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg">
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="w-4 h-4 text-gray-500" />
                 <span className="text-xs text-gray-600 dark:text-gray-400">
-                  Première commande
+                  {t('first-order')}
                 </span>
               </div>
               <p className="text-sm font-medium">
@@ -177,7 +172,7 @@ export function CustomerDetailsModal({
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="w-4 h-4 text-gray-500" />
                 <span className="text-xs text-gray-600 dark:text-gray-400">
-                  Dernière commande
+                  {t('last-order')}
                 </span>
               </div>
               <p className="text-sm font-medium">
@@ -187,10 +182,9 @@ export function CustomerDetailsModal({
           </div>
         </div>
 
-        {/* Footer - Fixed */}
         <div className="border-t dark:border-gray-700 p-4">
           <Button onClick={onClose} className="w-full">
-            Fermer
+            {t('close')}
           </Button>
         </div>
       </motion.div>
