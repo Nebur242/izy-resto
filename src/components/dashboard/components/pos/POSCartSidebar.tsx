@@ -51,7 +51,7 @@ export function POSCartSidebar({
 
   const handleCheckout = async () => {
     try {
-      if (amountPaid === 0) {
+      if (amountPaid === 0 || amountPaid >= total) {
         await onCheckout();
         toast.success('Commande créée avec succès');
       }
