@@ -5,6 +5,7 @@ import { MinimalMenuItem } from './MinimalMenuItem';
 import { MinimalMenuCategories } from './MinimalMenuCategories';
 import { SearchBar } from '../SearchBar';
 import { Pagination } from '../../ui/Pagination';
+import { useTranslation } from 'react-i18next';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -31,6 +32,8 @@ export function MinimalMenuSection() {
     currentPage * ITEMS_PER_PAGE
   );
 
+  const { t } = useTranslation('menu');
+
   return (
     <div className="space-y-12">
       <SearchBar onSearch={setSearchTerm} />
@@ -52,7 +55,7 @@ export function MinimalMenuSection() {
       {filteredItems.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 dark:text-gray-400">
-            Aucun produit trouvé
+            {t('no-items-founds')}
           </p>
         </div>
       ) : (

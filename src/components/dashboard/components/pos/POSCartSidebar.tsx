@@ -25,7 +25,6 @@ interface POSCartSidebarProps {
   setAmountPaid: (amount: number) => void;
   total: number;
   onUpdateQuantity: (itemId: string, delta: number) => void;
-  // onRemoveItem: (itemId: string) => void;
   onQuickAmount: (amount: number) => void;
   onCheckout: () => Promise<void>;
   isSubmitting: boolean;

@@ -6,6 +6,7 @@ import { CartItem } from './CartItem';
 import { CheckoutForm } from '../checkout/CheckoutForm';
 import { formatCurrency } from '../../utils/currency';
 import { formatTaxRate } from '../../utils/tax';
+import { useTranslation } from 'react-i18next';
 
 interface ICartProps {
   cartBgColor?: string;
@@ -21,7 +22,7 @@ export function Cart(props: ICartProps) {
     orderBgColor = 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500',
     totalCartAmount = 'text-blue-600',
     deliveryTitleStyle,
-    truckStyle
+    truckStyle,
   } = props;
   const { cart, total, taxes, subtotal } = useCart();
   const { settings } = useSettings();
@@ -31,6 +32,8 @@ export function Cart(props: ICartProps) {
   if (cart.length === 0) {
     return null;
   }
+
+  const { t } = useTranslation('cart');
 
   return (
     <>
@@ -56,7 +59,7 @@ export function Cart(props: ICartProps) {
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <ShoppingCart className="w-5 h-5" />
-                  Votre Panier ({cart.length})
+                  {t('your-cart')} ({cart.length})
                 </h3>
                 <button
                   onClick={() => setIsOpen(false)}
@@ -87,7 +90,7 @@ export function Cart(props: ICartProps) {
               <div className="p-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                    <span>Sous-total</span>
+                    <span>{t('sub-total')}</span>
                     <span>{formatCurrency(subtotal, settings?.currency)}</span>
                   </div>
 
@@ -97,7 +100,7 @@ export function Cart(props: ICartProps) {
                       className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
                     >
                       <span>
-                        {tax.name} ({formatTaxRate(tax.rate)})
+                        {t(tax.name)} ({formatTaxRate(tax.rate)})
                       </span>
                       <span>
                         {formatCurrency(tax.amount, settings?.currency)}
@@ -108,7 +111,7 @@ export function Cart(props: ICartProps) {
                   <div className="pt-2 border-t dark:border-gray-700 mt-2">
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-gray-800 dark:text-gray-200">
-                        Total Panier
+                        {t('total-cart')}
                       </span>
                       <span
                         className={`${totalCartAmount} dark:text-blue-400 text-xl font-bold`}
@@ -120,7 +123,7 @@ export function Cart(props: ICartProps) {
                       onClick={() => setIsCheckingOut(true)}
                       className={`${orderBgColor} w-full text-white font-medium px-6 py-3 rounded-xl shadow-md`}
                     >
-                      Passer la commande
+                      {t('make-order')}
                     </button>
                   </div>
                 </div>
