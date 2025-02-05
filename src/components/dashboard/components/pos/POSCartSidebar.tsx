@@ -51,8 +51,14 @@ export function POSCartSidebar({
 
   const handleCheckout = async () => {
     try {
-      await onCheckout();
-      toast.success('Commande créée avec succès');
+      if (amountPaid === 0) {
+        await onCheckout();
+        toast.success('Commande créée avec succès');
+      }
+
+      if (amountPaid !== 0 && amountPaid < total) {
+        toast.error('Le montant reçu est inférieur au total de la commande');
+      }
     } catch (error) {
       console.error('Error creating order:', error);
       if (error instanceof Error) {
