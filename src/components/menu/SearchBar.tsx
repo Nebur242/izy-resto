@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface SearchBarProps {
   onSearch: (term: string) => void;
@@ -20,6 +21,8 @@ export function SearchBar({ onSearch }: SearchBarProps) {
     onSearch('');
   };
 
+  const { t } = useTranslation('menu');
+
   return (
     <div className="relative max-w-xl mx-auto">
       <div className="relative">
@@ -28,7 +31,7 @@ export function SearchBar({ onSearch }: SearchBarProps) {
           type="text"
           value={searchTerm}
           onChange={handleChange}
-          placeholder="Lancer une recherche..."
+          placeholder={t('search-items')}
           className="w-full pl-12 pr-10 py-3 rounded-full border border-gray-200 dark:border-gray-700 
                    bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
                    focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400

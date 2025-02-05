@@ -5,6 +5,7 @@ import { MenuItem } from './MenuItem';
 import { MenuFilters } from './MenuFilters';
 import { SearchBar } from './SearchBar';
 import { Pagination } from '../ui/Pagination';
+import { useTranslation } from 'react-i18next';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -14,7 +15,6 @@ export function MenuSection() {
   const [currentPage, setCurrentPage] = useState(1);
   const { items, isLoading } = useMenu();
 
-  // Filter items based on both category and search term
   const filteredItems = items.filter(item => {
     const matchesCategory =
       activeCategory === 'all' || item.categoryId === activeCategory;
@@ -24,12 +24,13 @@ export function MenuSection() {
     return matchesCategory && matchesSearch;
   });
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
   const paginatedItems = filteredItems.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+
+  const { t } = useTranslation('menu');
 
   return (
     <div className="space-y-8">
@@ -39,7 +40,7 @@ export function MenuSection() {
         activeCategory={activeCategory}
         onCategoryChange={category => {
           setActiveCategory(category);
-          setCurrentPage(1); // Reset to first page on category change
+          setCurrentPage(1);
         }}
       />
 
@@ -71,7 +72,7 @@ export function MenuSection() {
                     scale: 1,
                     transition: {
                       duration: 0.3,
-                      delay: index * 0.05, // Stagger effect
+                      delay: index * 0.05,
                     },
                   }}
                   exit={{
@@ -95,7 +96,7 @@ export function MenuSection() {
             className="relative flex h-[50vh] items-center justify-center"
           >
             <p className="text-lg text-gray-500 dark:text-gray-400">
-              Aucun produit trouvé
+              {t('no-items-founds')}
             </p>
           </motion.div>
         )}
