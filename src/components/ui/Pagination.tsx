@@ -7,9 +7,13 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+export function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  
+
   const visiblePages = pages.filter(page => {
     if (totalPages <= 5) return true;
     if (page === 1 || page === totalPages) return true;
@@ -23,6 +27,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         size="sm"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
+        type="button"
       >
         <ChevronLeft className="w-4 h-4" />
       </Button>
@@ -39,10 +44,8 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         return (
           <button
             key={page}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onPageChange(page)}}
+            onClick={() => onPageChange(page)}
+            type="button"
             className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
               currentPage === page
                 ? 'bg-blue-600 text-white dark:bg-blue-500'
@@ -59,6 +62,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         size="sm"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
+        type="button"
       >
         <ChevronRight className="w-4 h-4" />
       </Button>
