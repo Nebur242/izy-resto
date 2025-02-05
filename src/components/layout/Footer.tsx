@@ -15,6 +15,7 @@ import packageJson from '../../../package.json';
 import { Link } from 'react-router-dom';
 import Whatsapp from '../svg/whatsapp';
 import Tiktok from '../svg/Tiktok';
+import { useTranslation } from 'react-i18next';
 
 interface SocialMediaIconProps {
   profile: SocialMediaProfile;
@@ -33,6 +34,8 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
   const Icon = icons[profile.platform];
   if (!Icon) return null;
 
+  const { t } = useTranslation('footer');
+
   return (
     <a
       href={
@@ -45,7 +48,7 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
       target="_blank"
       rel="noopener noreferrer"
       className="text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-      aria-label={`Visit our ${profile.platform}`}
+      aria-label={`${t('visit-us')} ${profile.platform}`}
     >
       <Icon className="w-7 h-7" />
     </a>
@@ -54,8 +57,8 @@ function SocialMediaIcon({ profile }: SocialMediaIconProps) {
 
 export function Footer() {
   const { settings } = useSettings();
+  const { t } = useTranslation('footer');
 
-  // Filter only active social media profiles
   const activeSocialProfiles =
     settings?.socialMedia?.filter(
       profile => profile.active && profile.url.trim()
@@ -66,10 +69,9 @@ export function Footer() {
       <div className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-8">
         <Container>
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8">
-            {/* Restaurant Info */}
             <div className="text-center md:text-left">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                {settings?.name || 'Restaurant'}
+                {t(settings?.name || 'restaurant-name')}
               </h3>
 
               {activeSocialProfiles.length > 0 && (
@@ -81,44 +83,44 @@ export function Footer() {
               )}
             </div>
 
-            {/* Contact Info */}
             <div className="text-center md:text-right">
               {settings?.address && (
                 <p className="flex items-center justify-center md:justify-end gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
-                  <span>{settings.address}</span>
+                  <span>{t(settings.address)}</span>
                 </p>
               )}
               {settings?.phone && (
                 <p className="flex items-center justify-center md:justify-end gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
                   <Phone className="w-4 h-4 flex-shrink-0" />
-                  <span>{settings.phone}</span>
+                  <span>{t(settings.phone)}</span>
                 </p>
               )}
               {settings?.email && (
                 <p className="flex items-center justify-center md:justify-end gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <Mail className="w-4 h-4 flex-shrink-0" />
-                  <span>{settings?.email}</span>
+                  <span>{t(settings?.email)}</span>
                 </p>
               )}
             </div>
           </div>
 
-          {/* Legal Links */}
           <div className="flex items-center justify-center md:justify-end gap-4 mt-4 text-sm">
             <Link
               to={settings?.termsOfService ? '/terms' : '#'}
               className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center gap-1"
             >
               <LinkIcon className="w-3 h-3" />
-              Conditions d'utilisation
+              {t('cgu')}
             </Link>
           </div>
         </Container>
       </div>
       <Container>
         <div className="flex justify-between gap-2">
-          <small>Tous droits réservés © {new Date().getFullYear()} - AF</small>
+          <small>
+            {t('all-rights-reserved')} © {new Date().getFullYear()} - AF
+          </small>
           <small className="text-center block">v{packageJson.version}</small>
         </div>
       </Container>

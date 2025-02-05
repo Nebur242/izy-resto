@@ -5,6 +5,7 @@ import { GridMenuItem } from './GridMenuItem';
 import { GridMenuCategories } from './GridMenuCategories';
 import { Pagination } from '../../ui/Pagination';
 import { SearchBar } from '../../menu/SearchBar';
+import { useTranslation } from 'react-i18next';
 
 export function GridMenuSection() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -14,11 +15,8 @@ export function GridMenuSection() {
     activeCategory !== 'all' ? activeCategory : undefined
   );
 
-  // Filter items based on search
-
   const ITEMS_PER_PAGE = 9;
 
-  // Filter items based on both category and search term
   const filteredItems = items.filter(item => {
     const matchesCategory =
       activeCategory === 'all' || item.categoryId === activeCategory;
@@ -28,11 +26,12 @@ export function GridMenuSection() {
     return matchesCategory && matchesSearch;
   });
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = filteredItems.slice(startIndex, endIndex);
+
+  const { t } = useTranslation('menu');
 
   return (
     <div className="space-y-12">
@@ -42,7 +41,7 @@ export function GridMenuSection() {
         activeCategory={activeCategory}
         onCategoryChange={category => {
           setActiveCategory(category);
-          setCurrentPage(1); // Reset to first page on category change
+          setCurrentPage(1);
         }}
       />
 
@@ -80,7 +79,7 @@ export function GridMenuSection() {
       {filteredItems.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 dark:text-gray-400">
-            Aucun produit trouvé
+          {t('no-items-founds')}
           </p>
         </div>
       ) : (

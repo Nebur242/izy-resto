@@ -5,6 +5,7 @@ import { useSettings } from '../../../hooks/useSettings';
 import { ProductDetailsModal } from '../ProductDetailsModal';
 import { formatCurrency } from '../../../utils/currency';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useTranslation } from 'react-i18next';
 
 interface MinimalMenuItemProps {
   item: MenuItem;
@@ -34,6 +35,8 @@ export function MinimalMenuItem({ item }: MinimalMenuItemProps) {
     };
   }, [item, itemWithVariants.variantPrices]);
 
+  const { t } = useTranslation('menu');
+
   return (
     <>
       <motion.div
@@ -50,9 +53,9 @@ export function MinimalMenuItem({ item }: MinimalMenuItemProps) {
           className="w-24 h-24 object-cover rounded-lg"
         />
         <div className="flex-1">
-          <h3 className="text-lg font-medium mb-1">{item.name}</h3>
+          <h3 className="text-lg font-medium mb-1">{t(item.name)}</h3>
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-            {item.description}
+            {t(item.description)}
           </p>
           <div className="flex items-center justify-between">
             <span className="font-bold text-blue-600 dark:text-blue-400">
@@ -79,7 +82,7 @@ export function MinimalMenuItem({ item }: MinimalMenuItemProps) {
                     key={index}
                     className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300"
                   >
-                    {variant.value}
+                    {t(variant.value)}
                   </span>
                 ))}
                 {item.variants.length > 2 && (

@@ -9,6 +9,7 @@ import { formatCurrency } from '../../utils/currency';
 import { useVariants } from '../../hooks/useVariants';
 import VariantCombinationError from './VariantCombinationError';
 import UnselectedRequiredVariantType from './UnselectedRequiredVariantType';
+import { useTranslation } from 'react-i18next';
 
 interface IProductDetailsModalProps {
   item: MenuItemWithVariants | null;
@@ -203,6 +204,8 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
     onClose();
   };
 
+  const { t } = useTranslation(['menu', 'cart']);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
       <motion.div
@@ -236,10 +239,10 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
           <div className="p-4 sm:p-6 space-y-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {item.name}
+                {t(item.name)}
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                {item.description}
+                {t(item.description)}
               </p>
             </div>
 
@@ -255,8 +258,8 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
               <AlertCircle className="h-5 w-5" />
               <span className="text-[10px] sm:text-xs font-medium">
                 {isOutOfStock
-                  ? 'Rupture de stock'
-                  : `${item.stockQuantity} unités disponibles`}
+                  ? `${t('out-of-stock')}`
+                  : `${item.stockQuantity} ${t('in-stock')}`}
               </span>
             </div>
             {variantTypes &&
@@ -305,8 +308,8 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
               })}
             {getCartItem() && (
               <div className="bg-blue-50 dark:bg-blue-900/30 p-2 sm:p-2.5 rounded-lg text-blue-600 dark:text-blue-400 text-[10px] sm:text-xs font-medium text-center">
-                Déjà dans le panier: {getCartItem()?.quantity}{' '}
-                {getCartItem()?.quantity > 1 ? 'unités' : 'unité'}
+                {t('already-in-cart')}: {getCartItem()?.quantity}{' '}
+                {getCartItem()?.quantity > 1 ? t('units') : t('unit')}
               </div>
             )}
           </div>
@@ -360,7 +363,7 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
             className={`${addProductToCartBgColor} w-full rounded-full py-2 sm:py-3 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-300 ease-in-out disabled:bg-gray-300 disabled:cursor-not-allowed dark:bg-blue-500 dark:hover:bg-blue-600 dark:disabled:bg-gray-700`}
           >
             <ShoppingBag className="h-5 w-5" />
-            {isOutOfStock ? 'Rupture de stock' : 'Ajouter au Panier'}
+            {isOutOfStock ? t('out-of-stock') : t('add-to-cart')}
           </Button>
         </div>
       </motion.div>
