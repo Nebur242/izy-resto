@@ -51,8 +51,7 @@ export function Hero() {
     document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const { t } = useTranslation();
-
+  const { t } = useTranslation('hero');
   return (
     <div className="relative h-[550px] w-full overflow-hidden">
       <div className="absolute inset-0">
@@ -61,24 +60,21 @@ export function Hero() {
             settings?.coverImage ||
             'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80'
           }
-          alt="Restaurant ambiance"
+          alt={t('cover-img-alt-title')}
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/60" />
       </div>
 
-      {/* Hero Content */}
       <div className="relative h-full">
         <div className="mx-auto h-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-full flex-col justify-between py-8 sm:py-12">
-            {/* Top Content */}
             <div className="flex flex-1 flex-col items-center justify-center text-center px-4 md:mt-8 mt-0">
               <h1 className="max-w-xl mx-auto mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl lg:max-w-2xl mt-10 md:mt-0">
-                {settings?.name || 'Fine Dining Experience'}
+                {t(settings?.name || 'restaurant-name')}
               </h1>
               <p className="mb-4 max-w-md mx-auto text-base text-gray-300/90 sm:text-lg">
-                {settings?.description ||
-                  'Experience culinary excellence with our carefully crafted menu featuring fresh ingredients and innovative recipes.'}
+                {t(settings?.description || 'restaurant-description')}
               </p>
               <Button
                 onClick={scrollToMenu}
@@ -86,12 +82,11 @@ export function Hero() {
     bg-gradient-to-r from-gray-200 to-white text-blue-600 hover:bg-gradient-to-r hover:from-gray-200 hover:to-gray-300
     dark:bg-gradient-to-r dark:from-blue-500 dark:to-blue-400 dark:text-white dark:hover:from-blue-600 dark:hover:to-blue-500"
               >
-                Voir le Menu
+                {t('view-menu')}
                 <ArrowDown className="ml-2 inline-block h-4 w-4 transition-transform group-hover:translate-y-1 group-hover:animate-bounce" />
               </Button>
             </div>
 
-            {/* Bottom Content - Info Cards */}
             <div className="space-y-2 px-4 sm:flex sm:space-y-0 sm:space-x-4 sm:px-6 max-w-4xl mx-auto w-full">
               <div className="sm:flex-1">
                 <OpeningHoursButton />
@@ -100,14 +95,18 @@ export function Hero() {
                 <InfoCard
                   icon={MapPin}
                   title="Adresse"
-                  description={settings?.address || '123 Rue Gourmet'}
+                  description={t(
+                    settings?.address || 'restaurant-default-address'
+                  )}
                 />
               </div>
               <div className="sm:flex-1">
                 <InfoCard
                   icon={Phone}
                   title="Contact"
-                  description={settings?.phone || 'Appelez-nous pour réserver'}
+                  description={t(
+                    settings?.phone || 'restaurant-call-to-action'
+                  )}
                   isButton
                   onClick={() => {
                     if (settings?.phone) {
