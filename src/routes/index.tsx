@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from '../pages/auth/LoginPage';
 import OrderTracking from '../pages/OrderTracking';
@@ -10,6 +10,8 @@ import PaymentSuccess from '../pages/paytech/SuccessPage';
 import { TermsOfService } from '../pages/TermsOfService';
 import { Home } from '../pages/home';
 import PendingTransaction from '../pages/payments/pending';
+import { useSettings } from '../hooks';
+import i18n from '../translations/i18n';
 
 const Dashboard = React.lazy(() =>
   import('../pages/dashboard/Dashboard')
@@ -21,6 +23,14 @@ const Dashboard = React.lazy(() =>
 );
 
 export function AppRoutes() {
+  const { settings } = useSettings();
+
+  useEffect(() => {
+    if (settings?.language) {
+      i18n.changeLanguage(settings.language);
+    }
+  }, [settings?.language]);
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />

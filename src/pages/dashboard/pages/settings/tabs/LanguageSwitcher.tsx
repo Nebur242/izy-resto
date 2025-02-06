@@ -9,13 +9,11 @@ type LanguageSwitcherProps = {
 
 export default function LanguageSwitcher({
   onLanguageChanged,
-  value,
+  value = 'fr',
 }: LanguageSwitcherProps) {
   const { t, i18n } = useTranslation();
 
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>(
-    value || (localStorage.getItem('language') as Language) || 'fr'
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(value);
 
   useEffect(() => {
     i18n.changeLanguage(selectedLanguage);
@@ -26,7 +24,6 @@ export default function LanguageSwitcher({
     setSelectedLanguage(newLang);
     i18n.changeLanguage(newLang);
     onLanguageChanged && onLanguageChanged(newLang);
-    localStorage.setItem('language', newLang);
   };
 
   return (
