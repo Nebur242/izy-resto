@@ -36,5 +36,8 @@
   "order-items": "Order items",
   "client-details": "Client details",
   "items": "Order items",
-  "no-order-found": "No order found"
+  "no-order-found": "No order found",
+  "print-bill": "Print bill",
+  "in-cooking": "In cooking",
+  "payment-mode": "Payment mode"
 }

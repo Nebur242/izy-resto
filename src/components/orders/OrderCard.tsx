@@ -20,7 +20,7 @@ interface OrderCardProps {
 export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
   ({ order, onStatusChange, onCancel }, ref) => {
     const { settings } = useSettings();
-    const { t } = useTranslation('order');
+    const { t } = useTranslation(['order', 'common']);
 
     const canCancel = ['pending', 'preparing'].includes(order.status);
     const [isPrinting, setIsPrinting] = useState(false);

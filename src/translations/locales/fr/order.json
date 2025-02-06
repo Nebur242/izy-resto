@@ -36,5 +36,8 @@
   "mark-as-delivered": "Marquer comme livré",
   "order-items": "Articles commandés",
   "client-details": "Détails Client",
-  "no-order-found": "Aucune commande trouvée"
+  "no-order-found": "Aucune commande trouvée",
+  "print-bill": "Imprimer le ticket",
+  "in-cooking": "In cooking",
+  "payment-mode": "Mode de paiement"
 }
