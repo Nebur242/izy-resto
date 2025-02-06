@@ -94,7 +94,7 @@ export function Hero() {
               <div className="sm:flex-1">
                 <InfoCard
                   icon={MapPin}
-                  title="Adresse"
+                  title={t('restaurant-address-title')}
                   description={t(
                     settings?.address || 'restaurant-default-address'
                   )}
@@ -103,7 +103,7 @@ export function Hero() {
               <div className="sm:flex-1">
                 <InfoCard
                   icon={Phone}
-                  title="Contact"
+                  title={t('restaurant-contact-title')}
                   description={t(
                     settings?.phone || 'restaurant-call-to-action'
                   )}

@@ -18,5 +18,10 @@
   "light-mode": "Mode clair",
   "previous": "Précédent",
   "next": "Suivant",
-  "schedules-not-defined": "Horaires non définis"
+  "schedules-not-defined": "Horaires non définis",
+  "preparing-your-menu": "Préparation de votre menu",
+  "setting-the-table": "Mise en place de la table",
+  "heating-the-stoves": "Chauffe des fourneaux",
+  "chef-is-coming": "Le chef arrive",
+  "final-touches": "Dernières touches"
 }

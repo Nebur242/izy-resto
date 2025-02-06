@@ -2,18 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UtensilsCrossed, Coffee, Pizza } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings';
+import { useTranslation } from 'react-i18next';
 
 interface LoadingScreenProps {
   isLoading: boolean;
 }
-
-const LOADING_MESSAGES = [
-  'Préparation de votre menu',
-  'Mise en place de la table',
-  'Chauffe des fourneaux',
-  'Le chef arrive',
-  'Dernières touches',
-];
 
 const ANIMATION_ELEMENTS = [
   {
@@ -43,6 +36,15 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
   const [messageIndex, setMessageIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const { settings } = useSettings();
+  const { t } = useTranslation<'common'>('common');
+
+  const LOADING_MESSAGES = [
+    t('preparing-your-menu'),
+    t('setting-the-table'),
+    t('heating-the-stoves'),
+    t('chef-is-coming'),
+    t('final-touches'),
+  ];
 
   useEffect(() => {
     let showTimeout: NodeJS.Timeout;
