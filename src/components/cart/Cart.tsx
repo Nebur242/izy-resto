@@ -29,6 +29,7 @@ export function Cart(props: ICartProps) {
   const { settings } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const { t } = useTranslation('cart');
 
   if (cart.length === 0) {
     return null;

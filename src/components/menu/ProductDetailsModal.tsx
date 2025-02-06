@@ -39,6 +39,8 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
   const [variantCombinationError, setVariantCombinationError] = useState('');
   const { variants } = useVariants();
 
+  const { t } = useTranslation(['menu', 'cart']);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -204,8 +206,6 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
     onClose();
   };
 
-  const { t } = useTranslation(['menu', 'cart']);
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
       <motion.div
@@ -309,7 +309,7 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
             {getCartItem() && (
               <div className="bg-blue-50 dark:bg-blue-900/30 p-2 sm:p-2.5 rounded-lg text-blue-600 dark:text-blue-400 text-[10px] sm:text-xs font-medium text-center">
                 {t('already-in-cart')}: {getCartItem()?.quantity}{' '}
-                {getCartItem()?.quantity > 1 ? t('units') : t('unit')}
+                {(getCartItem()?.quantity || 0) > 1 ? t('units') : t('unit')}
               </div>
             )}
           </div>
@@ -362,7 +362,7 @@ export function ProductDetailsModal(props: IProductDetailsModalProps) {
             disabled={isOutOfStock}
             className={`${addProductToCartBgColor} w-full rounded-full py-2 sm:py-3 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-300 ease-in-out disabled:bg-gray-300 disabled:cursor-not-allowed dark:bg-blue-500 dark:hover:bg-blue-600 dark:disabled:bg-gray-700`}
           >
-            <ShoppingBag className="h-5 w-5" />
+            <ShoppingBag className="h-5 w-5 mr-1" />
             {isOutOfStock ? t('out-of-stock') : t('add-to-cart')}
           </Button>
         </div>

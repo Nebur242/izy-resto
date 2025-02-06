@@ -4,8 +4,9 @@
   "grid-hero-description": "Experience culinary excellence with our carefully crafted menu.",
   "restaurant-call-to-action": "Call Us to Reserve",
   "restaurant-contact-title": "Contact",
-  "restaurant-default-address": "123 Rue Gourmet",
+  "restaurant-default-address": "123 Stanford Court",
   "restaurant-description": "Experience culinary excellence with our carefully crafted menu featuring fresh ingredients and innovative recipes.",
   "restaurant-name": "Fine Dining Experience",
-  "view-menu": "See Menu"
+  "view-menu": "See Menu",
+  "restaurant-address-title": "Address"
 }
