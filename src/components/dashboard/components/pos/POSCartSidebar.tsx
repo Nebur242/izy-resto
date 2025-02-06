@@ -51,14 +51,13 @@ export function POSCartSidebar({
 
   const handleCheckout = async () => {
     try {
-      if (amountPaid === 0 || amountPaid >= total) {
-        await onCheckout();
-        toast.success('Commande créée avec succès');
+      if (amountPaid < 0 || (amountPaid !== 0 && amountPaid < total)) {
+        toast.error('Le montant reçu est inférieur au total de la commande');
+        return;
       }
 
-      if (amountPaid !== 0 && amountPaid < total) {
-        toast.error('Le montant reçu est inférieur au total de la commande');
-      }
+      await onCheckout();
+      toast.success('Commande créée avec succès');
     } catch (error) {
       console.error('Error creating order:', error);
       if (error instanceof Error) {
@@ -91,6 +90,7 @@ export function POSCartSidebar({
             onChange={e => setTableNumber(e.target.value)}
             className="w-full rounded-lg border dark:border-gray-700 p-2"
             placeholder="Ex: 42"
+            min={0}
           />
         </div>
 

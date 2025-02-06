@@ -29,9 +29,7 @@ export function PaymentSection({
           <label className="block text-sm font-medium mb-1">Montant Reçu</label>
           <input
             type="number"
-            onChange={e =>
-              onAmountPaidChange(Math.abs(parseFloat(e.target.value)) || 0)
-            }
+            onChange={e => onAmountPaidChange(parseFloat(e.target.value) || 0)}
             className="w-full rounded-lg border dark:border-gray-700 p-2"
             min={0}
             step={getCurrencyStep(settings?.currency)}
