@@ -37,16 +37,13 @@ export function POSCartSidebar({
   setTableNumber,
   customerInfo,
   setCustomerInfo,
-  amountPaid,
+  amountPaid = 0,
   setAmountPaid,
-  // total,
-  // onUpdateQuantity,
-  // onRemoveItem,
   onQuickAmount,
   onCheckout,
   isSubmitting,
 }: POSCartSidebarProps) {
-  const [error, setError] = useState('');
+  const [error] = useState('');
   const [showExtras, setShowExtras] = useState(false);
   const { settings } = useSettings();
 
@@ -54,12 +51,8 @@ export function POSCartSidebar({
 
   const handleCheckout = async () => {
     try {
-      if (!amountPaid) {
-        setError('Montant reçu obligatoire');
-        return;
-      }
-      if (amountPaid < total) {
-        setError('Montant reçu doit etre supérieur ou égal au total');
+      if (amountPaid < 0 || (amountPaid !== 0 && amountPaid < total)) {
+        toast.error('Le montant reçu est inférieur au total de la commande');
         return;
       }
 
@@ -77,7 +70,6 @@ export function POSCartSidebar({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
       {onClose && (
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <h2 className="text-lg font-semibold">Panier</h2>
@@ -87,9 +79,7 @@ export function POSCartSidebar({
         </div>
       )}
 
-      {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto">
-        {/* Table Number */}
         <div className="p-4 border-b dark:border-gray-700">
           <label className="block text-sm font-medium mb-1">
             Numéro de Table (Optionnel)
@@ -100,10 +90,10 @@ export function POSCartSidebar({
             onChange={e => setTableNumber(e.target.value)}
             className="w-full rounded-lg border dark:border-gray-700 p-2"
             placeholder="Ex: 42"
+            min={0}
           />
         </div>
 
-        {/* Customer Info */}
         <div className="p-4 border-b dark:border-gray-700">
           <CustomerInfoForm
             customerInfo={customerInfo}
@@ -111,13 +101,11 @@ export function POSCartSidebar({
           />
         </div>
 
-        {/* Cart Items */}
         <div className="px-4">
           <CartItemList />
         </div>
       </div>
 
-      {/* Fixed Bottom Section */}
       {cart.length > 0 && (
         <div className="dark:border-gray-700 p-4 space-y-4 bg-white dark:bg-gray-800">
           <div className="flex justify-between items-center text-lg font-semibold border-t dark:border-gray-700 pt-4">
@@ -127,7 +115,6 @@ export function POSCartSidebar({
             </span>
           </div>
 
-          {/* Extras Section (Tax and Tips) */}
           <div className="space-y-2">
             <button
               onClick={() => setShowExtras(!showExtras)}

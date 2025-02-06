@@ -2,18 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UtensilsCrossed, Coffee, Pizza } from 'lucide-react';
 import { useSettings } from '../../hooks/useSettings';
+import { useTranslation } from 'react-i18next';
 
 interface LoadingScreenProps {
   isLoading: boolean;
 }
-
-const LOADING_MESSAGES = [
-  'Préparation de votre menu',
-  'Mise en place de la table',
-  'Chauffe des fourneaux',
-  'Le chef arrive',
-  'Dernières touches',
-];
 
 const ANIMATION_ELEMENTS = [
   {
@@ -43,6 +36,15 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
   const [messageIndex, setMessageIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const { settings } = useSettings();
+  const { t } = useTranslation<'common'>('common');
+
+  const LOADING_MESSAGES = [
+    t('preparing-your-menu'),
+    t('setting-the-table'),
+    t('heating-the-stoves'),
+    t('chef-is-coming'),
+    t('final-touches'),
+  ];
 
   useEffect(() => {
     let showTimeout: NodeJS.Timeout;
@@ -139,20 +141,24 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
                     transition={{ duration: 0.3 }}
                     className="absolute flex items-center gap-1.5"
                   >
-                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      {LOADING_MESSAGES[messageIndex]}
-                    </span>
-                    <motion.span
-                      animate={{ opacity: [0, 1, 0] }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        repeatType: 'loop',
-                      }}
-                      className="text-orange-500 dark:text-orange-400"
-                    >
-                      ...
-                    </motion.span>
+                    {settings?.language && (
+                      <>
+                        <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                          {LOADING_MESSAGES[messageIndex]}
+                        </span>
+                        <motion.span
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            repeatType: 'loop',
+                          }}
+                          className="text-orange-500 dark:text-orange-400"
+                        >
+                          ...
+                        </motion.span>
+                      </>
+                    )}
                   </motion.div>
                 </AnimatePresence>
               </div>

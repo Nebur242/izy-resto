@@ -22,8 +22,6 @@ import enMenu from './locales/en/menu.json';
 import enOrder from './locales/en/order.json';
 import frOrder from './locales/fr/order.json';
 
-const lng = localStorage.getItem('language') || 'fr';
-
 i18n.use(initReactI18next).init({
   resources: {
     en: {
@@ -45,7 +43,6 @@ i18n.use(initReactI18next).init({
       order: frOrder,
     },
   },
-  lng,
   fallbackLng: 'fr',
   saveMissing: true,
   interpolation: {
