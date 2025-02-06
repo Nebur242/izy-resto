@@ -4,6 +4,7 @@ import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
 import { formatFirestoreTimestamp } from '../../../utils/date';
 import { formatTaxRate } from '../../../utils/tax';
+import { useTranslation } from 'react-i18next';
 
 interface OrderReceiptDetailsProps {
   order: Order;
@@ -12,13 +13,14 @@ interface OrderReceiptDetailsProps {
 export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
   const { settings } = useSettings();
 
+  const { t } = useTranslation(['order', 'common']);
+
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 sm:p-8">
-      {/* Order Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
         <div className="mb-4 sm:mb-0">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
-            Commande #{order.id.slice(0, 8)}
+            {t('order')} #{order.id.slice(0, 8)}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             {formatFirestoreTimestamp(order.createdAt)}
@@ -33,19 +35,19 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
           </p>
         </div>
       </div>
-
-      {/* Order Type & Payment */}
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
         <div className="flex items-center space-x-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-4 py-2 rounded-full">
           {order.diningOption === 'dine-in' ? (
             <>
               <Utensils className="h-5 w-5" />
-              <span>Sur place (Table {order.tableNumber})</span>
+              <span>
+                {t('on-site')} (Table {order.tableNumber})
+              </span>
             </>
           ) : (
             <>
               <Truck className="h-5 w-5" />
-              <span>Livraison</span>
+              <span>{t('delivery')}</span>
             </>
           )}
         </div>
@@ -56,12 +58,10 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
           </div>
         )}
       </div>
-
-      {/* Order Items */}
       <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-inner mb-8">
         <div className="px-4 sm:px-6 py-4">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-            Articles commandés
+            {t('item-ordered')}
           </h2>
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {order.items.map(item => (
@@ -87,24 +87,22 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
               </div>
             ))}
           </div>
-
           <div className="space-y-2  pt-4 border-t border-gray-200 dark:border-gray-700">
             {order.subtotal && (
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>Sous-total</span>
+                <span>{t('sub-total')}</span>
                 <span>
                   {formatCurrency(order.subtotal, settings?.currency)}
                 </span>
               </div>
             )}
-
-            {(order?.taxes || []).map((tax, index) => (
+            {(order?.taxes || []).map(tax => (
               <div
                 key={tax.id}
                 className="flex justify-between text-sm text-gray-800 dark:text-gray-400"
               >
                 <span>
-                  {tax.name} ({formatTaxRate(tax.rate)})
+                  {t(tax.name)} ({formatTaxRate(tax.rate)})
                 </span>
                 <span>{formatCurrency(tax.amount, settings?.currency)}</span>
               </div>
@@ -114,31 +112,29 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
                 key={order.tip.amount}
                 className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
               >
-                <span>Pourboire ({order.tip.percentage}%)</span>
+                <span>
+                  {t('tip')} ({order.tip.percentage}%)
+                </span>
                 <span>
                   {formatCurrency(order.tip.amount, settings?.currency)}
                 </span>
               </div>
             )}
           </div>
-
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <p className="text-lg font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">
-              Total
+              {t('total')}
             </p>
-
             <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
               {formatCurrency(order.total, settings?.currency)}
             </span>
           </div>
         </div>
       </div>
-
-      {/* Customer Info */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <div className="px-4 sm:px-6 py-4">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-            Informations client
+            {t('customer-information')}
           </h2>
           <div className="space-y-2">
             <p className="text-gray-700 dark:text-gray-200">
@@ -154,7 +150,7 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
             )}
             {order.diningOption === 'delivery' && (
               <p className="text-gray-700 dark:text-gray-200 font-medium mt-4">
-                Adresse de livraison: {order.customerAddress}
+                {t('delivery-address')}: {order.customerAddress}
               </p>
             )}
           </div>

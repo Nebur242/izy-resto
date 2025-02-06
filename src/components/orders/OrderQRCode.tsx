@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { motion } from 'framer-motion';
 import { QrCode } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-interface OrderQRCodeProps {
+interface IOrderQRCodeProps {
   orderId: string;
   size?: number;
 }
 
-export function OrderQRCode({ orderId, size = 200 }: OrderQRCodeProps) {
+export function OrderQRCode(props: IOrderQRCodeProps) {
+  const { orderId, size = 200 } = props;
+  const { t } = useTranslation('order');
   const [qrUrl, setQrUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -58,11 +61,11 @@ export function OrderQRCode({ orderId, size = 200 }: OrderQRCodeProps) {
     >
       <img
         src={qrUrl}
-        alt="QR Code de suivi de commande"
+        alt={t('scan-qr-code-to-track')}
         className="w-full h-full"
       />
       <p className="text-xs text-center mt-2 text-gray-500">
-        Scannez pour suivre votre commande
+        {t('scan-qr-code-to-track')}
       </p>
     </motion.div>
   );

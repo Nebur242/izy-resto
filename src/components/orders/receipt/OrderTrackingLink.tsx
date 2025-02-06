@@ -1,14 +1,15 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Truck, ArrowRight } from 'lucide-react';
 import { Button } from '../../ui/Button';
+import { useTranslation } from 'react-i18next';
 
 interface OrderTrackingLinkProps {
   orderId: string;
 }
 
 export function OrderTrackingLink({ orderId }: OrderTrackingLinkProps) {
+  const { t } = useTranslation('order');
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -21,16 +22,14 @@ export function OrderTrackingLink({ orderId }: OrderTrackingLinkProps) {
         </div>
         <div>
           <h3 className="text-xl sm:text-2xl font-semibold mb-2">
-            Suivi de commande
+            {t('order-tracking')}
           </h3>
-          <p className="text-blue-100">
-            Suivez l'état de votre commande en temps réel
-          </p>
+          <p className="text-blue-100">{t('real-time-order-tracking')}</p>
         </div>
       </div>
       <Link to={`/order/${orderId}`} className="block">
         <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 group flex items-center justify-center">
-          <span className="mr-2">Suivre ma commande</span>
+          <span className="mr-2">{t('track-order')}</span>
           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
         </Button>
       </Link>

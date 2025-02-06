@@ -3,6 +3,7 @@ import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
 import { formatFirestoreTimestamp } from '../../../utils/date';
 import { CreditCard, Truck, Utensils } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface OrderTrackingHeaderProps {
   order: Order;
@@ -10,13 +11,14 @@ interface OrderTrackingHeaderProps {
 
 export function OrderTrackingHeader({ order }: OrderTrackingHeaderProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation(['order', 'common']);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-b-xl p-6 shadow-sm">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h1 className="text-2xl font-bold mb-2">
-            Commande #{order.id.slice(0, 8)}
+            {t('order')} #{order.id.slice(0, 8)}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             {formatFirestoreTimestamp(order.createdAt)}
@@ -31,19 +33,19 @@ export function OrderTrackingHeader({ order }: OrderTrackingHeaderProps) {
           </p>
         </div>
       </div>
-
-      {/* Order Type & Payment */}
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
         <div className="flex items-center space-x-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-4 py-2 rounded-full">
           {order.diningOption === 'dine-in' ? (
             <>
               <Utensils className="h-5 w-5" />
-              <span>Sur place (Table {order.tableNumber})</span>
+              <span>
+                {t('on-site')} (Table {order.tableNumber})
+              </span>
             </>
           ) : (
             <>
               <Truck className="h-5 w-5" />
-              <span>Livraison</span>
+              <span>{t('delivery')}</span>
             </>
           )}
         </div>

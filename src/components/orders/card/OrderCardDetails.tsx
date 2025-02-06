@@ -3,6 +3,7 @@ import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
 import { formatTaxRate } from '../../../utils/tax';
+import { useTranslation } from 'react-i18next';
 
 interface OrderCardDetailsProps {
   order: Order;
@@ -10,10 +11,10 @@ interface OrderCardDetailsProps {
 
 export function OrderCardDetails({ order }: OrderCardDetailsProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation(['order', 'common']);
 
   return (
     <>
-      {/* Customer Details */}
       <div>
         <h4 className="font-medium mb-2">Détails client</h4>
         <div className="text-sm opacity-75 space-y-1">
@@ -22,31 +23,29 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
           {order.customerEmail && <p>{order.customerEmail}</p>}
           {order.diningOption === 'delivery' && (
             <p className="font-medium">
-              Adresse de livraison : {order.customerAddress}
+              {t('delivery-address')} : {order.customerAddress}
             </p>
           )}
           {order.delivery && (
-            <p className="font-medium">Livraison à {order.delivery.name}</p>
+            <p className="font-medium">
+              {t('delivery-to')} {order.delivery.name}
+            </p>
           )}
         </div>
       </div>
-
-      {/* Payment Method */}
       {order.paymentMethod && (
         <div className="border-t border-current/10 pt-4">
           <h4 className="font-medium mb-2 flex items-center gap-2">
             <CreditCard className="w-4 h-4" />
-            Mode de paiement
+            {t('payment-mode')}
           </h4>
           <div className="text-sm opacity-75">
             <p>{order.paymentMethod.name}</p>
           </div>
         </div>
       )}
-
-      {/* Order Items */}
       <div className="border-t border-current/10 pt-4">
-        <h4 className="font-medium mb-2">Produits commandés</h4>
+        <h4 className="font-medium mb-2">{t('product-order')}</h4>
         <div className="space-y-2">
           {order.items.map(item => (
             <div key={item.id} className="flex justify-between text-sm">
@@ -59,19 +58,17 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
             </div>
           ))}
         </div>
-
         {(!!order.subtotal || !!order?.taxes || !!order?.tip?.percentage) && (
           <div className="space-y-2  pt-4 mt-4 border-t border-current/10">
             {order.subtotal && (
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>Sous-total</span>
+                <span>{t('sub-total')}</span>
                 <span>
                   {formatCurrency(order.subtotal, settings?.currency)}
                 </span>
               </div>
             )}
-
-            {(order?.taxes || []).map((tax, index) => (
+            {(order?.taxes || []).map(tax => (
               <div
                 key={tax.id}
                 className="flex justify-between text-sm text-gray-800 dark:text-gray-400"
@@ -87,7 +84,9 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
                 key={order.tip.amount}
                 className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
               >
-                <span>Pourboire ({order.tip.percentage}%)</span>
+                <span>
+                  {t('tip')} ({order.tip.percentage}%)
+                </span>
                 <span>
                   {formatCurrency(order.tip.amount, settings?.currency)}
                 </span>
@@ -95,7 +94,7 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
             )}
             {order?.delivery && (
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>Livraison</span>
+                <span>{t('delivery')}</span>
                 <span>
                   {formatCurrency(
                     Number(order.delivery.price),
@@ -105,7 +104,7 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
               </div>
             )}
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>Total</span>
+              <span>{t('total')}</span>
               <span>{formatCurrency(order.total, settings?.currency)}</span>
             </div>
           </div>
@@ -114,7 +113,7 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
       {order.preference && (
         <div className="border-t border-current/10 pt-4">
           <h4 className="font-medium mb-2 flex items-center gap-2">
-            <AlertTriangle /> Indications du client
+            <AlertTriangle /> {t('customer-indication')}
           </h4>
           <p className="text-sm">{order.preference}</p>
         </div>

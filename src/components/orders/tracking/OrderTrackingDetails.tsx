@@ -1,9 +1,9 @@
-import React from 'react';
 import { Phone, Mail, MapPin, Utensils, Truck } from 'lucide-react';
 import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
 import { formatTaxRate } from '../../../utils/tax';
+import { useTranslation } from 'react-i18next';
 
 interface OrderTrackingDetailsProps {
   order: Order;
@@ -11,10 +11,10 @@ interface OrderTrackingDetailsProps {
 
 export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation(['order', 'common']);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Customer Details */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Détails client</h2>
         <div className="space-y-3">
@@ -41,19 +41,20 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
             {order.diningOption === 'dine-in' ? (
               <div className="flex items-center text-blue-600 dark:text-blue-400">
                 <Utensils className="w-4 h-4 mr-2" />
-                <span>Sur place (Table {order.tableNumber})</span>
+                <span>
+                  {t('on-site')} (Table {order.tableNumber})
+                </span>
               </div>
             ) : (
               <div className="flex items-center text-green-600 dark:text-green-400">
                 <Truck className="w-4 h-4 mr-2" />
-                <span>Livraison</span>
+                <span>{t('delivery')}</span>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Order Items */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Articles commandés</h2>
         <div className="space-y-3">
@@ -75,14 +76,14 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
             <div className="space-y-2  pt-4 mt-4 border-t border-current/10">
               {order.subtotal && (
                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                  <span>Sous-total</span>
+                  <span>{t('sub-total')}</span>
                   <span>
                     {formatCurrency(order.subtotal, settings?.currency)}
                   </span>
                 </div>
               )}
 
-              {(order?.taxes || []).map((tax, index) => (
+              {(order?.taxes || []).map(tax => (
                 <div
                   key={tax.id}
                   className="flex justify-between text-sm text-gray-800 dark:text-gray-400"
@@ -98,7 +99,9 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
                   key={order.tip.amount}
                   className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
                 >
-                  <span>Pourboire ({order.tip.percentage}%)</span>
+                  <span>
+                    {t('tip')} ({order.tip.percentage}%)
+                  </span>
                   <span>
                     {formatCurrency(order.tip.amount, settings?.currency)}
                   </span>
@@ -106,7 +109,9 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
               )}
               {order?.delivery && (
                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                  <span>Livraison à {order.delivery.name}</span>
+                  <span>
+                    {t('delivery-to')} {order.delivery.name}
+                  </span>
                   <span>
                     {formatCurrency(
                       Number(order.delivery.price),
@@ -117,7 +122,7 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
               )}
 
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>Total</span>
+                <span>{t('total')}</span>
                 <span>{formatCurrency(order.total, settings?.currency)}</span>
               </div>
             </div>

@@ -19,6 +19,9 @@ import frHero from './locales/fr/hero.json';
 import frMenu from './locales/fr/menu.json';
 import enMenu from './locales/en/menu.json';
 
+import enOrder from './locales/en/order.json';
+import frOrder from './locales/fr/order.json';
+
 const lng = localStorage.getItem('language') || 'fr';
 
 i18n.use(initReactI18next).init({
@@ -30,6 +33,7 @@ i18n.use(initReactI18next).init({
       menu: enMenu,
       footer: enFooter,
       hero: enHero,
+      order: enOrder,
     },
     fr: {
       cart: frCart,
@@ -38,6 +42,7 @@ i18n.use(initReactI18next).init({
       menu: frMenu,
       footer: frFooter,
       hero: frHero,
+      order: frOrder,
     },
   },
   lng,
