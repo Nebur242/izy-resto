@@ -19,11 +19,12 @@ export function OrderConfirmationModal(props: IOrderConfirmationModalProps) {
   const { settings } = useSettings();
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
+  const { t } = useTranslation('ticket');
 
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
-      const pdf = await generateReceiptPDF(order, settings);
+      const pdf = await generateReceiptPDF(order, t, settings);
       pdf.save(`commande-${order.id.slice(0, 8)}.pdf`);
       toast.success('Ticket téléchargé');
     } catch (error) {
@@ -37,7 +38,7 @@ export function OrderConfirmationModal(props: IOrderConfirmationModalProps) {
   const handlePrint = async () => {
     try {
       setIsPrinting(true);
-      const pdf = await generateReceiptPDF(order, settings);
+      const pdf = await generateReceiptPDF(order, t, settings);
       pdf.autoPrint();
       window.open(pdf.output('bloburl'));
       toast.success("Ticket envoyé à l'impression");

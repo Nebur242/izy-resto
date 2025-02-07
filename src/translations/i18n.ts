@@ -22,6 +22,9 @@ import enMenu from './locales/en/menu.json';
 import enOrder from './locales/en/order.json';
 import frOrder from './locales/fr/order.json';
 
+import frTicket from './locales/fr/ticket.json';
+import enTicket from './locales/en/ticket.json';
+
 i18n.use(initReactI18next).init({
   resources: {
     en: {
@@ -32,6 +35,7 @@ i18n.use(initReactI18next).init({
       footer: enFooter,
       hero: enHero,
       order: enOrder,
+      ticket: enTicket,
     },
     fr: {
       cart: frCart,
@@ -41,6 +45,7 @@ i18n.use(initReactI18next).init({
       footer: frFooter,
       hero: frHero,
       order: frOrder,
+      ticket: frTicket,
     },
   },
   fallbackLng: 'fr',

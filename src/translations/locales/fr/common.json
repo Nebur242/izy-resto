@@ -64,5 +64,17 @@
     "sunday": "Dimanche"
   },
   "no-opening-hours": "Aucun horaire défini",
-  "opening-hours-modal-title": "Horaires d'ouverture"
+  "opening-hours-modal-title": "Horaires d'ouverture",
+  "quantity": "Qté",
+  "price": "Prix",
+  "total": "Total",
+  "the-plate": "L'Assiette",
+  "transaction": "TRANSACTION",
+  "note": "Note",
+  "amount-received": "Montant reçu",
+  "amount-due": "MONNAIE RENDUE",
+  "payment-on-site": "PAIEMENT SUR PLACE",
+  "payment-receive": "PAIEMENT REÇU",
+  "serve-by": "Vous avez été servi par",
+  "payment-on-delivery": "Paiement à la livraison"
 }

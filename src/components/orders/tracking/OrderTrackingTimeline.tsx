@@ -19,6 +19,7 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
   const { t } = useTranslation('order');
   const [isDownloading, setIsDownloading] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const { t } = useTranslation('ticket');
 
   const { settings } = useSettings();
   const { updateOrderStatus } = useOrders();
@@ -44,7 +45,8 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
   const handleDownloadReceipt = async () => {
     try {
       setIsDownloading(true);
-      const pdf = await generateUserReceipt(order, settings);
+      const pdf = await generateUserReceipt(order, t, settings);
+      console.log('pdf', pdf);
       pdf.save(`commande-${order.id.slice(0, 8)}.pdf`);
       toast.success(t('common:download-success'));
     } catch (error) {
