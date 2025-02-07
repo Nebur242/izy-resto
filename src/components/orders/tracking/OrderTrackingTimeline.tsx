@@ -9,12 +9,14 @@ import { useSettings } from '../../../hooks';
 import toast from 'react-hot-toast';
 import { Download, Clipboard } from 'lucide-react';
 import { useOrders } from '../../../context/OrderContext';
+import { useTranslation } from 'react-i18next';
 
 interface OrderTrackingTimelineProps {
   order: Order;
 }
 
 export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
+  const { t } = useTranslation('order');
   const [isDownloading, setIsDownloading] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
 
@@ -23,17 +25,17 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
 
   const handleCancelOrder = async () => {
     if (order.status !== 'pending') {
-      toast.error('Cette commande ne peut plus être annulée');
+      toast.error(t('order-can-not-be-cancel'));
       return;
     }
 
     try {
       setIsCancelling(true);
       await updateOrderStatus(order.id, 'cancelled');
-      toast.success('Commande annulée avec succès');
+      toast.success(t('order-successfully-cancelled'));
     } catch (error) {
       console.error('Error cancelling order:', error);
-      toast.error("Erreur lors de l'annulation");
+      toast.error(t('canceled-error'));
     } finally {
       setIsCancelling(false);
     }
@@ -44,10 +46,10 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
       setIsDownloading(true);
       const pdf = await generateUserReceipt(order, settings);
       pdf.save(`commande-${order.id.slice(0, 8)}.pdf`);
-      toast.success('Facture téléchargée');
+      toast.success(t('common:download-success'));
     } catch (error) {
       console.error('Error downloading receipt:', error);
-      toast.error('Erreur lors du téléchargement');
+      toast.error(t('common:download-error'));
     } finally {
       setIsDownloading(false);
     }
@@ -58,7 +60,7 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
       await navigator.clipboard.writeText(
         `${window.location.origin}/order/${order.id}`
       );
-      toast.success('Lien copié 👌');
+      toast.success(t('common:link-copied'));
     } else {
       window.open(`${window.location.origin}/order/${order.id}`, '_blank');
     }
@@ -66,7 +68,7 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-      <h2 className="text-lg font-semibold mb-4">État de la commande</h2>
+      <h2 className="text-lg font-semibold mb-4">{t('order-stat')}</h2>
 
       <div className="space-y-6">
         <OrderTimeline
@@ -84,7 +86,7 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
           >
             <OrderQRCode orderId={order.id} size={150} />
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Scannez ce code pour suivre votre commande
+              {t('scan-and-track')}
             </p>
             <Button
               variant="primary"
@@ -92,7 +94,7 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
               className="w-full mt-4"
             >
               <Clipboard className="w-4 h-4 mr-2" />
-              Cliquer pour copier
+              {t('click-to-copy')}
             </Button>
             <Button
               variant="secondary"
@@ -102,10 +104,9 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
             >
               <Download className="w-4 h-4 mr-2" />
               {isDownloading
-                ? 'Téléchargement...'
-                : 'Télécharger la confirmation de commande'}
+                ? t('downloading')
+                : t('download-order-confirmation')}
             </Button>
-            {/* Cancel Button - Only show if pending */}
             {order.status === 'pending' && (
               <Button
                 disabled={isCancelling}
@@ -113,7 +114,7 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
                 onClick={handleCancelOrder}
                 className="w-full mt-4"
               >
-                Annuler la commande
+                {t('cancel-order')}
               </Button>
             )}
           </motion.div>

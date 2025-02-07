@@ -27,8 +27,9 @@ import { getCurrencyObject } from '../../constants/defaultSettings';
 import { CinetPayPayment } from './CinetPayPayment';
 import { formatTaxRate } from '../../utils/tax';
 import { MoneyFusionPaymentButton } from './MoneyFusionPaymentButton';
+import { useTranslation } from 'react-i18next';
 
-interface OrderConfirmationProps {
+interface IOrderConfirmationProps {
   customerData: {
     name?: string;
     phone?: string;
@@ -45,13 +46,15 @@ interface OrderConfirmationProps {
   >;
 }
 
-export function OrderConfirmation({
-  customerData,
-  onConfirm,
-  onBack,
-  showPaymentMethods = false,
-  setSelectedPaymentMethod,
-}: OrderConfirmationProps) {
+export function OrderConfirmation(props: IOrderConfirmationProps) {
+  const { t } = useTranslation('order');
+  const {
+    customerData,
+    onConfirm,
+    onBack,
+    showPaymentMethods,
+    setSelectedPaymentMethod,
+  } = props;
   const { settings } = useSettings();
   const { subtotal, taxes, tip, total, cart, setTipPercentage, deliveryZone } =
     useCart();
@@ -126,62 +129,70 @@ export function OrderConfirmation({
 
     if (customerData.diningOption === 'dine-in' && !isDineInPaymentActivated) {
       return (
-        <>
+        <span className="flex align-items justify-between text-white">
           <Check className="w-4 h-4 mr-2" />
-          Confirmer la commande
-        </>
+          {t('order:confirm-order')}
+        </span>
       );
     }
 
-    if (!selectedPaymentMethod) return 'Confirmer la commande';
+    if (!selectedPaymentMethod) return t('order:confirm-order');
 
     if (
       hasPaid ||
       selectedPaymentMethod.name.toLowerCase() === 'paiement à la livraison'
     ) {
       return (
-        <>
+        <span className="flex align-items justify-between text-white">
           <Check className="w-4 h-4 mr-2" />
-          Confirmer la commande
-        </>
+          {t('order:confirm-order')}
+        </span>
       );
     }
 
-    // For Wave payment
     if (selectedPaymentMethod.name.toLowerCase() === 'wave') {
       return (
-        <>
+        <span className="flex align-items justify-between text-white">
           <ExternalLink className="w-4 h-4 mr-2" />
-          Payer avec Wave
-        </>
+          {t('order:pay-with-wave')}
+        </span>
       );
     }
 
-    // For Paytech payment
     if (selectedPaymentMethod.name.toLowerCase() === 'paytech') {
-      return <>Payer avec paytech</>;
+      return (
+        <p className="flex align-items justify-between text-white">
+          {t('pay-with-paytech')}
+        </p>
+      );
     }
 
-    // For Stripe payment
     if (selectedPaymentMethod.name.toLowerCase() === 'stripe') {
-      return <>Payer avec Stripe</>;
+      return (
+        <span className="flex align-items justify-between text-white">
+          {t('pay-with-stripe')}
+        </span>
+      );
     }
 
     if (selectedPaymentMethod.name.toLowerCase() === 'cinetpay') {
-      return <>Payer avec CinetPay</>;
-    }
-
-    // For QR code payment
-    if (selectedPaymentMethod.qrCode) {
       return (
-        <>
-          <CreditCard className="w-4 h-4 mr-2" />
-          Scanner pour payer
-        </>
+        <span className="flex align-items justify-between text-white">
+          {t('pay-with-cinetpay')}
+        </span>
       );
     }
 
-    return 'Confirmer la commande';
+    if (selectedPaymentMethod.qrCode) {
+      return (
+        <span className="flex items-center justify-between text-white">
+          <CreditCard className="w-4 h-4 mr-2" />
+          {t('order:scan-and-pay')}
+        </span>
+      );
+    }
+
+    return t('order:confirm-order');
   };
 
   return (
@@ -191,19 +202,15 @@ export function OrderConfirmation({
       exit={{ opacity: 0, y: -20 }}
       className="space-y-6"
     >
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold flex items-center gap-2">
           <ShoppingBag className="w-6 h-6 text-blue-500" />
-          Confirmation de commande
+          {t('confirm-order')}
         </h2>
       </div>
-
-      {/* Order Summary */}
       <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 space-y-4">
-        {/* Customer Info */}
         <div className="space-y-2">
-          <h3 className="font-medium">Détails Client</h3>
+          <h3 className="font-medium">{t('client-details')}</h3>
           <div className="space-y-2">
             {customerData.name && (
               <p className="text-gray-600 dark:text-gray-300">
@@ -231,10 +238,8 @@ export function OrderConfirmation({
               )}
           </div>
         </div>
-
-        {/* Order Items */}
         <div className="space-y-3">
-          <h3 className="font-medium">Articles commandés</h3>
+          <h3 className="font-medium">{t('item-ordered')}</h3>
           {cart.map((item: CartItem) => (
             <div key={item.id} className="flex justify-between items-center">
               <div>
@@ -251,11 +256,9 @@ export function OrderConfirmation({
           ))}
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>Sous-total</span>
+              <span>{`${t('cart:sub-total')}`}</span>
               <span>{formatCurrency(subtotal, settings?.currency)}</span>
             </div>
-
-            {/* Taxes */}
             {taxes.map(tax => (
               <div
                 key={tax.id}
@@ -267,12 +270,9 @@ export function OrderConfirmation({
                 <span>{formatCurrency(tax.amount, settings?.currency)}</span>
               </div>
             ))}
-
-            {/* Tips */}
             {settings?.tips.enabled && (
               <div className="pt-2 border-t dark:border-gray-700">
                 <span className="mb-2 block">{settings.tips.label}</span>
-
                 <div className="flex flex-wrap gap-2 mb-2">
                   {settings?.tips?.defaultPercentages
                     .map(Number)
@@ -296,7 +296,7 @@ export function OrderConfirmation({
                     onClick={() => setTipPercentage(null)}
                     className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                   >
-                    Aucun
+                    {t('no-tip')}
                   </button>
                 </div>
 
@@ -312,25 +312,21 @@ export function OrderConfirmation({
                 )}
               </div>
             )}
-
             {deliveryZone && (
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mt-4">
-                <span>Livraison</span>
+                <span>{t('delivery')}</span>
                 <span>
                   {formatCurrency(deliveryZone.price, settings?.currency)}
                 </span>
               </div>
             )}
-
-            {/* Total */}
             <div className="flex justify-between text-lg font-semibold border-t dark:border-gray-700 pt-2">
-              <span>Total</span>
+              <span>{t('total')}</span>
               <span className="text-blue-600 dark:text-blue-400">
                 {formatCurrency(total, settings?.currency)}
               </span>
             </div>
           </div>
-
           {selectedPaymentMethod?.instruction && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -346,15 +342,13 @@ export function OrderConfirmation({
           )}
         </div>
       </div>
-
-      {/* Payment Methods */}
       {(showPaymentMethods ||
         (customerData.diningOption === 'dine-in' &&
           settings?.paymentOnDineInActivated)) && (
         <div className="space-y-4">
           <h3 className="font-medium flex items-center gap-2">
             <CreditCard className="w-5 h-5" />
-            Mode de paiement
+            {t('payment-method')}
           </h3>
           <div className="space-y-3">
             {paymentMethods
@@ -404,8 +398,6 @@ export function OrderConfirmation({
                     }}
                     className="sr-only"
                   />
-
-                  {/* Payment Method Icon/Image */}
                   {method.qrCode ? (
                     <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
                       <img
@@ -419,13 +411,9 @@ export function OrderConfirmation({
                       <CreditCard className="w-6 h-6 text-gray-400" />
                     </div>
                   )}
-
-                  {/* Method Name */}
                   <div className="flex-1">
                     <p className="font-medium">{method.name}</p>
                   </div>
-
-                  {/* Selection Indicator */}
                   <div
                     className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
                     transition-colors duration-200 ${
@@ -447,8 +435,6 @@ export function OrderConfirmation({
                   </div>
                 </label>
               ))}
-
-            {/* Payment URL Info */}
             {(selectedPaymentMethod?.url ||
               selectedPaymentMethod?.qrCode ||
               selectedPaymentMethod?.name.toLowerCase() === 'cinetpay') &&
@@ -461,15 +447,14 @@ export function OrderConfirmation({
                 >
                   <div className="flex flex-col items-center gap-3">
                     <p className="text-center text-sm text-gray-600 dark:text-gray-300">
-                      Après avoir effectué le paiement, cliquez sur le bouton
-                      "J'ai payé" ci-dessous
+                      {t('payment-confirmation')}
                     </p>
                     <Button
                       onClick={() => setHasPaid(true)}
                       className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-colors"
                     >
                       <Check className="w-4 h-4 mr-2" />
-                      J'ai payé
+                      {t('i-have-paid')}
                     </Button>
                   </div>
                 </motion.div>
@@ -477,8 +462,6 @@ export function OrderConfirmation({
           </div>
         </div>
       )}
-
-      {/* Actions */}
       <div className="flex flex-col justify-end gap-4">
         {(!['paytech', 'stripe', 'cinetpay', 'money fusion'].includes(
           selectedPaymentMethod?.name.toLowerCase() || ''
@@ -494,13 +477,13 @@ export function OrderConfirmation({
               isConfirmingOrder
             }
             className={`
-            bg-gradient-to-r from-blue-600 to-indigo-600
+            flex items-center bg-gradient-to-r from-blue-600 to-indigo-600
             hover:from-blue-700 hover:to-indigo-700
             disabled:opacity-50 disabled:cursor-not-allowed
           `}
             spanClassName="text-white"
           >
-            {renderPaymentButton()}
+            <span className="text-white">{renderPaymentButton()}</span>
           </Button>
         )}
 
@@ -543,8 +526,6 @@ export function OrderConfirmation({
               currency={settings.currency}
             />
           )}
-
-        {/* Add MoneyFusion Payment Button */}
         {selectedPaymentMethod?.name.toLowerCase() === 'money fusion' &&
           !hasPaid &&
           settings?.currency && (
@@ -567,11 +548,9 @@ export function OrderConfirmation({
 
         <Button variant="secondary" onClick={onBack}>
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour
+          {t('common:back')}
         </Button>
       </div>
-
-      {/* QR Code Modal */}
       <AnimatePresence>
         {showQRCode && selectedPaymentMethod?.qrCode && (
           <QRCodeModal
@@ -626,8 +605,7 @@ const PayTechPaymentButton = ({
   cart,
   onConfirm,
   currency,
-}: // setHasPaid,
-{
+}: {
   paymentMethod: {
     apiKey: string;
     apiSecret: string;
@@ -637,6 +615,7 @@ const PayTechPaymentButton = ({
   currency: string;
   onConfirm: () => void;
 }) => {
+  const { t } = useTranslation('order');
   const {
     isPaying,
     paymentSucceeded,
@@ -705,7 +684,7 @@ const PayTechPaymentButton = ({
     disabled:opacity-50 disabled:cursor-not-allowed
   `}
       >
-        Payer avec PayTech
+        <span className="text-white">{t('pay-with-paytech')}</span>
       </Button>
     </>
   );

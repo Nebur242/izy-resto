@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   X,
   Utensils,
@@ -9,7 +8,7 @@ import {
   MapPin,
   CreditCard,
 } from 'lucide-react';
-import { useTranslation } from '../../i18n/useTranslation';
+import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../hooks/useSettings';
 import { useOrders } from '../../context/OrderContext';
 import { formatCurrency } from '../../utils/currency';
@@ -18,16 +17,14 @@ import { OrderTimeline } from './OrderTimeline';
 import { Button } from '../ui/Button';
 import { OrderQRCode } from './OrderQRCode';
 
-interface OrderDetailsModalProps {
+interface IOrderDetailsModalProps {
   orderId: string | null;
   onClose: () => void;
 }
 
-export function OrderDetailsModal({
-  orderId,
-  onClose,
-}: OrderDetailsModalProps) {
-  const { t } = useTranslation();
+export function OrderDetailsModal(props: IOrderDetailsModalProps) {
+  const { orderId, onClose } = props;
+  const { t } = useTranslation(['order', 'common']);
   const { settings } = useSettings();
   const { getOrderById } = useOrders();
 
@@ -43,11 +40,10 @@ export function OrderDetailsModal({
         exit={{ opacity: 0, scale: 0.95 }}
         className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-3xl overflow-hidden"
       >
-        {/* Header */}
         <div className="flex justify-between items-start p-6 border-b dark:border-gray-700">
           <div>
             <h2 className="text-2xl font-bold mb-2">
-              {t('orders.orderNumber')} {order.id.slice(0, 8)}
+              {t('order-number')} {order.id.slice(0, 8)}
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
               {formatFirestoreTimestamp(order.createdAt)}
@@ -59,7 +55,7 @@ export function OrderDetailsModal({
                 {formatCurrency(order.total, settings?.currency)}
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {order.items.length} {t('orders.items')}
+                {order.items.length} {t('order-items')}
               </p>
             </div>
             <button
@@ -70,20 +66,18 @@ export function OrderDetailsModal({
             </button>
           </div>
         </div>
-
         <div className="p-6 space-y-6">
-          {/* Order Type & Payment Method */}
           <div className="flex flex-wrap gap-3">
             <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200">
               {order.diningOption === 'dine-in' ? (
                 <>
                   <Utensils className="w-4 h-4 mr-2" />
-                  Sur Place (Table {order.tableNumber})
+                  {t('on-site')} (Table {order.tableNumber})
                 </>
               ) : (
                 <>
                   <Truck className="w-4 h-4 mr-2" />
-                  Livraison
+                  {t('delivery')}
                 </>
               )}
             </div>
@@ -94,19 +88,17 @@ export function OrderDetailsModal({
               </div>
             )}
           </div>
-
-          {/* Order Timeline */}
           <OrderTimeline
             order={order}
             status={order.status}
             createdAt={order.createdAt}
             updatedAt={order.updatedAt}
           />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Customer Details */}
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
-              <h3 className="text-lg font-semibold mb-4">Détails Client</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                {t('client-details')}
+              </h3>
               <div className="space-y-3">
                 <p className="flex items-center text-gray-600 dark:text-gray-400">
                   <Phone className="w-4 h-4 mr-2" />
@@ -126,10 +118,8 @@ export function OrderDetailsModal({
                 )}
               </div>
             </div>
-
-            {/* Order Items */}
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
-              <h3 className="text-lg font-semibold mb-4">Articles</h3>
+              <h3 className="text-lg font-semibold mb-4">{t('items')}</h3>
               <div className="space-y-3">
                 {order.items.map(item => (
                   <div
@@ -153,7 +143,7 @@ export function OrderDetailsModal({
                 ))}
                 <div className="border-t dark:border-gray-600 pt-3 mt-3">
                   <div className="flex justify-between font-bold">
-                    <span>Total</span>
+                    <span>{t('total')}</span>
                     <span>
                       {formatCurrency(order.total, settings?.currency)}
                     </span>
@@ -162,11 +152,9 @@ export function OrderDetailsModal({
               </div>
             </div>
           </div>
-
-          {/* QR Code */}
           <div className="border-t dark:border-gray-700 pt-6">
             <div className="flex flex-col items-center gap-4">
-              <h3 className="text-lg font-semibold">Suivi de commande</h3>
+              <h3 className="text-lg font-semibold">{t('order-tracking')}</h3>
               <OrderQRCode orderId={order.id} size={150} />
             </div>
           </div>
@@ -174,7 +162,7 @@ export function OrderDetailsModal({
 
         <div className="border-t dark:border-gray-700 p-6">
           <Button onClick={onClose} className="w-full">
-            Fermer
+            {t('close')}
           </Button>
         </div>
       </motion.div>

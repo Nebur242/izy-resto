@@ -141,20 +141,24 @@ export function LoadingScreen({ isLoading }: LoadingScreenProps) {
                     transition={{ duration: 0.3 }}
                     className="absolute flex items-center gap-1.5"
                   >
-                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                      {LOADING_MESSAGES[messageIndex]}
-                    </span>
-                    <motion.span
-                      animate={{ opacity: [0, 1, 0] }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        repeatType: 'loop',
-                      }}
-                      className="text-orange-500 dark:text-orange-400"
-                    >
-                      ...
-                    </motion.span>
+                    {settings?.language && (
+                      <>
+                        <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                          {LOADING_MESSAGES[messageIndex]}
+                        </span>
+                        <motion.span
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            repeatType: 'loop',
+                          }}
+                          className="text-orange-500 dark:text-orange-400"
+                        >
+                          ...
+                        </motion.span>
+                      </>
+                    )}
                   </motion.div>
                 </AnimatePresence>
               </div>

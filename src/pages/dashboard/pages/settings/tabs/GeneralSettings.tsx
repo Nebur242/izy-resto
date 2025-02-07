@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { RestaurantSettings } from '../../../../../types';
 import { SocialMediaSettings } from './SocialMediaSettings';
 import { allCurrencies } from '../../../../../constants/defaultSettings';
-import LanguageSwitcher from './LanguageSwitcher';
+// import LanguageSwitcher from './LanguageSwitcher';
 
 export function GeneralSettings() {
   const {
@@ -182,12 +182,12 @@ export function GeneralSettings() {
             </div>
           </div>
 
-          <LanguageSwitcher
+          {/* <LanguageSwitcher
             value={watch('language')}
             onLanguageChanged={language =>
               handleFieldChange('language', language)
             }
-          />
+          /> */}
         </div>
       </section>
 

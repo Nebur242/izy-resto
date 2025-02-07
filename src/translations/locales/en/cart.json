@@ -1,7 +1,8 @@
 {
   "your-cart": "Your cart",
-  "sub-total": "Sub-total",
-  "make-order": "Make order",
+  "sub-total": "SubTotal",
+  "make-order": "Place order",
   "total-cart": "Total Cart",
-  "already-in-cart": "Already in cart"
+  "already-in-cart": "Already in cart",
+  "comunal-tax": "Comunal tax"
 }

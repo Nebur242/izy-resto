@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { RestaurantSettings } from '../../types';
 import axios, { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const CinetPayPaymentModal = ({
   onClose,
@@ -62,6 +63,7 @@ export const CinetPayPayment = ({
   amount: number;
   onConfirm: () => void;
 }) => {
+  const { t } = useTranslation('common');
   const [isClosed, setIsClosed] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [url, setUrl] = useState('');
@@ -107,7 +109,6 @@ export const CinetPayPayment = ({
       setUrl(response.data.data.payment_url);
       setIsClosed(false);
     } catch (error) {
-      console.log(error);
       if (error instanceof AxiosError) {
         setError(
           error.response?.data.description || 'Une erreur est survenue...'
@@ -140,7 +141,7 @@ export const CinetPayPayment = ({
         className="w-full"
         type="submit"
       >
-        {isLoading ? 'En cours de chargement...' : 'Payer avec Cinetpay'}
+        {isLoading ? t('loading-in-progress') : t('pay-with-cinetpay')}
       </Button>
     </>
   );

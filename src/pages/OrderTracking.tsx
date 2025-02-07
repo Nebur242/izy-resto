@@ -10,8 +10,10 @@ import { OrderRating } from '../components/orders/rating/OrderRating';
 import { orderService } from '../services/orders/order.service';
 import { LoadingScreen } from '../components/ui/LoadingScreen';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 export default function OrderTracking() {
+  const { t } = useTranslation('order');
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { getOrderById, isLoading } = useOrders();
@@ -21,18 +23,15 @@ export default function OrderTracking() {
 
   const order = orderId ? getOrderById(orderId) : undefined;
 
-  console.log('order', order);
-
   const handleSubmitRating = async () => {
     if (!orderId || rating === 0) return;
 
     try {
       setIsSubmitting(true);
       await orderService.updateOrderRating(orderId, rating, feedback);
-      toast.success('Merci pour votre avis !');
+      toast.success(t('common:thank-you-for-your-opinion'));
     } catch (error: any) {
       console.error('Error submitting rating:', error);
-      // toast.error(error.message || 'Échec de l\'envoi de l\'avis');
     } finally {
       setIsSubmitting(false);
     }
@@ -45,19 +44,19 @@ export default function OrderTracking() {
   if (!order) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
-        <h1 className="text-2xl font-bold mb-4">Commande introuvable</h1>
+        <h1 className="text-2xl font-bold mb-4">{t('order-not-exist')}</h1>
         <p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
-          Cette commande n'existe plus ou a été supprimée
+          {t('this-order-no-longer-exist')}
         </p>
         <div className="flex gap-4">
           <Button onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour
+            {t('common:back')}
           </Button>
           <Link to="/">
             <Button variant="secondary">
               <Home className="w-4 h-4 mr-2" />
-              Accueil
+              {t('common:home')}
             </Button>
           </Link>
         </div>
@@ -68,25 +67,22 @@ export default function OrderTracking() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
       <div className="max-w-3xl mx-auto">
-        {/* Navigation */}
         <div className="flex justify-between items-center mb-8">
           <Link to="/">
             <Button variant="ghost">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour
+              {t('common:back')}
             </Button>
           </Link>
           <Link to="/">
             <Button variant="secondary">
               <Home className="w-4 h-4 mr-2" />
-              Accueil
+              {t('common:home')}
             </Button>
           </Link>
         </div>
-
         <div className="space-y-6">
           <div>
-            {/* Status Header */}
             <div
               className={`p-6 text-white rounded-t-2xl shadow-xl overflow-hidden ${
                 order.status === 'cancelled'
@@ -105,28 +101,24 @@ export default function OrderTracking() {
                 <div>
                   <h1 className="text-2xl font-bold mb-1">
                     {order.status === 'cancelled'
-                      ? 'Commande annulée'
-                      : 'Commande confirmée !'}
+                      ? t('order:order-cancelled')
+                      : t('order-confirmed')}
                   </h1>
                   <p className="text-white/80">
                     {order.status === 'cancelled'
-                      ? 'Cette commande a été annulée'
-                      : 'Votre commande a été enregistrée avec succès'}
+                      ? t('this-order-is-canceled')
+                      : t('order-successfully-saved')}
                   </p>
                 </div>
               </div>
             </div>
-            {/* Order Header */}
             <OrderTrackingHeader order={order} />
           </div>
 
-          {/* Order Timeline */}
           <OrderTrackingTimeline order={order} />
 
-          {/* Order Details */}
           <OrderTrackingDetails order={order} />
 
-          {/* Rating Section - Only show for delivered orders without rating */}
           {(order.status === 'delivered' || order.status === 'cancelled') &&
             !order.rating && (
               <OrderRating

@@ -17,6 +17,7 @@ interface ICartProps {
 }
 
 export function Cart(props: ICartProps) {
+  const { t } = useTranslation('cart');
   const {
     cartBgColor = 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700',
     orderBgColor = 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500',
@@ -28,7 +29,6 @@ export function Cart(props: ICartProps) {
   const { settings } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const { t } = useTranslation('cart');
 
   if (cart.length === 0) {
     return null;

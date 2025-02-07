@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCard, Wallet } from 'lucide-react';
 import { PaymentMethod } from '../../types/payment';

@@ -1,8 +1,8 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-interface OrderStatsProps {
+interface IOrderStatsProps {
   stats: {
     total: number;
     pending: number;
@@ -11,28 +11,30 @@ interface OrderStatsProps {
   };
 }
 
-export function OrderStats({ stats }: OrderStatsProps) {
+export function OrderStats(props: IOrderStatsProps) {
+  const { t } = useTranslation(['order', 'common']);
+  const { stats } = props;
   const statCards = [
     {
-      title: 'Total Commandes',
+      title: t('total-orders'),
       value: stats.total,
       icon: ShoppingBag,
       color: 'blue',
     },
     {
-      title: 'En Attente',
+      title: t('pending'),
       value: stats.pending,
       icon: Clock,
       color: 'yellow',
     },
     {
-      title: 'En Préparation',
+      title: t('in-cooking'),
       value: stats.preparing,
       icon: AlertCircle,
       color: 'purple',
     },
     {
-      title: 'Livrées',
+      title: t('delivered'),
       value: stats.delivered,
       icon: CheckCircle,
       color: 'green',

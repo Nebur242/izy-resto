@@ -3,6 +3,7 @@ import { Order } from '../../../types';
 import { useSettings } from '../../../hooks/useSettings';
 import { formatCurrency } from '../../../utils/currency';
 import { formatFirestoreTimestamp } from '../../../utils/date';
+import { useTranslation } from 'react-i18next';
 
 interface OrderCardHeaderProps {
   order: Order;
@@ -11,13 +12,14 @@ interface OrderCardHeaderProps {
 export function OrderCardHeader({ order }: OrderCardHeaderProps) {
   const { settings } = useSettings();
   const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
+  const { t } = useTranslation(['order', 'common']);
 
   return (
     <div className="flex justify-between items-start">
       <div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-2">
           <h3 className="text-lg font-semibold">
-            Commande #{order.id.slice(0, 8)}
+            {t("order")} #{order.id.slice(0, 8)}
           </h3>
 
           {order.diningOption === 'dine-in' ? (
@@ -28,7 +30,7 @@ export function OrderCardHeader({ order }: OrderCardHeaderProps) {
           ) : (
             <span className="inline-flex items-center px-3 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-sm font-medium">
               <Truck className="w-4 h-4 mr-2" />
-              Livraison
+              {t('delivery')}
             </span>
           )}
         </div>

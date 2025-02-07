@@ -94,10 +94,18 @@ export function Hero() {
               <div className="sm:flex-1">
                 <InfoCard
                   icon={MapPin}
+                  isButton
                   title={t('restaurant-address-title')}
                   description={t(
                     settings?.address || 'restaurant-default-address'
                   )}
+                  onClick={() => {
+                    settings?.address &&
+                      window.open(
+                        `https://www.google.com/maps/search/${settings?.address}`,
+                        '_blank'
+                      );
+                  }}
                 />
               </div>
               <div className="sm:flex-1">

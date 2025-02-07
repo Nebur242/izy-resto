@@ -1,9 +1,15 @@
 import { Timestamp } from 'firebase/firestore';
 import { formatDistanceToNow, format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { enUS, fr } from 'date-fns/locale';
 
-export function formatFirestoreTimestamp(timestamp: any): string {
-  if (!timestamp) return 'Date non disponible';
+type SupportedLocales = 'en' | 'fr';
+
+export function formatFirestoreTimestamp(
+  timestamp: any,
+  lang: SupportedLocales = 'fr'
+): string {
+  if (!timestamp)
+    return lang === 'fr' ? 'Date non disponible' : 'Date not available';
 
   try {
     let date: Date;
@@ -13,21 +19,27 @@ export function formatFirestoreTimestamp(timestamp: any): string {
     } else if (typeof timestamp === 'string') {
       date = new Date(timestamp);
     } else if (timestamp.seconds) {
-      // Handle raw Firestore timestamp object
+      // Cas d'un objet timestamp Firestore brut
       date = new Date(timestamp.seconds * 1000);
     } else {
       throw new Error('Invalid timestamp format');
     }
 
-    return formatDistanceToNow(date, { addSuffix: true, locale: fr });
+    const locale = lang === 'fr' ? fr : enUS;
+    return formatDistanceToNow(date, { addSuffix: true, locale });
   } catch (error) {
     console.error('Error formatting timestamp:', error);
-    return 'Date non disponible';
+    return lang === 'fr' ? 'Date non disponible' : 'Date not available';
   }
 }
 
-export function formatDate(date: any, withHours?: boolean = false): string {
-  if (!date) return 'Date non disponible';
+export function formatDate(
+  date: any,
+  withHours: boolean = false,
+  lang: SupportedLocales = 'fr'
+): string {
+  if (!date)
+    return lang === 'fr' ? 'Date non disponible' : 'Date not available';
 
   try {
     let dateObj: Date;
@@ -37,7 +49,7 @@ export function formatDate(date: any, withHours?: boolean = false): string {
     } else if (typeof date === 'string') {
       dateObj = new Date(date);
     } else if (date.seconds) {
-      // Handle raw Firestore timestamp object
+      // Cas d'un objet timestamp Firestore brut
       dateObj = new Date(date.seconds * 1000);
     } else if (date instanceof Date) {
       dateObj = date;
@@ -45,13 +57,18 @@ export function formatDate(date: any, withHours?: boolean = false): string {
       throw new Error('Invalid date format');
     }
 
-    return format(
-      dateObj,
-      withHours ? "dd MMMM yyyy 'à' HH:mm:ss" : 'dd MMMM yyyy',
-      { locale: fr }
-    );
+    const locale = lang === 'fr' ? fr : enUS;
+
+    // Format de date adapté selon la langue et l'option avec heures
+    const formatString = withHours
+      ? lang === 'fr'
+        ? "dd MMMM yyyy 'à' HH:mm:ss"
+        : "dd MMMM yyyy 'at' HH:mm:ss"
+      : 'dd MMMM yyyy';
+
+    return format(dateObj, formatString, { locale });
   } catch (error) {
     console.error('Error formatting date:', error);
-    return 'Date non disponible';
+    return lang === 'fr' ? 'Date non disponible' : 'Date not available';
   }
 }

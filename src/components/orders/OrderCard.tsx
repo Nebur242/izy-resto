@@ -9,6 +9,7 @@ import { Printer } from 'lucide-react';
 import { generateReceiptPDF } from '../../utils/pdf';
 import { useSettings } from '../../hooks';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 interface OrderCardProps {
   order: Order;
@@ -19,6 +20,7 @@ interface OrderCardProps {
 export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
   ({ order, onStatusChange, onCancel }, ref) => {
     const { settings } = useSettings();
+    const { t } = useTranslation(['order', 'common']);
 
     const canCancel = ['pending', 'preparing'].includes(order.status);
     const [isPrinting, setIsPrinting] = useState(false);
@@ -41,10 +43,10 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
         const pdf = await generateReceiptPDF(order, settings);
         pdf.autoPrint();
         window.open(pdf.output('bloburl'));
-        toast.success("Ticket envoyé à l'impression");
+        toast.success(t('invoice-in-printing'));
       } catch (error) {
         console.error('Error printing receipt:', error);
-        toast.error("Erreur lors de l'impression");
+        toast.error(t('printing-error'));
       } finally {
         setIsPrinting(false);
       }
@@ -83,8 +85,8 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
                 className="flex-1 bg-white/90 hover:bg-white text-current"
               >
                 {order.status === 'pending'
-                  ? 'Marquer en préparation'
-                  : 'Marquer comme livré'}
+                  ? t('mark-in-cooking')
+                  : t('mark-as-delivered')}
               </Button>
             )}
             {canCancel && onCancel && (
@@ -93,7 +95,7 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
                 onClick={() => onCancel(order.id)}
                 className="flex-1"
               >
-                Annuler la commande
+                {t('cancel-order')}
               </Button>
             )}
           </div>
@@ -103,7 +105,7 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
             className="bg-white/90 hover:bg-white text-current px-4 py-2 rounded w-full"
           >
             <Printer className="h-4 w-4 mr-2" />
-            {isPrinting ? 'Impression...' : 'Imprimer le ticket'}
+            {isPrinting ? t('printing') : t('print-bill')}
           </Button>
         </div>
       </motion.div>

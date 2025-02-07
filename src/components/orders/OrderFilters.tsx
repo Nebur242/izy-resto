@@ -1,33 +1,30 @@
-import React from 'react';
 import { OrderStatus } from '../../types';
 import { Button } from '../ui/Button';
 import { Calendar } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-interface OrderFiltersProps {
+interface IOrderFiltersProps {
   currentFilter: OrderStatus | 'all';
   onFilterChange: (filter: OrderStatus | 'all') => void;
   dateRange: { from?: Date; to?: Date };
   onDateRangeChange: (range: { from?: Date; to?: Date }) => void;
 }
 
-export function OrderFilters({ 
-  currentFilter, 
-  onFilterChange,
-  dateRange,
-  onDateRangeChange 
-}: OrderFiltersProps) {
+export function OrderFilters(props: IOrderFiltersProps) {
+  const { currentFilter, onFilterChange, dateRange, onDateRangeChange } = props;
+  const { t } = useTranslation(['order', 'common', 'dashboard']);
   const filters: Array<{ value: OrderStatus | 'all'; label: string }> = [
-    { value: 'all', label: 'Toutes les commandes' },
-    { value: 'pending', label: 'En Attente' },
-    { value: 'preparing', label: 'En Préparation' },
-    { value: 'delivered', label: 'Livré' },
-    { value: 'cancelled', label: 'Annulé' }
+    { value: 'all', label: t('all-orders') },
+    { value: 'pending', label: t('pending') },
+    { value: 'preparing', label: t('in-cooking') },
+    { value: 'delivered', label: t('delivered') },
+    { value: 'cancelled', label: t('canceled') },
   ];
 
   const presets = [
     { label: 'Ce Jour', days: 0 },
-    { label: '7 Derniers Jours', days: 7 },
-    { label: '30 Derniers Jours', days: 30 }
+    { label: t('last-week'), days: 7 },
+    { label: t('last-month'), days: 30 },
   ];
 
   const handleDatePreset = (days: number) => {
@@ -47,7 +44,6 @@ export function OrderFilters({
 
   return (
     <div className="space-y-4">
-      {/* Status Filters */}
       <div className="flex flex-wrap gap-2">
         {filters.map(filter => (
           <Button
@@ -60,8 +56,6 @@ export function OrderFilters({
           </Button>
         ))}
       </div>
-
-      {/* Date Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <Calendar className="w-5 h-5 text-gray-500" />
         {presets.map(preset => (
@@ -75,12 +69,8 @@ export function OrderFilters({
           </Button>
         ))}
         {(dateRange.from || dateRange.to) && (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={clearDateRange}
-          >
-            Réinitialiser le filtre
+          <Button variant="secondary" size="sm" onClick={clearDateRange}>
+            {t('reset-filter')}
           </Button>
         )}
       </div>
