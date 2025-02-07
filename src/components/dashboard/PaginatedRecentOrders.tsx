@@ -17,7 +17,7 @@ export function PaginatedRecentOrders({
   orders,
   itemsPerPage,
 }: PaginatedRecentOrdersProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('order');
   const { settings } = useSettings();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -49,7 +49,7 @@ export function PaginatedRecentOrders({
           >
             <div>
               <h4 className="font-medium text-gray-900 dark:text-white">
-                {t('orders.orderNumber')} {order.id.slice(0, 8)}
+                {t('order-number')} {order.id.slice(0, 8)}
               </h4>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {formatFirestoreTimestamp(order.createdAt)}
@@ -64,7 +64,7 @@ export function PaginatedRecentOrders({
                   statusColors[order.status]
                 }`}
               >
-                {t(`orders.status.${order.status}`)}
+                {t(`order-status-${order.status}`)}
               </span>
             </div>
           </motion.button>

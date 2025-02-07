@@ -76,5 +76,10 @@
   "error-phone-number-only-digits": "The number must contain digits only",
   "order-success-dine-in": "✨ Order placed successfully! Please wait at your table.",
   "order-success-delivery": "🚚 Order placed successfully! We will deliver shortly.",
-  "error-order-failed": "Order failed. Please try again."
+  "error-order-failed": "Order failed. Please try again.",
+  "order-status-pending": "Pending",
+  "order-status-in-cooking": "In cooking",
+  "order-status-delivered": "Delivered",
+  "order-status-canceled": "Canceled",
+  "order-confimed": "Order confirmed"
 }

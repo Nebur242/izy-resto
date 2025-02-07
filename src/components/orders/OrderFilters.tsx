@@ -12,19 +12,19 @@ interface IOrderFiltersProps {
 
 export function OrderFilters(props: IOrderFiltersProps) {
   const { currentFilter, onFilterChange, dateRange, onDateRangeChange } = props;
-  const { t } = useTranslation(['order', 'common', 'dashboard']);
+  const { t } = useTranslation('order');
   const filters: Array<{ value: OrderStatus | 'all'; label: string }> = [
-    { value: 'all', label: t('all-orders') },
-    { value: 'pending', label: t('pending') },
-    { value: 'preparing', label: t('in-cooking') },
-    { value: 'delivered', label: t('delivered') },
-    { value: 'cancelled', label: t('canceled') },
+    { value: 'all', label: t('common:all-orders') },
+    { value: 'pending', label: t('common:pending') },
+    { value: 'preparing', label: t('common:in-cooking') },
+    { value: 'delivered', label: t('common:delivered') },
+    { value: 'cancelled', label: t('common:canceled') },
   ];
 
   const presets = [
-    { label: 'Ce Jour', days: 0 },
-    { label: t('last-week'), days: 7 },
-    { label: t('last-month'), days: 30 },
+    { label: t('dashboard:this-day'), days: 0 },
+    { label: t('dashboard:last-week'), days: 7 },
+    { label: t('dashboard:last-month'), days: 30 },
   ];
 
   const handleDatePreset = (days: number) => {
@@ -70,7 +70,7 @@ export function OrderFilters(props: IOrderFiltersProps) {
         ))}
         {(dateRange.from || dateRange.to) && (
           <Button variant="secondary" size="sm" onClick={clearDateRange}>
-            {t('reset-filter')}
+            {t('common:reset-filter')}
           </Button>
         )}
       </div>

@@ -58,7 +58,7 @@ export async function generateReceiptPDF(
             settings?.name
               ? `
                 <div style="font-size: 16px; font-weight: bold; margin-bottom: 4px; ${baseStyles}">
-              ${settings?.name || t("the-plate")}
+              ${settings?.name || t('the-plate')}
           </div>
             `
               : ''
@@ -82,9 +82,13 @@ export async function generateReceiptPDF(
 
         <div style="margin-bottom: 8px; ${baseStyles}">
           <div style="${baseStyles}">${formatDate(order.createdAt)}</div>
-          <div style="${baseStyles}">${t("common:transaction")} #${order.id.slice(0, 6)}</div>
+          <div style="${baseStyles}">${t(
+      'common:transaction'
+    )} #${order.id.slice(0, 6)}</div>
           <div style="${baseStyles}">${
-      order.diningOption === 'delivery' ? t("order:delivery") : t("order:on-site")
+      order.diningOption === 'delivery'
+        ? t('order:delivery')
+        : t('order:on-site')
     }</div>
           ${
             order.tableNumber
@@ -112,12 +116,16 @@ export async function generateReceiptPDF(
           }
            ${
              order.delivery
-               ? `<div style="${baseStyles}">${t("order:delivery-to")} ${order.delivery.name}</div>`
+               ? `<div style="${baseStyles}">${t('order:delivery-to')} ${
+                   order.delivery.name
+                 }</div>`
                : ''
            }
           ${
             order.preference
-              ? `<div style="font-size: 10px; ${baseStyles}">${t("note")}: ${order.preference}</div>`
+              ? `<div style="font-size: 10px; ${baseStyles}">${t('note')}: ${
+                  order.preference
+                }</div>`
               : ''
           }
         </div>
@@ -146,7 +154,7 @@ export async function generateReceiptPDF(
         
         <div style="margin-bottom: 8px; ${baseStyles}">
           <div style="display: flex; justify-content: space-between; ${baseStyles}">
-            <div style="${baseStyles}">${t("cart:sub-total")}</div>
+            <div style="${baseStyles}">${t('cart:sub-total')}</div>
             <div style="${baseStyles}">${formatCurrency(
                order.subtotal,
                settings?.currency
@@ -180,7 +188,7 @@ export async function generateReceiptPDF(
             order.tip
               ? `
             <div style="display: flex; justify-content: space-between; ${baseStyles}">
-              <div style="${baseStyles}">${t("order:tip")} ${
+              <div style="${baseStyles}">${t('order:tip')} ${
                   order.tip.percentage ? ` (${order.tip.percentage}%)` : ''
                 }</div>
               <div style="${baseStyles}">${formatCurrency(
@@ -197,7 +205,7 @@ export async function generateReceiptPDF(
               order.delivery
                 ? `
             <div style="display: flex; justify-content: space-between; ${baseStyles}">
-              <div style="${baseStyles}">${t("order:delivery")}</div>
+              <div style="${baseStyles}">${t('order:delivery')}</div>
               <div style="${baseStyles}">${formatCurrency(
                     Number(order.delivery.price),
                     settings?.currency
@@ -208,7 +216,7 @@ export async function generateReceiptPDF(
             }
 
           <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
-            <div style="${baseStyles}">{t("common:total")}</div>
+            <div style="${baseStyles}">${t("common:total")}</div>
             <div style="${baseStyles}">${formatCurrency(
       order.total,
       settings?.currency
@@ -219,7 +227,7 @@ export async function generateReceiptPDF(
               ? `
             
               <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
-            <div style="${baseStyles}">${t("common:amount-received")}</div>
+            <div style="${baseStyles}">${t('common:amount-received')}</div>
             <div style="${baseStyles}">${formatCurrency(
                   order.amountPaid,
                   settings?.currency
@@ -232,7 +240,7 @@ export async function generateReceiptPDF(
           ${
             order.change && order.change > 0
               ? `   <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
-            <div style="${baseStyles}">${t("amount-due")}</div>
+            <div style="${baseStyles}">${t('amount-due')}</div>
             <div style="${baseStyles}">${formatCurrency(
                   order.change,
                   settings?.currency
@@ -244,17 +252,21 @@ export async function generateReceiptPDF(
 
         <div style="margin-bottom: 8px; ${baseStyles}">
           <div style="${baseStyles}">${
-      order.paymentMethod?.name || t("common:payment-on-site")
+      order.paymentMethod?.name || t('common:payment-on-site')
     }</div>
   
         </div>
 
         <div style="text-align: center; margin: 12px 0; ${baseStyles}">
-          <div style="margin-bottom: 8px; ${baseStyles}">${t("comon:payment-receive")}</div>
+          <div style="margin-bottom: 8px; ${baseStyles}">${t(
+      'common:payment-receive'
+    )}</div>
           <img src="${qrCodeUrl}" width="120" style="margin: 0 auto; display: block;" />
               ${
                 order.servedBy
-                  ? `<div style="${baseStyles}">${t("common:serve-by")} ${order.servedBy}</div>`
+                  ? `<div style="${baseStyles}">${t('common:serve-by')} ${
+                      order.servedBy
+                    }</div>`
                   : ''
               }
         </div>
@@ -344,7 +356,7 @@ export async function generateUserReceipt(
 
         <div style="text-align: center; margin-bottom: 15px;">
           <p style="color: #000000; font-size: 14px; margin: 0 0 4px 0;">
-          ${t('order-summary')} #${order.id.slice(0, 8)}
+          ${t('ticket:order-summary')} #${order.id.slice(0, 8)}
           </p>
           <p style="color: #000000; font-size: 13px; margin: 0;">${formatDate(
             order.createdAt,
@@ -369,9 +381,9 @@ export async function generateUserReceipt(
           }
               ${
                 order.delivery
-                  ? `
-            <p style="color: #000000; margin: 0; font-size: 13px;">#{t("order:delivery-to)} ${order.delivery.name}</p>
-          `
+                  ? `<p style="color: #000000; margin: 0; font-size: 13px;">${t(
+                      'order:delivery-to'
+                    )} #${order.delivery.name}</p>`
                   : ''
               }
         </div>
@@ -422,7 +434,7 @@ export async function generateUserReceipt(
         <div style="margin-top: 10px;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
             <span style="color: #000000; font-size: 13px;">${t(
-              'common:sub-total'
+              'cart:sub-total'
             )}</span>
             <span style="color: #000000; font-size: 13px;">${formatCurrency(
               order.subtotal,
@@ -490,7 +502,7 @@ export async function generateUserReceipt(
 
         <div style="text-align: center; padding-top: 12px; margin-top: 15px; border-top: 1px solid #eee;">
           <p style="color: #000000; font-size: 13px; margin: 0 0 8px 0;">${t(
-            'receipt-notice'
+            'ticket:receipt-notice'
           )}</p>
           ${
             settings?.address

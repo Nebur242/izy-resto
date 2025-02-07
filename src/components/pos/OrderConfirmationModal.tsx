@@ -19,7 +19,6 @@ export function OrderConfirmationModal(props: IOrderConfirmationModalProps) {
   const { settings } = useSettings();
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
-  const { t } = useTranslation('ticket');
 
   const handleDownload = async () => {
     try {

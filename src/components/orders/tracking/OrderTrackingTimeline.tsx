@@ -19,7 +19,6 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
   const { t } = useTranslation('order');
   const [isDownloading, setIsDownloading] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
-  const { t } = useTranslation('ticket');
 
   const { settings } = useSettings();
   const { updateOrderStatus } = useOrders();

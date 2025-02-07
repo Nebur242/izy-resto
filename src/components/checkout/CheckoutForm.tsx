@@ -34,7 +34,7 @@ type DiningOption = 'dine-in' | 'delivery';
 type CheckoutStep = 'form' | 'confirmation';
 
 export function CheckoutForm(props: ICheckoutFormProps) {
-  const { t } = useTranslation(['order', 'common']);
+  const { t } = useTranslation('order');
   const {
     onCancel,
     onSuccess,
