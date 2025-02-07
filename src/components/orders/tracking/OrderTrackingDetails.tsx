@@ -11,12 +11,12 @@ interface OrderTrackingDetailsProps {
 
 export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
   const { settings } = useSettings();
-  const { t } = useTranslation(['order', 'common']);
+  const { t } = useTranslation('order');
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">Détails client</h2>
+        <h2 className="text-lg font-semibold mb-4">{t('client-details')}</h2>
         <div className="space-y-3">
           {order.customerPhone && (
             <p className="flex items-center text-gray-600 dark:text-gray-400">
@@ -56,7 +56,7 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">Articles commandés</h2>
+        <h2 className="text-lg font-semibold mb-4">{t('item-ordered')}</h2>
         <div className="space-y-3">
           {order.items.map(item => (
             <div key={item.id} className="flex justify-between items-center">
@@ -76,7 +76,7 @@ export function OrderTrackingDetails({ order }: OrderTrackingDetailsProps) {
             <div className="space-y-2  pt-4 mt-4 border-t border-current/10">
               {order.subtotal && (
                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                  <span>{t('sub-total')}</span>
+                  <span>{t('cart:sub-total')}</span>
                   <span>
                     {formatCurrency(order.subtotal, settings?.currency)}
                   </span>

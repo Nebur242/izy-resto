@@ -37,7 +37,7 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
         <div className="border-t border-current/10 pt-4">
           <h4 className="font-medium mb-2 flex items-center gap-2">
             <CreditCard className="w-4 h-4" />
-            {t('payment-mode')}
+            {t('payment-method')}
           </h4>
           <div className="text-sm opacity-75">
             <p>{order.paymentMethod.name}</p>
@@ -62,7 +62,7 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
           <div className="space-y-2  pt-4 mt-4 border-t border-current/10">
             {order.subtotal && (
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>{t('sub-total')}</span>
+                <span>{t('common:sub-total')}</span>
                 <span>
                   {formatCurrency(order.subtotal, settings?.currency)}
                 </span>

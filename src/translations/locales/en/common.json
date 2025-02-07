@@ -1,5 +1,6 @@
 {
   "add": "Add",
+  "home": "Home",
   "back": "Back",
   "cancel": "Cancel",
   "close": "Close",
@@ -16,6 +17,8 @@
   "next": "Next",
   "opening-hours": "Opening Hours",
   "previous": "Previous",
+  "canceled-error": "Error while cancelling",
+  "items": "Items",
   "save": "Save",
   "share": "Share",
   "schedules-not-defined": "Schedules not defined",
@@ -36,5 +39,15 @@
   "setting-the-table": "Setting the table",
   "heating-the-stoves": "Heating the stoves",
   "chef-is-coming": "Chef is coming",
-  "final-touches": "Final touches"
+  "final-touches": "Final touches",
+  "loading-in-progress": "Loading in progress...",
+  "pay-with-cinetpay": "Pay with Cinetpay",
+  "thank-you-for-your-opinion": "Thank you for your opinion!",
+  "download-success": "Download success",
+  "link-copied": "Link copied 👌",
+  "back-to-home": "Back to home",
+  "click-and-copy-link": "Click to copy the order tracking link",
+  "show-qr-code": "Show QR Code",
+  "hide-qr-code": "Hide QR Code",
+  "canceled": "Canceled"
 }

@@ -17,15 +17,13 @@ import { OrderTimeline } from './OrderTimeline';
 import { Button } from '../ui/Button';
 import { OrderQRCode } from './OrderQRCode';
 
-interface OrderDetailsModalProps {
+interface IOrderDetailsModalProps {
   orderId: string | null;
   onClose: () => void;
 }
 
-export function OrderDetailsModal({
-  orderId,
-  onClose,
-}: OrderDetailsModalProps) {
+export function OrderDetailsModal(props: IOrderDetailsModalProps) {
+  const { orderId, onClose } = props;
   const { t } = useTranslation(['order', 'common']);
   const { settings } = useSettings();
   const { getOrderById } = useOrders();

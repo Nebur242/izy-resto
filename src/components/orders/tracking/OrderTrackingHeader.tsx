@@ -11,7 +11,9 @@ interface OrderTrackingHeaderProps {
 
 export function OrderTrackingHeader({ order }: OrderTrackingHeaderProps) {
   const { settings } = useSettings();
-  const { t } = useTranslation(['order', 'common']);
+  const { t, i18n } = useTranslation('order');
+
+  const lang: 'fr' | 'en' = i18n.language.startsWith('fr') ? 'fr' : 'en';
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-b-xl p-6 shadow-sm">
@@ -21,7 +23,7 @@ export function OrderTrackingHeader({ order }: OrderTrackingHeaderProps) {
             {t('order')} #{order.id.slice(0, 8)}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            {formatFirestoreTimestamp(order.createdAt)}
+            {formatFirestoreTimestamp(order.createdAt, lang)}
           </p>
         </div>
         <div className="text-right">
@@ -29,7 +31,7 @@ export function OrderTrackingHeader({ order }: OrderTrackingHeaderProps) {
             {formatCurrency(order.total, settings?.currency)}
           </p>
           <p className="text-gray-600 dark:text-gray-400">
-            {order.items.length} articles
+            {order.items.length} {t('common:items')}
           </p>
         </div>
       </div>

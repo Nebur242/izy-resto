@@ -12,15 +12,16 @@ interface IOrderTimelineProps {
 
 export function OrderTimeline(props: IOrderTimelineProps) {
   const { status, createdAt, updatedAt, order } = props;
-  const { t } = useTranslation(['order', 'common']);
+  const { t, i18n } = useTranslation('order');
   const statuses: OrderStatus[] = ['pending', 'preparing', 'delivered'];
   const currentIndex = statuses.indexOf(status);
+  const lang: 'fr' | 'en' = i18n.language.startsWith('fr') ? 'fr' : 'en';
 
   const statusLabels: { [key in OrderStatus]: string } = {
-    pending: t('pending'),
+    pending: t('common:pending'),
     preparing: t('in-cooking'),
-    delivered: t('delivery'),
-    cancelled: t('canceled'),
+    delivered: t('common:delivery'),
+    cancelled: t('common:canceled'),
   };
 
   const getStatusLabel = (
@@ -59,12 +60,12 @@ export function OrderTimeline(props: IOrderTimelineProps) {
                 </span>
                 {index === 0 && (
                   <span className="text-xs text-gray-500 mt-1">
-                    {formatFirestoreTimestamp(createdAt)}
+                    {formatFirestoreTimestamp(createdAt, lang)}
                   </span>
                 )}
                 {isActive && index > 0 && (
                   <span className="text-xs text-gray-500 mt-1">
-                    {formatFirestoreTimestamp(updatedAt)}
+                    {formatFirestoreTimestamp(updatedAt, lang)}
                   </span>
                 )}
               </div>

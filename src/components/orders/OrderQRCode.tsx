@@ -61,7 +61,7 @@ export function OrderQRCode(props: IOrderQRCodeProps) {
     >
       <img
         src={qrUrl}
-        alt={t('scan-qr-code-to-track')}
+        alt={`${t('scan-qr-code-to-track')}`}
         className="w-full h-full"
       />
       <p className="text-xs text-center mt-2 text-gray-500">

@@ -12,6 +12,7 @@ import { useSettings } from '../../hooks';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DeliveryZoneSelect } from './DeliveryZoneSelect';
 import { formatCurrency } from '../../utils/currency';
+import { useTranslation } from 'react-i18next';
 
 interface CheckoutFormData {
   name?: string;
@@ -33,6 +34,7 @@ type DiningOption = 'dine-in' | 'delivery';
 type CheckoutStep = 'form' | 'confirmation';
 
 export function CheckoutForm(props: ICheckoutFormProps) {
+  const { t } = useTranslation(['order', 'common']);
   const {
     onCancel,
     onSuccess,
@@ -212,7 +214,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
                   : 'text-gray-500 dark:text-gray-400'
               }`}
             />
-            <span className="font-medium text-sm">Livraison</span>
+            <span className="font-medium text-sm">{t('delivery')}</span>
           </button>
         )}
 
@@ -240,7 +242,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
                   : 'text-gray-500 dark:text-gray-400'
               }`}
             />
-            <span className="font-medium text-sm">Sur place</span>
+            <span className="font-medium text-sm">{t('on-site')}</span>
           </button>
         )}
       </div>
@@ -249,18 +251,19 @@ export function CheckoutForm(props: ICheckoutFormProps) {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Nom (Optionnel)
+              {t('order-customer-name')}
             </label>
             <input
               type="text"
               {...register('name')}
               className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow"
-              placeholder="Votre nom"
+              placeholder={t('order-customer-placeholder')}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Téléphone {diningOption === 'dine-in' ? '(Optionnel)' : '*'}
+              {t('order-customer-phone')}{' '}
+              {diningOption === 'dine-in' ? '(Optionnel)' : '*'}
             </label>
             <div className="relative">
               <input
@@ -268,14 +271,14 @@ export function CheckoutForm(props: ICheckoutFormProps) {
                 {...register('phone', {
                   required:
                     diningOption === 'delivery'
-                      ? 'Le numéro de téléphone est requis'
+                      ? t('order-customer-phone-required')
                       : false,
                   validate: validatePhone,
                 })}
                 className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow pr-10
                  ${errors.phone ? 'border-red-500 dark:border-red-500' : ''}
                `}
-                placeholder="Numéro de téléphone"
+                placeholder={t('order-customer-phone-placeholder')}
               />
               {errors.phone && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500">
@@ -292,12 +295,12 @@ export function CheckoutForm(props: ICheckoutFormProps) {
           {diningOption === 'dine-in' ? (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Numéro de table
+                {t('table-number')}
               </label>
               <input
                 type="text"
                 {...register('tableNumber', {
-                  required: 'Le numéro de table est requis',
+                  required: t('table-number-required'),
                 })}
                 className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow
                  ${
@@ -326,7 +329,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
                   {deliveryZone && (
                     <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mb-2">
                       <p className="text-sm text-blue-600 dark:text-blue-400 flex justify-between">
-                        <span>Frais de livraison:</span>
+                        <span>{t("delivery-fees")}</span>
                         <span className="font-medium">
                           {formatCurrency(
                             deliveryZone.price,
@@ -340,17 +343,17 @@ export function CheckoutForm(props: ICheckoutFormProps) {
               )}
 
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Adresse de livraison *
+                {t('delivery-address')} *
               </label>
               <textarea
                 {...register('address', {
-                  required: "L'adresse de livraison est requise",
+                  required: t('customer-delivery-addres-required'),
                 })}
                 rows={3}
                 className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow resize-none
                  ${errors.address ? 'border-red-500 dark:border-red-500' : ''}
                `}
-                placeholder="Votre adresse complète"
+                placeholder={t('customer-delivery-addres-placeholder')}
               />
               {errors.address && (
                 <p className="mt-1 text-sm text-red-500 dark:text-red-400">
@@ -363,13 +366,13 @@ export function CheckoutForm(props: ICheckoutFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Vos indications pour le restaurant (Optionnel)
+            {t('restaurant-indication')}
           </label>
           <textarea
             {...register('preference')}
             rows={3}
             className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow resize-none `}
-            placeholder="Indiquer nous ici vos préférences (exemple: pas de piment...), n'hésiter pas de marquer si vous avez des allergies ou autre chose..."
+            placeholder={t('customer-indication-placeholder')}
           />
         </div>
 
@@ -400,7 +403,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
             onClick={onCancel}
             className="px-4"
           >
-            Retour
+            {t('common:back')}
           </Button>
           <Button
             disabled={
@@ -412,7 +415,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
             spanClassName="text-white"
             className={`${nextButtonStyle}`}
           >
-            Suivant
+            {t('common:next')}
           </Button>
         </div>
       </form>

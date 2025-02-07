@@ -13,7 +13,7 @@ interface OrderReceiptDetailsProps {
 export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
   const { settings } = useSettings();
 
-  const { t } = useTranslation(['order', 'common']);
+  const { t } = useTranslation('order');
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 sm:p-8">
@@ -90,7 +90,7 @@ export function OrderReceiptDetails({ order }: OrderReceiptDetailsProps) {
           <div className="space-y-2  pt-4 border-t border-gray-200 dark:border-gray-700">
             {order.subtotal && (
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>{t('sub-total')}</span>
+                <span>{t('cart:sub-total')}</span>
                 <span>
                   {formatCurrency(order.subtotal, settings?.currency)}
                 </span>

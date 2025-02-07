@@ -16,7 +16,7 @@ interface OrderTrackingTimelineProps {
 }
 
 export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
-  const { t } = useTranslation(['order', 'common']);
+  const { t } = useTranslation('order');
   const [isDownloading, setIsDownloading] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
 
@@ -46,10 +46,10 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
       setIsDownloading(true);
       const pdf = await generateUserReceipt(order, settings);
       pdf.save(`commande-${order.id.slice(0, 8)}.pdf`);
-      toast.success(t('download-success'));
+      toast.success(t('common:download-success'));
     } catch (error) {
       console.error('Error downloading receipt:', error);
-      toast.error(t('download-error'));
+      toast.error(t('common:download-error'));
     } finally {
       setIsDownloading(false);
     }
@@ -60,7 +60,7 @@ export function OrderTrackingTimeline({ order }: OrderTrackingTimelineProps) {
       await navigator.clipboard.writeText(
         `${window.location.origin}/order/${order.id}`
       );
-      toast.success(t('link-copied'));
+      toast.success(t('common:link-copied'));
     } else {
       window.open(`${window.location.origin}/order/${order.id}`, '_blank');
     }
