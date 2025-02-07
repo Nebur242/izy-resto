@@ -83,15 +83,15 @@ export function CheckoutForm(props: ICheckoutFormProps) {
     const cleanedNumber = value.replace(/[^\d+]/g, '');
 
     if (cleanedNumber.replace('+', '').length < 8) {
-      return 'Le numéro doit contenir au moins 8 chiffres';
+      return t('error-phone-number-length');
     }
 
     if (cleanedNumber.startsWith('+')) {
       if (!/^\+\d{8,}$/.test(cleanedNumber)) {
-        return 'Format international invalide (+XXX...)';
+        return t('error-phone-number-format');
       }
     } else if (!/^\d{8,}$/.test(cleanedNumber)) {
-      return 'Le numéro doit contenir uniquement des chiffres';
+      return t('error-phone-number-only-digits');
     }
 
     return true;
@@ -132,8 +132,8 @@ export function CheckoutForm(props: ICheckoutFormProps) {
 
       toast.success(
         diningOption === 'dine-in'
-          ? '✨ Commande passée avec succès! Veuillez patienter à votre table.'
-          : '🚚 Commande passée avec succès! Nous vous livrerons sous peu.'
+          ? t('order-success-dine-in')
+          : t('order-success-delivery')
       );
 
       clearCart();
@@ -145,7 +145,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
       if (error?.code?.includes('rate-limit')) {
         setRateLimitError(error?.message || 'Rate limit atteint...');
       }
-      toast.error('Échec de la commande. Veuillez réessayer.');
+      toast.error(t('error-order-failed'));
       setStep('form');
     }
   };
@@ -329,7 +329,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
                   {deliveryZone && (
                     <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mb-2">
                       <p className="text-sm text-blue-600 dark:text-blue-400 flex justify-between">
-                        <span>{t("delivery-fees")}</span>
+                        <span>{t('delivery-fees')}</span>
                         <span className="font-medium">
                           {formatCurrency(
                             deliveryZone.price,

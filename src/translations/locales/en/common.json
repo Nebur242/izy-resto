@@ -49,5 +49,16 @@
   "click-and-copy-link": "Click to copy the order tracking link",
   "show-qr-code": "Show QR Code",
   "hide-qr-code": "Hide QR Code",
-  "canceled": "Canceled"
+  "canceled": "Canceled",
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "no-opening-hours": "Aucun horaire défini",
+  "opening-hours-modal-title": "Opening hours"
 }

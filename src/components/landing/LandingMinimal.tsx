@@ -27,7 +27,7 @@ export function LandingMinimal() {
             <HeaderWrapper />
             <main className="bg-white dark:bg-gray-900 transition-colors">
               <Container>
-                <section id="menu" className="py-16">
+                <section id="menu" className="py-32">
                   <MinimalMenuSection />
                 </section>
               </Container>

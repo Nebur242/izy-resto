@@ -70,5 +70,11 @@
   "this-order-is-canceled": "This order has been cancelled",
   "order-successfully-saved": "Your order has been successfully saved",
   "scan-qr-code-to-track": "Scan the QR code to track your order",
-  "click-to-copy": "Click to copy"
+  "click-to-copy": "Click to copy",
+  "error-phone-number-length": "The number must contain at least 8 digits",
+  "error-phone-number-format": "Format international invalide (+XXX...)",
+  "error-phone-number-only-digits": "The number must contain digits only",
+  "order-success-dine-in": "✨ Order placed successfully! Please wait at your table.",
+  "order-success-delivery": "🚚 Order placed successfully! We will deliver shortly.",
+  "error-order-failed": "Order failed. Please try again."
 }

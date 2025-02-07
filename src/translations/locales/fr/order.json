@@ -68,5 +68,11 @@
   "order-canceled": "Commande annulée",
   "this-order-is-canceled": "Cette commande a été annulée",
   "order-successfully-saved": "Votre commande a été enregistrée avec succès",
-  "scan-qr-code-to-track": "Scannez le QR Code pour suivre votre commande"
+  "scan-qr-code-to-track": "Scannez le QR Code pour suivre votre commande",
+  "error-phone-number-length": "Le numéro doit contenir au moins 8 chiffres",
+  "error-phone-number-format": "Format international invalide (+XXX...)",
+  "error-phone-number-only-digits": "Le numéro doit contenir uniquement des chiffres",
+  "order-success-dine-in": "✨ Order placed successfully! Please wait at your table.",
+  "order-success-delivery": "🚚 Order placed successfully! We will deliver shortly.",
+  "error-order-failed": "Échec de la commande. Veuillez réessayer."
 }

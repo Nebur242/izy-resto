@@ -53,5 +53,16 @@
   "back-to-home": "Retour à l'accueil",
   "click-and-copy-link": "Cliquer pour copier le lien de suivi de la commande",
   "show-qr-code": "Afficher le QR Code",
-  "hide-qr-code": "Masquer le QR Code"
+  "hide-qr-code": "Masquer le QR Code",
+  "days": {
+    "monday": "Lundi",
+    "tuesday": "Mardi",
+    "wednesday": "Mercredi",
+    "thursday": "Jeudi",
+    "friday": "Vendredi",
+    "saturday": "Samedi",
+    "sunday": "Dimanche"
+  },
+  "no-opening-hours": "Aucun horaire défini",
+  "opening-hours-modal-title": "Horaires d'ouverture"
 }

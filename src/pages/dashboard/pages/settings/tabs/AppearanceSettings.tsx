@@ -286,9 +286,12 @@ export function AppearanceSettings() {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Version actuelle: {packageJson.version || 'Chargement...'}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Nouvelle version: {version?.value}
-            </p>
+            {version?.value && (
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Nouvelle version: {version?.value}
+              </p>
+            )}
+
             {cooldownTime > 0 && (
               <p className="text-sm text-amber-600 dark:text-amber-400">
                 Déploiement en cours, rafraichissez votre site dans exactement:{' '}
