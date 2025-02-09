@@ -1,12 +1,11 @@
 import { Timestamp } from 'firebase/firestore';
 import { formatDistanceToNow, format } from 'date-fns';
 import { enUS, fr } from 'date-fns/locale';
-
-type SupportedLocales = 'en' | 'fr';
+import { Language } from '../types';
 
 export function formatFirestoreTimestamp(
   timestamp: any,
-  lang: SupportedLocales = 'fr'
+  lang: Language = 'fr'
 ): string {
   if (!timestamp)
     return lang === 'fr' ? 'Date non disponible' : 'Date not available';

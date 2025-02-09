@@ -79,5 +79,15 @@
   "order-status-in-cooking": "En préparation",
   "order-status-delivered": "Livré",
   "order-status-canceled": "Annulé",
-  "order-confimed": "Commande confirmée"
+  "order-confimed": "Commande confirmée",
+  "amount-due": "Montant dû",
+  "payment-method-names": {
+    "Paiement à la livraison": "Paiement à la livraison",
+    "CinetPay": "Payer avec CinetPay",
+    "PayTech": "Payer avec PayTech",
+    "Stripe": "Payer avec Stripe",
+    "Wave": "Payer avec Wave",
+    "Money Fusion": "Payer avec Money Fusion",
+    "Paiement à la caisse": "Paiement à la caisse"
+  }
 }

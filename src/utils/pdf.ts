@@ -1,4 +1,4 @@
-import { Order, RestaurantSettings } from '../types';
+import { Currency, Order, RestaurantSettings } from '../types';
 import { formatCurrency } from './currency';
 import { formatDate } from './date';
 import html2canvas from 'html2canvas';
@@ -6,10 +6,63 @@ import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
 import { formatTaxRate } from './tax';
 
+type Translations = {
+  restaurantName: string;
+  transactionLabel: string;
+  deliveryLabel: string;
+  onSiteLabel: string;
+  noteLabel: string;
+  subtotalLabel: string;
+  tipLabel: string;
+  totalLabel: string;
+  amountReceivedLabel: string;
+  amountDueLabel: string;
+  paymentOnSiteLabel: string;
+  paymentReceiveLabel: string;
+  paymentMethodName: string;
+  servedByLabel: string;
+};
+
+type Settings = {
+  logo?: string;
+  logoWidth?: number;
+  name?: string;
+  address?: string;
+  currency?: Currency;
+};
+
+export const getPdfSettings = (settings: Settings | null) => {
+  return {
+    logo: settings?.logo,
+    logoWidth: settings?.logoWidth,
+    name: settings?.name,
+    address: settings?.address,
+    currency: settings?.currency,
+  };
+};
+
+export const getPdfTranslationValues = (t: (key: string) => string) => {
+  return {
+    restaurantName: t('the-plate'),
+    transactionLabel: t('common:transaction'),
+    deliveryLabel: t('order:delivery'),
+    onSiteLabel: t('order:on-site'),
+    noteLabel: t('note'),
+    subtotalLabel: t('cart:sub-total'),
+    tipLabel: t('order:tip'),
+    totalLabel: t('common:total'),
+    amountReceivedLabel: t('common:amount-received'),
+    amountDueLabel: t('amount-due'),
+    paymentOnSiteLabel: t('common:payment-on-site'),
+    paymentReceiveLabel: t('common:payment-receive'),
+    servedByLabel: t('common:serve-by'),
+  };
+};
+
 export async function generateReceiptPDF(
   order: Order,
-  t: (key: string) => string,
-  settings?: any
+  translations: Translations,
+  settings?: Settings
 ): Promise<jsPDF> {
   try {
     const receiptDiv = document.createElement('div');
@@ -22,7 +75,7 @@ export async function generateReceiptPDF(
     receiptDiv.style.fontSize = '11px';
     receiptDiv.style.lineHeight = '1.3';
     receiptDiv.style.color = 'rgb(0, 0, 0)';
-    receiptDiv.style.webkitPrintColorAdjust = 'exact';
+    receiptDiv.style.printColorAdjust = 'exact';
     receiptDiv.style.printColorAdjust = 'exact';
 
     const qrCodeUrl = await QRCode.toDataURL(
@@ -57,38 +110,34 @@ export async function generateReceiptPDF(
           ${
             settings?.name
               ? `
-                <div style="font-size: 16px; font-weight: bold; margin-bottom: 4px; ${baseStyles}">
-              ${settings?.name || t('the-plate')}
-          </div>
+            <div style="font-size: 16px; font-weight: bold; margin-bottom: 4px; ${baseStyles}">
+              ${settings?.name || translations.restaurantName}
+            </div>
             `
               : ''
           }
-
           ${
             settings?.address
               ? `
-              <div style="margin-bottom: 2px; ${baseStyles}">
-                ${settings?.address || '3000, rue de Mary'}
-              </div>
+            <div style="margin-bottom: 2px; ${baseStyles}">
+              ${settings?.address || '3000, rue de Mary'}
+            </div>
             `
               : ''
           }
-        
-        
-
         </div>
 
         <div style="border-bottom: 1px dashed rgb(0, 0, 0); margin: 8px 0;"></div>
 
         <div style="margin-bottom: 8px; ${baseStyles}">
           <div style="${baseStyles}">${formatDate(order.createdAt)}</div>
-          <div style="${baseStyles}">${t(
-      'common:transaction'
-    )} #${order.id.slice(0, 6)}</div>
+          <div style="${baseStyles}">${
+      translations.transactionLabel
+    } #${order.id.slice(0, 6)}</div>
           <div style="${baseStyles}">${
       order.diningOption === 'delivery'
-        ? t('order:delivery')
-        : t('order:on-site')
+        ? translations.deliveryLabel
+        : translations.onSiteLabel
     }</div>
           ${
             order.tableNumber
@@ -114,18 +163,14 @@ export async function generateReceiptPDF(
               ? `<div style="${baseStyles}">${order.customerAddress}</div>`
               : ''
           }
-           ${
-             order.delivery
-               ? `<div style="${baseStyles}">${t('order:delivery-to')} ${
-                   order.delivery.name
-                 }</div>`
-               : ''
-           }
+          ${
+            order.delivery
+              ? `<div style="${baseStyles}">${translations.deliveryLabel} ${order.delivery.name}</div>`
+              : ''
+          }
           ${
             order.preference
-              ? `<div style="font-size: 10px; ${baseStyles}">${t('note')}: ${
-                  order.preference
-                }</div>`
+              ? `<div style="font-size: 10px; ${baseStyles}">${translations.noteLabel}: ${order.preference}</div>`
               : ''
           }
         </div>
@@ -134,141 +179,135 @@ export async function generateReceiptPDF(
           ${order.items
             .map(
               item => `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 2px; ${baseStyles}">
-              <div style="${baseStyles}">${item.quantity} ${item.name}</div>
-              <div style="${baseStyles}">${formatCurrency(
+              <div style="display: flex; justify-content: space-between; margin-bottom: 2px; ${baseStyles}">
+                <div style="${baseStyles}">${item.quantity} ${item.name}</div>
+                <div style="${baseStyles}">${formatCurrency(
                 item.price * item.quantity,
                 settings?.currency
               )}</div>
-            </div>
-          `
+              </div>
+            `
             )
             .join('')}
         </div>
 
         <div style="border-bottom: 1px dashed rgb(0, 0, 0); margin: 8px 0;"></div>
 
-       ${
-         order.subtotal > 0
-           ? `
-        
-        <div style="margin-bottom: 8px; ${baseStyles}">
-          <div style="display: flex; justify-content: space-between; ${baseStyles}">
-            <div style="${baseStyles}">${t('cart:sub-total')}</div>
-            <div style="${baseStyles}">${formatCurrency(
-               order.subtotal,
-               settings?.currency
-             )}</div>
-          </div>
-        `
-           : ''
-       } 
-
-          ${
-            order.taxes?.length > 0
-              ? order.taxes
-                  ?.map(
-                    tax => `
+        ${
+          order.subtotal > 0
+            ? `
+          <div style="margin-bottom: 8px; ${baseStyles}">
             <div style="display: flex; justify-content: space-between; ${baseStyles}">
-              <div style="${baseStyles}">${tax.name} (${Number(
-                      tax.rate
-                    ).toFixed(3)}%)</div>
+              <div style="${baseStyles}">${translations.subtotalLabel}</div>
               <div style="${baseStyles}">${formatCurrency(
-                      tax.amount,
-                      settings?.currency
-                    )}</div>
+                order.subtotal,
+                settings?.currency
+              )}</div>
             </div>
           `
-                  )
-                  .join('')
-              : ''
-          }
+            : ''
+        }
 
-          ${
-            order.tip
-              ? `
-            <div style="display: flex; justify-content: space-between; ${baseStyles}">
-              <div style="${baseStyles}">${t('order:tip')} ${
-                  order.tip.percentage ? ` (${order.tip.percentage}%)` : ''
-                }</div>
-              <div style="${baseStyles}">${formatCurrency(
-                  order.tip.amount,
-                  settings?.currency
-                )}</div>
-            </div>
-          `
-              : ''
-          }
-
-
-            ${
-              order.delivery
-                ? `
-            <div style="display: flex; justify-content: space-between; ${baseStyles}">
-              <div style="${baseStyles}">${t('order:delivery')}</div>
-              <div style="${baseStyles}">${formatCurrency(
-                    Number(order.delivery.price),
+        ${
+          order.taxes?.length > 0
+            ? order.taxes
+                ?.map(
+                  tax => `
+                <div style="display: flex; justify-content: space-between; ${baseStyles}">
+                  <div style="${baseStyles}">${tax.name} (${Number(
+                    tax.rate
+                  ).toFixed(3)}%)</div>
+                  <div style="${baseStyles}">${formatCurrency(
+                    tax.amount,
                     settings?.currency
                   )}</div>
-            </div>
-          `
-                : ''
-            }
+                </div>
+              `
+                )
+                .join('')
+            : ''
+        }
 
-          <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
-            <div style="${baseStyles}">${t("common:total")}</div>
+        ${
+          order.tip
+            ? `
+          <div style="display: flex; justify-content: space-between; ${baseStyles}">
+            <div style="${baseStyles}">${translations.tipLabel} ${
+                order.tip.percentage ? ` (${order.tip.percentage}%)` : ''
+              }</div>
             <div style="${baseStyles}">${formatCurrency(
+                order.tip.amount,
+                settings?.currency
+              )}</div>
+          </div>
+          `
+            : ''
+        }
+
+        ${
+          order.delivery
+            ? `
+          <div style="display: flex; justify-content: space-between; ${baseStyles}">
+            <div style="${baseStyles}">${translations.deliveryLabel}</div>
+            <div style="${baseStyles}">${formatCurrency(
+                Number(order.delivery.price),
+                settings?.currency
+              )}</div>
+          </div>
+          `
+            : ''
+        }
+
+        <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
+          <div style="${baseStyles}">${translations.totalLabel}</div>
+          <div style="${baseStyles}">${formatCurrency(
       order.total,
       settings?.currency
     )}</div>
-          </div>
-          ${
-            order.amountPaid && order.amountPaid > 0
-              ? `
-            
-              <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
-            <div style="${baseStyles}">${t('common:amount-received')}</div>
-            <div style="${baseStyles}">${formatCurrency(
-                  order.amountPaid,
-                  settings?.currency
-                )}</div>
-          </div>
-            `
-              : ''
-          }
-        
-          ${
-            order.change && order.change > 0
-              ? `   <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
-            <div style="${baseStyles}">${t('amount-due')}</div>
-            <div style="${baseStyles}">${formatCurrency(
-                  order.change,
-                  settings?.currency
-                )}</div>
-          </div>`
-              : ''
-          }
         </div>
 
+        ${
+          order.amountPaid && order.amountPaid > 0
+            ? `
+          <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
+            <div style="${baseStyles}">${translations.amountReceivedLabel}</div>
+            <div style="${baseStyles}">${formatCurrency(
+                order.amountPaid,
+                settings?.currency
+              )}</div>
+          </div>
+          `
+            : ''
+        }
+        
+        ${
+          order.change && order.change > 0
+            ? `
+          <div style="display: flex; justify-content: space-between; margin-top: 4px; ${baseStyles}">
+            <div style="${baseStyles}">${translations.amountDueLabel}</div>
+            <div style="${baseStyles}">${formatCurrency(
+                order.change,
+                settings?.currency
+              )}</div>
+          </div>
+          `
+            : ''
+        }
+
         <div style="margin-bottom: 8px; ${baseStyles}">
-          <div style="${baseStyles}">${
-      order.paymentMethod?.name || t('common:payment-on-site')
-    }</div>
-  
+          <div style="${baseStyles}">${translations.paymentMethodName}</div>
         </div>
 
         <div style="text-align: center; margin: 12px 0; ${baseStyles}">
-          <div style="margin-bottom: 8px; ${baseStyles}">${t(
-      'common:payment-receive'
-    )}</div>
+          <div style="margin-bottom: 8px; ${baseStyles}">${
+      translations.paymentReceiveLabel
+    }</div>
           <img src="${qrCodeUrl}" width="120" style="margin: 0 auto; display: block;" />
-              ${
-                order.servedBy
-                  ? `<div style="${baseStyles}">${t('common:serve-by')} ${
-                      order.servedBy
-                    }</div>`
-                  : ''
-              }
+          ${
+            order.servedBy
+              ? `<div style="${baseStyles}">${translations.servedByLabel} ${order.servedBy}</div>`
+              : ''
+          }
         </div>
 
         <div style="text-align: center; margin: 12px 0; ${baseStyles}">

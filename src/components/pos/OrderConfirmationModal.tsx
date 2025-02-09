@@ -3,7 +3,11 @@ import { motion } from 'framer-motion';
 import { Printer, Download, CheckCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Order } from '../../types';
-import { generateReceiptPDF } from '../../utils/pdf';
+import {
+  generateReceiptPDF,
+  getPdfSettings,
+  getPdfTranslationValues,
+} from '../../utils/pdf';
 import { useSettings } from '../../hooks/useSettings';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +27,18 @@ export function OrderConfirmationModal(props: IOrderConfirmationModalProps) {
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
-      const pdf = await generateReceiptPDF(order, t, settings);
+      const translations = getPdfTranslationValues(t);
+      const pdfSettings = getPdfSettings(settings);
+      const pdf = await generateReceiptPDF(
+        order,
+        {
+          ...translations,
+          paymentMethodName: t(
+            `payment-method-names.${order.paymentMethod?.name}`
+          ),
+        },
+        pdfSettings
+      );
       pdf.save(`commande-${order.id.slice(0, 8)}.pdf`);
       toast.success('Ticket téléchargé');
     } catch (error) {
@@ -37,7 +52,18 @@ export function OrderConfirmationModal(props: IOrderConfirmationModalProps) {
   const handlePrint = async () => {
     try {
       setIsPrinting(true);
-      const pdf = await generateReceiptPDF(order, t, settings);
+      const translations = getPdfTranslationValues(t);
+      const pdfSettings = getPdfSettings(settings);
+      const pdf = await generateReceiptPDF(
+        order,
+        {
+          ...translations,
+          paymentMethodName: t(
+            `payment-method-names.${order.paymentMethod?.name}`
+          ),
+        },
+        pdfSettings
+      );
       pdf.autoPrint();
       window.open(pdf.output('bloburl'));
       toast.success("Ticket envoyé à l'impression");
@@ -63,7 +89,7 @@ export function OrderConfirmationModal(props: IOrderConfirmationModalProps) {
         </div>
 
         <div className="text-center mb-8">
-          <h3 className="text-xl font-semibold mb-2">{t("order-confimed")}</h3>
+          <h3 className="text-xl font-semibold mb-2">{t('order-confimed')}</h3>
           <p className="text-gray-600 dark:text-gray-400">
             La commande #{order.id.slice(0, 8)} a été enregistrée avec succès.
           </p>

@@ -6,7 +6,11 @@ import { OrderCardDetails } from './card/OrderCardDetails';
 import { OrderTimeline } from './OrderTimeline';
 import { Button } from '../ui/Button';
 import { Printer } from 'lucide-react';
-import { generateReceiptPDF } from '../../utils/pdf';
+import {
+  generateReceiptPDF,
+  getPdfSettings,
+  getPdfTranslationValues,
+} from '../../utils/pdf';
 import { useSettings } from '../../hooks';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -40,7 +44,19 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
     const handlePrint = async () => {
       try {
         setIsPrinting(true);
-        const pdf = await generateReceiptPDF(order, t, settings);
+        const translations = getPdfTranslationValues(t);
+        const pdfSettings = getPdfSettings(settings);
+
+        const pdf = await generateReceiptPDF(
+          order,
+          {
+            ...translations,
+            paymentMethodName: t(
+              `payment-method-names.${order.paymentMethod?.name}`
+            ),
+          },
+          pdfSettings
+        );
         pdf.autoPrint();
         window.open(pdf.output('bloburl'));
         toast.success(t('invoice-in-printing'));

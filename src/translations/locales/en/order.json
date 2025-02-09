@@ -37,7 +37,7 @@
   "items": "Order items",
   "no-order-found": "No order found",
   "print-bill": "Print bill",
-  "in-cooking": "In cooking",
+  "in-cooking": "Cooking",
   "payment-method": "Payment mode",
   "confirm-order": "Confirm order",
   "no-tip": "Not available",
@@ -81,5 +81,15 @@
   "order-status-in-cooking": "In cooking",
   "order-status-delivered": "Delivered",
   "order-status-canceled": "Canceled",
-  "order-confimed": "Order confirmed"
+  "order-confimed": "Order confirmed",
+  "amount-due": "Amount due",
+  "payment-method-names": {
+    "Paiement à la livraison": "Cash on delivery",
+    "CinetPay": "Pay with CinetPay",
+    "PayTech": "Pay with PayTech",
+    "Stripe": "Pay with Stripe",
+    "Wave": "Pay with Wave",
+    "Money Fusion": "Pay with Money Fusion",
+    "Paiement à la caisse": "Payment at checkout"
+  }
 }
