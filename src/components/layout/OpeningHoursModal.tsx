@@ -34,8 +34,6 @@ export function OpeningHoursModal({ isOpen, onClose }: OpeningHoursModalProps) {
       });
   }, [settings?.openingHours]);
 
-  console.log('openingHours', openingHours);
-
   if (!isOpen) return null;
 
   return (

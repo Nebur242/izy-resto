@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Order, OrderStatus } from '../../types';
+import { Language, Order, OrderStatus } from '../../types';
 import { formatFirestoreTimestamp } from '../../utils/date';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +15,7 @@ export function OrderTimeline(props: IOrderTimelineProps) {
   const { t, i18n } = useTranslation('order');
   const statuses: OrderStatus[] = ['pending', 'preparing', 'delivered'];
   const currentIndex = statuses.indexOf(status);
-  const lang: 'fr' | 'en' = i18n.language.startsWith('fr') ? 'fr' : 'en';
+  const lang = i18n.language as Language;
 
   const statusLabels: { [key in OrderStatus]: string } = {
     pending: t('common:pending'),

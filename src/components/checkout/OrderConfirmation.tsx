@@ -48,6 +48,8 @@ interface IOrderConfirmationProps {
 
 export function OrderConfirmation(props: IOrderConfirmationProps) {
   const { t } = useTranslation('order');
+
+  // console.log(t('days.monday'));
   const {
     customerData,
     onConfirm,
@@ -412,7 +414,12 @@ export function OrderConfirmation(props: IOrderConfirmationProps) {
                     </div>
                   )}
                   <div className="flex-1">
-                    <p className="font-medium">{method.name}</p>
+                    <p className="font-medium">
+                      {t(`payment-method-names.${method.name}`) ===
+                      `payment-method-names.${method.name}`
+                        ? method.name
+                        : t(`payment-method-names.${method.name}`)}
+                    </p>
                   </div>
                   <div
                     className={`w-6 h-6 rounded-full border-2 flex items-center justify-center

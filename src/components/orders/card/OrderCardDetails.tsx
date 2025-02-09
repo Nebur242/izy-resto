@@ -62,7 +62,7 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
           <div className="space-y-2  pt-4 mt-4 border-t border-current/10">
             {order.subtotal && (
               <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>{t('common:sub-total')}</span>
+                <span>{t('cart:sub-total')}</span>
                 <span>
                   {formatCurrency(order.subtotal, settings?.currency)}
                 </span>
@@ -104,7 +104,7 @@ export function OrderCardDetails({ order }: OrderCardDetailsProps) {
               </div>
             )}
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>{t('total')}</span>
+              <span>{t('common:total')}</span>
               <span>{formatCurrency(order.total, settings?.currency)}</span>
             </div>
           </div>

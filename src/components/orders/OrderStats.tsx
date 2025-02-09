@@ -12,29 +12,29 @@ interface IOrderStatsProps {
 }
 
 export function OrderStats(props: IOrderStatsProps) {
-  const { t } = useTranslation(['order', 'common']);
+  const { t } = useTranslation('order');
   const { stats } = props;
   const statCards = [
     {
-      title: t('total-orders'),
+      title: t('common:total-orders'),
       value: stats.total,
       icon: ShoppingBag,
       color: 'blue',
     },
     {
-      title: t('pending'),
+      title: t('common:pending'),
       value: stats.pending,
       icon: Clock,
       color: 'yellow',
     },
     {
-      title: t('in-cooking'),
+      title: t('common:in-cooking'),
       value: stats.preparing,
       icon: AlertCircle,
       color: 'purple',
     },
     {
-      title: t('delivered'),
+      title: t('common:delivered'),
       value: stats.delivered,
       icon: CheckCircle,
       color: 'green',

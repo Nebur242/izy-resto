@@ -6,7 +6,11 @@ import { OrderCardDetails } from './card/OrderCardDetails';
 import { OrderTimeline } from './OrderTimeline';
 import { Button } from '../ui/Button';
 import { Printer } from 'lucide-react';
-import { generateReceiptPDF } from '../../utils/pdf';
+import {
+  generateReceiptPDF,
+  getPdfSettings,
+  getPdfTranslationValues,
+} from '../../utils/pdf';
 import { useSettings } from '../../hooks';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +24,7 @@ interface OrderCardProps {
 export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
   ({ order, onStatusChange, onCancel }, ref) => {
     const { settings } = useSettings();
-    const { t } = useTranslation(['order', 'common']);
+    const { t } = useTranslation('order');
 
     const canCancel = ['pending', 'preparing'].includes(order.status);
     const [isPrinting, setIsPrinting] = useState(false);
@@ -40,7 +44,19 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
     const handlePrint = async () => {
       try {
         setIsPrinting(true);
-        const pdf = await generateReceiptPDF(order, settings);
+        const translations = getPdfTranslationValues(t);
+        const pdfSettings = getPdfSettings(settings);
+
+        const pdf = await generateReceiptPDF(
+          order,
+          {
+            ...translations,
+            paymentMethodName: t(
+              `payment-method-names.${order.paymentMethod?.name}`
+            ),
+          },
+          pdfSettings
+        );
         pdf.autoPrint();
         window.open(pdf.output('bloburl'));
         toast.success(t('invoice-in-printing'));
@@ -105,7 +121,7 @@ export const OrderCard = React.forwardRef<HTMLDivElement, OrderCardProps>(
             className="bg-white/90 hover:bg-white text-current px-4 py-2 rounded w-full"
           >
             <Printer className="h-4 w-4 mr-2" />
-            {isPrinting ? t('printing') : t('print-bill')}
+            {isPrinting ? t('common:printing') : t('print-bill')}
           </Button>
         </div>
       </motion.div>

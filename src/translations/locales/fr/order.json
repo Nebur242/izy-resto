@@ -36,7 +36,7 @@
   "client-details": "Détails Client",
   "no-order-found": "Aucune commande trouvée",
   "print-bill": "Imprimer le ticket",
-  "in-cooking": "In cooking",
+  "in-cooking": "En préparation",
   "payment-method": "Mode de paiement",
   "confirm-order": "Confirmation de commande",
   "no-tip": "Aucun",
@@ -74,5 +74,20 @@
   "error-phone-number-only-digits": "Le numéro doit contenir uniquement des chiffres",
   "order-success-dine-in": "✨ Order placed successfully! Please wait at your table.",
   "order-success-delivery": "🚚 Order placed successfully! We will deliver shortly.",
-  "error-order-failed": "Échec de la commande. Veuillez réessayer."
+  "error-order-failed": "Échec de la commande. Veuillez réessayer.",
+  "order-status-pending": "En attente",
+  "order-status-in-cooking": "En préparation",
+  "order-status-delivered": "Livré",
+  "order-status-canceled": "Annulé",
+  "order-confimed": "Commande confirmée",
+  "amount-due": "Montant dû",
+  "payment-method-names": {
+    "Paiement à la livraison": "Paiement à la livraison",
+    "CinetPay": "Payer avec CinetPay",
+    "PayTech": "Payer avec PayTech",
+    "Stripe": "Payer avec Stripe",
+    "Wave": "Payer avec Wave",
+    "Money Fusion": "Payer avec Money Fusion",
+    "Paiement à la caisse": "Paiement à la caisse"
+  }
 }

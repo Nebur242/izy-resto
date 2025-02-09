@@ -60,5 +60,17 @@
     "sunday": "Sunday"
   },
   "no-opening-hours": "Aucun horaire défini",
-  "opening-hours-modal-title": "Opening hours"
+  "opening-hours-modal-title": "Opening hours",
+  "quantity": "Qty",
+  "price": "Price",
+  "the-plate": "The Plate",
+  "transaction": "TRANSACTION",
+  "note": "Note",
+  "amount-received": "Amount received",
+  "amount-due": "Amount due",
+  "payment-on-site": "Payment on site",
+  "payment-receive": "Payment received",
+  "serve-by": "You were served by",
+  "payment-on-delivery": "Payment on delivery",
+  "in-cooking": "Cooking"
 }
