@@ -13,6 +13,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { DeliveryZoneSelect } from './DeliveryZoneSelect';
 import { formatCurrency } from '../../utils/currency';
 import { useTranslation } from 'react-i18next';
+import { countryCodes } from '../../data/countryData';
 
 interface CheckoutFormData {
   name?: string;
@@ -20,6 +21,7 @@ interface CheckoutFormData {
   address?: string;
   tableNumber?: string;
   preference?: string;
+  phoneCode?: string;
 }
 
 interface ICheckoutFormProps {
@@ -57,6 +59,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
 
   const [step, setStep] = useState<CheckoutStep>('form');
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+  const [selectedCode, setSelectedCode] = useState('+221');
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethod | null>(null);
@@ -67,6 +70,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
     watch,
     formState: { errors },
     trigger,
+    setValue,
   } = useForm<CheckoutFormData>({
     mode: 'onChange',
     defaultValues: {
@@ -118,7 +122,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
         total,
         tip,
         customerName: name,
-        customerPhone: data.phone,
+        customerPhone: `${selectedCode}${data.phone}`,
         customerAddress: diningOption === 'delivery' ? data.address : undefined,
         tableNumber: diningOption === 'dine-in' ? data.tableNumber : undefined,
         diningOption,
@@ -178,6 +182,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
         customerData={{
           ...formData,
           diningOption,
+          selectedCode
         }}
         onConfirm={() => handleSubmit(onSubmit)()}
         onBack={() => setStep('form')}
@@ -265,7 +270,21 @@ export function CheckoutForm(props: ICheckoutFormProps) {
               {t('order-customer-phone')}{' '}
               {diningOption === 'dine-in' ? '(Optionnel)' : '*'}
             </label>
-            <div className="relative">
+            <div className="relative flex">
+              <select
+                value={selectedCode}
+                onChange={e => {
+                  setSelectedCode(e.target.value);
+                  setValue('phoneCode', e.target.value);
+                }}
+                className="rounded-l-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+              >
+                {countryCodes.map(country => (
+                  <option key={country.code} value={country.code}>
+                    {country.label} {country.code}
+                  </option>
+                ))}
+              </select>
               <input
                 type="tel"
                 {...register('phone', {
@@ -276,8 +295,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
                   validate: validatePhone,
                 })}
                 className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow pr-10
-                 ${errors.phone ? 'border-red-500 dark:border-red-500' : ''}
-               `}
+                 ${errors.phone ? 'border-red-500 dark:border-red-500' : ''}`}
                 placeholder={t('order-customer-phone-placeholder')}
               />
               {errors.phone && (
