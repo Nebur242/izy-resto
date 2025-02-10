@@ -72,5 +72,7 @@
   "payment-receive": "Payment received",
   "serve-by": "You were served by",
   "payment-on-delivery": "Payment on delivery",
-  "in-cooking": "Cooking"
+  "in-cooking": "Cooking",
+  "description-max-limit": "Description cannot exceed {{maxLimit}} characters",
+  "description-min-limit": "Description must contain at least {{minLimit}} characters"
 }
