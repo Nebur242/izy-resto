@@ -77,6 +77,6 @@
   "payment-receive": "PAIEMENT REÇU",
   "serve-by": "Vous avez été servi par",
   "payment-on-delivery": "Paiement à la livraison",
-  "description-max-limit": "La description ne peut pas dépasser 250 caractères",
-  "description-min-limit": "La description doit contenir au moins 10 caractères"
+  "description-max-limit": "La description ne peut pas dépasser {{maxLimit}} caractères",
+  "description-min-limit": "La description doit contenir au moins {{minLimit}} caractères"
 }

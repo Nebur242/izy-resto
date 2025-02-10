@@ -68,11 +68,13 @@ export function GeneralSettings() {
                 required: 'La description est requise',
                 maxLength: {
                   value: 250,
-                  message: t('description-max-limit'),
+                  message: t('description-max-limit', {
+                    maxLimit: 250,
+                  }),
                 },
                 minLength: {
                   value: 10,
-                  message: t('description-min-limit'),
+                  message: t('description-min-limit', { minLimit: 10 }),
                 },
               })}
               rows={3}
