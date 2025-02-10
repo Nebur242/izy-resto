@@ -5,7 +5,7 @@ import { Button } from '../../ui/Button';
 import { Variant } from '../../../types/variant';
 import { MenuItemVariantPrice } from '../../../types/menu';
 import { VariantCombination } from './VariantCombination';
-import toast from 'react-hot-toast';
+// import toast from 'react-hot-toast';
 
 interface VariantManagerProps {
   variants: Variant[];

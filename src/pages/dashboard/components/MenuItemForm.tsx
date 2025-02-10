@@ -20,7 +20,6 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
   const { settings } = useSettings();
   const { items: inventory } = useInventory();
 
-  // Initialize selectedCategory with the item's categoryId if editing an existing item
   const [selectedCategory, setSelectedCategory] = React.useState(
     item?.categoryId || ''
   );
@@ -42,30 +41,32 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
       description: item?.description || '',
       price: item?.price || 0,
       image: item?.image || '',
-      // Ensure categoryId is set to the item's category when editing
       categoryId: item?.categoryId || '',
       stockQuantity: item?.stockQuantity || 0,
       inventoryConnections: item?.inventoryConnections || [],
     },
   });
 
-  const handleFormSubmit = (formData: any) => {
-    const menuItem: MenuItemWithVariants = {
-      ...formData,
-      price: Number(formData.price),
-      stockQuantity: Number(formData.stockQuantity),
-      variantPrices: variantPrices.map(vp => ({
-        ...vp,
-        price: Number(vp.price),
-      })),
-      inventoryConnections: formData.inventoryConnections
-        .filter((conn: any) => conn.itemId && conn.ratio)
-        .map((conn: any) => ({
-          ...conn,
-          ratio: Number(conn.ratio),
-        })),
-    };
-    onSave(menuItem);
+  // Helper function to get price modifier for a specific variant value
+  const getVariantPriceModifier = (
+    variantName: string,
+    value: string
+  ): number => {
+    const variant = variants.find(v => v.name === variantName);
+    if (!variant) return 0;
+
+    const variantValue = variant.values.find(v => v === value);
+    const priceModifier =
+      variant.prices?.[variant.values.indexOf(variantValue)] || 0;
+    return priceModifier;
+  };
+
+  // Calculate total price modifier for a combination
+  const calculatePriceModifiers = (combination: string[]): number => {
+    return combination.reduce((total, variantStr) => {
+      const [variantName, value] = variantStr.split(': ');
+      return total + getVariantPriceModifier(variantName, value);
+    }, 0);
   };
 
   const getVariantCombinations = () => {
@@ -85,6 +86,52 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
     return combinations;
   };
 
+  const handleFormSubmit = (formData: any) => {
+    const allCombinations = getVariantCombinations();
+    const basePrice = Number(formData.price);
+
+    // Create defaultVariantPrices for combinations not in variantPrices
+    const defaultVariantPrices = allCombinations
+      .filter(
+        combination =>
+          !variantPrices.some(
+            vp =>
+              JSON.stringify(vp.variantCombination) ===
+              JSON.stringify(combination)
+          )
+      )
+      .map(combination => {
+        // Calculate total price modifiers for this combination
+        const priceModifier = calculatePriceModifiers(combination);
+
+        return {
+          variantCombination: combination,
+          price: basePrice + priceModifier, // Add the modifier to base price
+          image: formData.image, // Use the main product image as default
+        };
+      });
+
+    console.log(defaultVariantPrices);
+
+    const menuItem: MenuItemWithVariants = {
+      ...formData,
+      price: Number(formData.price),
+      stockQuantity: Number(formData.stockQuantity),
+      variantPrices: variantPrices.map(vp => ({
+        ...vp,
+        price: Number(vp.price),
+      })),
+      defaultVariantPrices,
+      inventoryConnections: formData.inventoryConnections
+        .filter((conn: any) => conn.itemId && conn.ratio)
+        .map((conn: any) => ({
+          ...conn,
+          ratio: Number(conn.ratio),
+        })),
+    };
+    onSave(menuItem);
+  };
+
   const handleVariantChange = (
     combination: string[],
     field: 'price' | 'image',
@@ -102,15 +149,27 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
         );
       }
 
+      // For new variants, calculate the default price including modifiers
+      const basePrice = watch('price');
+      const priceModifier = calculatePriceModifiers(combination);
+
       return [
         ...prev,
         {
           variantCombination: combination,
-          price: field === 'price' ? (value as number) : watch('price'),
+          price:
+            field === 'price' ? (value as number) : basePrice + priceModifier,
           image: field === 'image' ? (value as string) : undefined,
         },
       ];
     });
+  };
+
+  // Also update the UI to show the calculated price with modifiers
+  const getDefaultPriceForCombination = (combination: string[]): number => {
+    const basePrice = watch('price');
+    const priceModifier = calculatePriceModifiers(combination);
+    return basePrice + priceModifier;
   };
 
   return (
@@ -355,7 +414,8 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                               p =>
                                 JSON.stringify(p.variantCombination) ===
                                 JSON.stringify(combination)
-                            )?.price || watch('price')
+                            )?.price ||
+                            getDefaultPriceForCombination(combination)
                           }
                           onChange={e =>
                             handleVariantChange(
@@ -366,6 +426,9 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
                           }
                           className="w-full rounded-lg border dark:border-gray-600 p-2 dark:bg-gray-700"
                         />
+                        <span className="text-sm text-gray-500">
+                          Prix calculé avec les modificateurs
+                        </span>
                       </div>
 
                       <div>

@@ -2,6 +2,7 @@ export interface Variant {
   id: string;
   name: string;
   type: string;
+  prices?: number[];
   values: string[];
   categoryIds: string[];
   isRequired?: boolean;

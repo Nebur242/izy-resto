@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 
 interface Tab {
@@ -20,6 +19,7 @@ export function Tabs({ tabs, activeTab, onChange }: TabsProps) {
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
+            type="button"
             className={`relative py-4 px-1 ${
               activeTab === tab.id
                 ? 'text-blue-600 dark:text-blue-400'

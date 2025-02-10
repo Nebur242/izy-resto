@@ -1,5 +1,5 @@
 import { forwardRef, useMemo, useState } from 'react';
-import { MenuItem as MenuItemType, MenuItemWithVariants } from '../../types';
+import { MenuItemWithVariants } from '../../types';
 import { Badge } from '../ui/Badge';
 import { useCart } from '../../context/CartContext';
 import { useSettings } from '../../hooks/useSettings';
@@ -9,7 +9,7 @@ import { useIsMobile } from '../../hooks/useIsMobile';
 import { useTranslation } from 'react-i18next';
 
 interface MenuItemProps {
-  item: MenuItemType;
+  item: MenuItemWithVariants;
 }
 
 export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
@@ -19,7 +19,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
     const [showModal, setShowModal] = useState(false);
     const itemInCart = cart.find(cartItem => cartItem.id === item.id);
     const isOutOfStock = item.stockQuantity === 0;
-    const itemWithVariants = item as MenuItemWithVariants;
+    const itemWithVariants = item;
     const hasVariants = itemWithVariants.variantPrices?.length > 0;
 
     const isMobile = useIsMobile();

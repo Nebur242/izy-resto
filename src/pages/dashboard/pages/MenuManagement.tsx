@@ -38,6 +38,7 @@ export function MenuManagement() {
       const menuItems = await menuService.getMenuItems();
       setItems(menuItems);
     } catch (error) {
+      console.log(error);
       console.error('Error loading menu items:', error);
     } finally {
       setIsLoading(false);

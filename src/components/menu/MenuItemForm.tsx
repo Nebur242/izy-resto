@@ -1,14 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { Button } from '../ui/Button';
-import { MenuItem, MenuItemWithVariants } from '../../types';
+import { useForm, FormProvider, UseFormReturn } from 'react-hook-form';
+import {
+  MenuItem,
+  MenuItemWithVariants,
+  RestaurantSettings,
+} from '../../types';
+import { LogoUploader } from '../settings/LogoUploader';
 import { useCategories } from '../../hooks/useCategories';
 import { useVariants } from '../../hooks/useVariants';
 import { useSettings } from '../../hooks/useSettings';
-import { LogoUploader } from '../settings/LogoUploader';
-import { VariantManager } from './variants/VariantManager';
 import { useInventory } from '../../hooks/useInventory';
+import { motion } from 'framer-motion';
+import { VariantManager } from './variants/VariantManager';
+import { Button } from '../ui';
+import { Tabs } from '../ui/Tabs';
+
+const tabs = [
+  { id: 'product', label: 'Produit' },
+  { id: 'variants', label: 'Combinaisons de variantes' },
+  { id: 'inventory', label: "Connexions à l'inventaire" },
+];
 
 interface MenuItemFormProps {
   item?: MenuItem | null;
@@ -16,7 +28,321 @@ interface MenuItemFormProps {
   onCancel: () => void;
 }
 
+interface MenuItemFormProps {
+  item?: MenuItem | null;
+  onSave: (data: MenuItemWithVariants) => void;
+  onCancel: () => void;
+}
+
+interface FormInputs {
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  categoryId: string;
+  stockQuantity: number;
+  inventoryConnections: Array<{
+    itemId: string;
+    ratio: number;
+  }>;
+}
+
+interface ProductTabProps {
+  register: UseFormReturn<FormInputs>['register'];
+  errors: UseFormReturn<FormInputs>['formState']['errors'];
+  watch: UseFormReturn<FormInputs>['watch'];
+  setValue: UseFormReturn<FormInputs>['setValue'];
+  settings: RestaurantSettings;
+  categories: Array<{
+    id: string;
+    name: string;
+    [key: string]: any;
+  }>;
+  selectedCategory: string;
+  handleCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+interface InventoryConnectionsTabProps {
+  register: UseFormReturn<FormInputs>['register'];
+  watch: UseFormReturn<FormInputs>['watch'];
+  setValue: UseFormReturn<FormInputs>['setValue'];
+  inventory: Array<{
+    id: string;
+    name: string;
+    [key: string]: any;
+  }>;
+}
+
+interface VariantsTabProps {
+  selectedCategory: string;
+  variants: Array<{
+    id: string;
+    name: string;
+    values: string[];
+    prices?: number[];
+  }>;
+  variantPrices: Array<{
+    variantCombination: string[];
+    price: number;
+    image: string;
+  }>;
+  setVariantPrices: React.Dispatch<
+    React.SetStateAction<
+      Array<{
+        variantCombination: string[];
+        price: number;
+        image: string;
+      }>
+    >
+  >;
+}
+
+interface ProductSelectProps {
+  index: number;
+  register: UseFormReturn<FormInputs>['register'];
+  watch: UseFormReturn<FormInputs>['watch'];
+  setValue: UseFormReturn<FormInputs>['setValue'];
+  inventory: Array<{
+    id: string;
+    name: string;
+  }>;
+}
+
+// Updating the ProductTab to include complete price and stock fields
+const ProductTab: React.FC<ProductTabProps> = ({
+  register,
+  errors,
+  watch,
+  setValue,
+  settings,
+  categories,
+  selectedCategory,
+  handleCategoryChange,
+}) => (
+  <div className="space-y-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div>
+        <label className="block text-sm font-medium mb-1">Nom</label>
+        <input
+          type="text"
+          {...register('name', { required: 'Le nom est requis' })}
+          className="w-full rounded-lg border p-2.5 dark:bg-gray-700"
+          placeholder="Nom du produit"
+        />
+        {errors.name && (
+          <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Catégorie</label>
+        <select
+          {...register('categoryId', { required: 'La catégorie est requise' })}
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          className="w-full rounded-lg border p-2.5 dark:bg-gray-700"
+        >
+          <option value="">Sélectionner une catégorie</option>
+          {categories.map(category => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+        {errors.categoryId && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.categoryId.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Prix</label>
+        <div className="relative">
+          <input
+            type="number"
+            step={settings?.currency === 'XOF' ? '1' : '0.01'}
+            {...register('price', {
+              required: 'Le prix est requis',
+              min: { value: 0, message: 'Le prix doit être positif' },
+            })}
+            className="w-full rounded-lg border p-2.5 dark:bg-gray-700 pr-12"
+            placeholder="0.00"
+          />
+          <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+            {settings?.currency}
+          </div>
+        </div>
+        {errors.price && (
+          <p className="mt-1 text-sm text-red-500">{errors.price.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Stock</label>
+        <input
+          type="number"
+          {...register('stockQuantity', {
+            required: 'Le stock est requis',
+            min: { value: 0, message: 'Le stock doit être positif' },
+          })}
+          className="w-full rounded-lg border p-2.5 dark:bg-gray-700"
+          placeholder="0"
+        />
+        {errors.stockQuantity && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.stockQuantity.message}
+          </p>
+        )}
+      </div>
+
+      <div className="md:col-span-2">
+        <label className="block text-sm font-medium mb-1">Description</label>
+        <textarea
+          {...register('description', {
+            required: 'La description est requise',
+          })}
+          rows={3}
+          className="w-full rounded-lg border p-2.5 dark:bg-gray-700"
+          placeholder="Description du produit"
+        />
+        {errors.description && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.description.message}
+          </p>
+        )}
+      </div>
+
+      <div className="md:col-span-2">
+        <LogoUploader
+          value={watch('image')}
+          onChange={url => setValue('image', url, { shouldDirty: true })}
+          label="Image du produit"
+          description="Format recommandé: JPG ou PNG en haute résolution (1920x1080px minimum)"
+        />
+      </div>
+    </div>
+  </div>
+);
+
+// Completing the InventoryConnectionsTab with the full ratio input field
+const InventoryConnectionsTab: React.FC<InventoryConnectionsTabProps> = ({
+  register,
+  watch,
+  setValue,
+  inventory,
+}) => {
+  const ProductSelect = ({ index }: { index: number }) => (
+    <div
+      key={index}
+      className="grid grid-cols-[1fr,1fr,auto] gap-4 items-start"
+    >
+      <div className="flex flex-col">
+        <label className="block text-sm font-medium mb-2">
+          Produit d'inventaire
+        </label>
+        <select
+          {...register(`inventoryConnections.${index}.itemId`)}
+          className="w-full rounded-lg border p-2.5 dark:bg-gray-700"
+        >
+          <option value="">Sélectionner un produit</option>
+          {inventory.map(item => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex flex-col">
+        <div className="mb-2">
+          <label className="block text-sm font-medium">
+            Ratio (1:{watch(`inventoryConnections.${index}.ratio`) || '0'})
+          </label>
+        </div>
+        <input
+          type="number"
+          step="0.1"
+          min="0.1"
+          {...register(`inventoryConnections.${index}.ratio`, {
+            required: 'Le ratio est requis',
+            min: { value: 0.1, message: 'Le ratio doit être supérieur à 0' },
+          })}
+          className="w-full rounded-lg border p-2.5 dark:bg-gray-700"
+          placeholder="Ex: 3 pour 1:3"
+        />
+        <span className="text-xs mt-1 text-gray-500 dark:text-gray-400">
+          Le ratio est une règle de proportion simple entre le produit
+          d'inventaire et le produit du menu
+        </span>
+      </div>
+
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={() => {
+          const connections = watch('inventoryConnections');
+          setValue(
+            'inventoryConnections',
+            connections.filter((_: any, i: number) => i !== index),
+            { shouldDirty: true }
+          );
+        }}
+        className="self-center mb-0.5"
+      >
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+  );
+
+  return (
+    <div className="space-y-4">
+      {watch('inventoryConnections')?.map((_, index) => (
+        <ProductSelect key={index} index={index} />
+      ))}
+
+      <Button
+        type="button"
+        variant="secondary"
+        onClick={() => {
+          const connections = watch('inventoryConnections') || [];
+          setValue(
+            'inventoryConnections',
+            [...connections, { itemId: '', ratio: 1 }],
+            { shouldDirty: true }
+          );
+        }}
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        Ajouter une connexion
+      </Button>
+    </div>
+  );
+};
+
+const VariantsTab: React.FC<VariantsTabProps> = ({
+  selectedCategory,
+  variants,
+  variantPrices,
+  setVariantPrices,
+}) => (
+  <div>
+    {selectedCategory && variants.length > 0 ? (
+      <VariantManager
+        variants={variants}
+        value={variantPrices}
+        onChange={setVariantPrices}
+      />
+    ) : (
+      <div className="text-center py-8 text-gray-500">
+        Sélectionnez une catégorie pour gérer les variantes
+      </div>
+    )}
+  </div>
+);
+
 export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
+  const [activeTab, setActiveTab] = useState('product');
   const { categories } = useCategories();
   const { settings } = useSettings();
   const [selectedCategory, setSelectedCategory] = useState(
@@ -28,13 +354,7 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
     (item as MenuItemWithVariants)?.variantPrices || []
   );
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm({
+  const methods = useForm({
     defaultValues: {
       name: item?.name || '',
       description: item?.description || '',
@@ -46,38 +366,13 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
     },
   });
 
-  useEffect(() => {
-    if (item?.categoryId) {
-      setSelectedCategory(item.categoryId);
-      setValue('categoryId', item.categoryId);
-    }
-  }, [item?.categoryId, setValue]);
-
-  const handleFormSubmit = (formData: any) => {
-    const filteredVariantPrices = variantPrices.map(v => {
-      return {
-        ...v,
-        variantCombination: v.variantCombination.filter(Boolean),
-      };
-    });
-
-    const menuItem: MenuItemWithVariants = {
-      ...formData,
-      price: Number(formData.price),
-      stockQuantity: Number(formData.stockQuantity),
-      variantPrices: filteredVariantPrices.map(vp => ({
-        ...vp,
-        price: Number(vp.price),
-      })),
-      inventoryConnections: formData.inventoryConnections
-        .filter((conn: any) => conn.itemId && conn.ratio)
-        .map((conn: any) => ({
-          ...conn,
-          ratio: Number(conn.ratio),
-        })),
-    };
-    onSave(menuItem);
-  };
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isDirty },
+  } = methods;
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -87,316 +382,102 @@ export function MenuItemForm({ item, onSave, onCancel }: MenuItemFormProps) {
       setVariantPrices([]);
     }
   };
-  const ProductSelect = ({ index }: { index: number }) => {
-    const currentValue = watch(`inventoryConnections.${index}.itemId`);
 
-    return (
-      <div
-        key={index}
-        className="grid grid-cols-[1fr,1fr,auto] gap-4 items-start"
-      >
-        <div className="flex flex-col">
-          <label className="block text-sm font-medium mb-2">
-            Produit d'inventaire
-          </label>
-          <select
-            value={currentValue}
-            {...register(`inventoryConnections.${index}.itemId`)}
-            className="w-full rounded-lg border dark:border-gray-600 p-2.5 dark:bg-gray-700 h-10"
-          >
-            <option value="">Sélectionner un produit</option>
-            {inventory.map(item => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex flex-col">
-          <div className="mb-2">
-            <label className="block text-sm font-medium">
-              Ratio (1:{watch(`inventoryConnections.${index}.ratio`) || '0'})
-            </label>
-          </div>
-          <input
-            type="number"
-            step="0.1"
-            min="1"
-            {...register(`inventoryConnections.${index}.ratio`)}
-            className="w-full rounded-lg border dark:border-gray-600 p-2.5 dark:bg-gray-700 h-10"
-            placeholder="Ex: 3 pour 1:3"
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'product':
+        return (
+          <ProductTab
+            register={register}
+            errors={errors}
+            watch={watch}
+            setValue={setValue}
+            settings={settings!}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            handleCategoryChange={handleCategoryChange}
           />
-          <span className="text-xs mt-1 text-gray-500 dark:text-gray-400">
-            Le ratio est une règle de proportion simple entre le produit
-            d'inventaire et le produit du menu
-          </span>
-        </div>
-
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => {
-            const connections = watch('inventoryConnections');
-            setValue(
-              'inventoryConnections',
-              connections.filter((_: any, i: number) => i !== index),
-              { shouldDirty: true }
-            );
-          }}
-          className="self-center mb-0.5"
-        >
-          <X className="w-4 h-4" />
-        </Button>
-      </div>
-    );
+        );
+      case 'inventory':
+        return (
+          <InventoryConnectionsTab
+            register={register}
+            watch={watch}
+            setValue={setValue}
+            inventory={inventory}
+          />
+        );
+      case 'variants':
+        return (
+          <VariantsTab
+            selectedCategory={selectedCategory}
+            variants={variants}
+            variantPrices={variantPrices}
+            setVariantPrices={setVariantPrices}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-[90vw] max-w-4xl h-[80vh] flex flex-col">
-        {/* Fixed Header */}
-        <div className="flex justify-between items-center p-4 md:p-6 border-b dark:border-gray-700">
-          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-[90vw] max-w-4xl h-[80vh] flex flex-col"
+      >
+        <div className="flex justify-between items-center p-4 md:p-6 border-b dark:border-gray-700/80">
+          <h2 className="text-lg md:text-xl font-semibold">
             {item ? 'Modifier le produit' : 'Nouveau produit'}
           </h2>
           <button
             onClick={onCancel}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
+            className="text-gray-500 hover:text-gray-700"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Scrollable Form */}
-        <form
-          onSubmit={handleSubmit(handleFormSubmit)}
-          className="flex flex-col flex-1 overflow-hidden"
-        >
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-4 md:p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                {/* Name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Nom
-                  </label>
-                  <input
-                    type="text"
-                    {...register('name', { required: 'Le nom est requis' })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 p-2.5 
-                            bg-white dark:bg-gray-700 
-                            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                            dark:text-white dark:placeholder-gray-400
-                            transition-colors"
-                    placeholder="Nom du produit"
-                  />
-                  {errors.name && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.name.message}
-                    </p>
-                  )}
-                </div>
+        <FormProvider {...methods}>
+          <form
+            onSubmit={handleSubmit(onSave)}
+            className="flex flex-col flex-1 overflow-hidden"
+          >
+            <div className="flex-1 flex flex-col overflow-hidden p-2">
+              <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
-                {/* Category */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Catégorie
-                  </label>
-                  <select
-                    {...register('categoryId', {
-                      required: 'La catégorie est requise',
-                    })}
-                    value={selectedCategory}
-                    onChange={handleCategoryChange}
-                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 p-2.5 
-                            bg-white dark:bg-gray-700 
-                            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                            dark:text-white
-                            transition-colors"
-                  >
-                    <option value="">Sélectionner une catégorie</option>
-                    {categories.map(category => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.categoryId && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.categoryId.message}
-                    </p>
-                  )}
-                </div>
+              <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                {renderTabContent()}
+              </div>
+            </div>
 
-                {/* Price */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Prix
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      step={settings?.currency === 'XOF' ? '1' : '0.01'}
-                      {...register('price', {
-                        required: 'Le prix est requis',
-                        min: { value: 0, message: 'Le prix doit être positif' },
-                      })}
-                      className="w-full rounded-lg border border-gray-300 dark:border-gray-600 p-2.5 
-                              bg-white dark:bg-gray-700 
-                              focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                              dark:text-white
-                              transition-colors pr-12"
-                      placeholder="0.00"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
-                      {settings?.currency}
-                    </div>
-                  </div>
-                  {errors.price && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.price.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Stock */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Stock
-                  </label>
-                  <input
-                    type="number"
-                    {...register('stockQuantity', {
-                      required: 'Le stock est requis',
-                      min: { value: 0, message: 'Le stock doit être positif' },
-                    })}
-                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 p-2.5 
-                            bg-white dark:bg-gray-700 
-                            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                            dark:text-white
-                            transition-colors"
-                    placeholder="0"
-                  />
-                  {errors.stockQuantity && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.stockQuantity.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Description */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    {...register('description', {
-                      required: 'La description est requise',
-                    })}
-                    rows={3}
-                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 p-2.5 
-                            bg-white dark:bg-gray-700 
-                            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                            dark:text-white
-                            transition-colors"
-                    placeholder="Description du produit"
-                  />
-                  {errors.description && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.description.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Image */}
-                <div className="md:col-span-2">
-                  <LogoUploader
-                    value={watch('image')}
-                    onChange={url =>
-                      setValue('image', url, { shouldDirty: true })
+            <div className="p-4 md:p-6 border-t dark:border-gray-700/80 mt-auto">
+              <div className="flex justify-end gap-4">
+                <Button type="button" variant="ghost" onClick={onCancel}>
+                  Annuler
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={!isDirty}
+                  className={`
+                    px-6 py-2 rounded-lg font-medium text-white
+                    transition-all duration-200
+                    ${
+                      isDirty
+                        ? 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl'
+                        : 'bg-gray-400 cursor-not-allowed'
                     }
-                    label="Image du produit"
-                    description="Format recommandé: JPG ou PNG en haute résolution (1920x1080px minimum)"
-                  />
-                </div>
-              </div>
-
-              {/* Inventory Connections */}
-              <div className="border-t dark:border-gray-700 pt-6">
-                <h3 className="text-lg font-medium mb-4">
-                  Connexions à l'inventaire
-                </h3>
-                <div className="space-y-4">
-                  {watch('inventoryConnections')?.map(
-                    (connection: any, index: number) => (
-                      <ProductSelect index={index} key={index} />
-                    )
-                  )}
-
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => {
-                      const connections = watch('inventoryConnections') || [];
-                      setValue(
-                        'inventoryConnections',
-                        [...connections, { itemId: '', ratio: 1 }],
-                        { shouldDirty: true }
-                      );
-                    }}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Ajouter une connexion
-                  </Button>
-                </div>
-              </div>
-
-              {/* Variants */}
-              {selectedCategory && variants.length > 0 && (
-                <div className="border-t dark:border-gray-700 pt-6">
-                  <VariantManager
-                    variants={variants}
-                    value={variantPrices}
-                    onChange={setVariantPrices}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Fixed Footer */}
-          <div className="p-4 md:p-6 border-t dark:border-gray-700 mt-auto">
-            <div className="flex justify-end gap-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={onCancel}
-                className="px-6 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 
-                dark:hover:bg-gray-700 transition-all duration-200 rounded-lg
-                hover:shadow-sm active:scale-95"
-              >
-                Annuler
-              </Button>
-              <Button
-                type="submit"
-                className="px-8 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 
-                hover:from-blue-600 hover:to-indigo-700 text-white font-medium 
-                rounded-lg shadow-sm hover:shadow-md transition-all duration-200 
-                active:scale-95 relative overflow-hidden group"
-              >
-                <span className="relative z-10 flex items-center justify-center">
+                  `}
+                >
                   {item ? 'Mettre à jour' : 'Ajouter'}
-                </span>
-                <div
-                  className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 
-                      opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                />
-              </Button>
+                </Button>
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </FormProvider>
+      </motion.div>
     </div>
   );
 }

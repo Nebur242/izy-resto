@@ -31,4 +31,5 @@ export interface MenuItemVariantPrice {
 
 export interface MenuItemWithVariants extends MenuItem {
   variantPrices: MenuItemVariantPrice[];
+  defaultVariantPrices: MenuItemVariantPrice[];
 }

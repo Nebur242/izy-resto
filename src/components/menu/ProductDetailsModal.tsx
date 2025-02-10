@@ -15,9 +15,9 @@ interface IProductDetailsModalProps {
   item: MenuItemWithVariants | null;
   onClose: () => void;
   onAddToCart?: (item: MenuItem & { quantity: number }) => void;
-  addProductToCartBgColor: string;
-  stockAvailableBgColor: string;
-  priceStyle: string;
+  addProductToCartBgColor?: string;
+  stockAvailableBgColor?: string;
+  priceStyle?: string;
 }
 
 export function ProductDetailsModal(props: IProductDetailsModalProps) {

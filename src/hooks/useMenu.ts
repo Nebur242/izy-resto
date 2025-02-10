@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
-import { MenuItem } from '../types';
+import { MenuFilters, MenuItemWithVariants } from '../types';
 import { menuService } from '../services/menu/menu.service';
 import toast from 'react-hot-toast';
 
 export function useMenu(categoryId?: string) {
-  const [items, setItems] = useState<MenuItem[]>([]);
+  const [items, setItems] = useState<MenuItemWithVariants[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -13,9 +12,16 @@ export function useMenu(categoryId?: string) {
     const loadMenuItems = async () => {
       try {
         setIsLoading(true);
-        const filters = categoryId && categoryId !== 'all' ? { categoryId } : undefined;
+        const filters: MenuFilters | undefined =
+          categoryId && categoryId !== 'all'
+            ? { category: categoryId }
+            : undefined;
         const menuItems = await menuService.getMenuItems(filters);
-        setItems(menuItems);
+        const menuItemsWithDefault = menuItems.map(menuItem => ({
+          ...menuItem,
+          variantPrices: menuItem.variantPrices,
+        }));
+        setItems(menuItemsWithDefault);
         setError(null);
       } catch (err) {
         console.error('Error loading menu items:', err);

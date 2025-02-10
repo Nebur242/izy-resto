@@ -17,17 +17,17 @@ class MenuService extends FirestoreService<MenuItem> {
     super('menu_items');
   }
 
-  async getMenuItems(filters?: MenuFilters): Promise<MenuItem[]> {
+  async getMenuItems(filters?: MenuFilters): Promise<MenuItemWithVariants[]> {
     try {
       let q = collection(db, this.collectionName);
       const constraints = [];
 
-      if (filters?.category && filters.category !== 'all') {
+      if (filters?.category && filters?.category !== 'all') {
         constraints.push(where('categoryId', '==', filters.category));
       }
 
       if (constraints.length > 0) {
-        q = query(q, ...constraints);
+        q = query(q, ...constraints) as any;
       }
 
       const snapshot = await getDocs(q);
@@ -39,13 +39,15 @@ class MenuService extends FirestoreService<MenuItem> {
         .map(item => {
           return {
             ...item,
-            variantPrices: item?.variantPrices.filter(
-              vp => vp?.variantCombination?.length > 0
-            ),
+            variantPrices:
+              item?.variantPrices?.filter(
+                vp => vp?.variantCombination?.length > 0
+              ) || [],
           };
-        }) as MenuItem[];
+        });
       return data;
     } catch (error) {
+      console.log(error);
       throw new MenuServiceError(
         'Failed to fetch menu items',
         'menu/fetch-error',
@@ -83,14 +85,14 @@ class MenuService extends FirestoreService<MenuItem> {
           }
 
           // Format variant prices
-          data.variantPrices = data.variantPrices.map(vp => ({
+          data.variantPrices = data?.variantPrices.map(vp => ({
             variantCombination: [...vp.variantCombination]
               .filter(item => {
                 return !!item && !item.includes('null');
               })
               .sort(),
             price: Number(vp.price),
-            image: vp.image || null,
+            image: vp?.image,
           }));
         }
 
@@ -137,7 +139,7 @@ class MenuService extends FirestoreService<MenuItem> {
             return !!item && !item.includes('null');
           }),
           price: Number(vp.price),
-          image: vp.image || null,
+          image: vp?.image,
         }));
       }
 

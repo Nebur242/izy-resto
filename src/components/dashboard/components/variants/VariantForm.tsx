@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { X, Plus, Minus, Type, Layers, List } from 'lucide-react';
 import { Button } from '../../../ui/Button';
@@ -24,27 +23,40 @@ export function VariantForm({
     watch,
     setValue,
     formState: { errors, isDirty },
-  } = useForm({
-    defaultValues: variant || {
-      name: '',
-      type: '',
-      values: [''],
-      categoryIds: [],
-      isRequired: false,
-    },
+  } = useForm<Variant>({
+    defaultValues: variant
+      ? {
+          ...variant,
+          prices: variant?.prices || variant.values.map(() => 0),
+        }
+      : {
+          name: '',
+          type: '',
+          values: [''],
+          prices: [0],
+          categoryIds: [],
+          isRequired: false,
+        },
   });
 
   const values = watch('values');
+  const prices = watch('prices') || [];
   const selectedCategories = watch('categoryIds');
 
   const addValue = () => {
     setValue('values', [...values, ''], { shouldDirty: true });
+    setValue('prices', [...prices, 0], { shouldDirty: true });
   };
 
   const removeValue = (index: number) => {
     setValue(
       'values',
       values.filter((_, i) => i !== index),
+      { shouldDirty: true }
+    );
+    setValue(
+      'prices',
+      prices.filter((_, i) => i !== index),
       { shouldDirty: true }
     );
   };
@@ -151,12 +163,12 @@ export function VariantForm({
               )}
             </div>
 
-            {/* Values Management */}
+            {/* Values and Prices Management */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   <Layers className="w-4 h-4" />
-                  Valeurs Possibles
+                  Valeurs et Prix
                 </label>
                 <Button
                   type="button"
@@ -177,6 +189,14 @@ export function VariantForm({
                       })}
                       className="flex-1 px-4 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow"
                       placeholder={`Option ${index + 1}`}
+                    />
+                    <input
+                      type="number"
+                      {...register(`prices.${index}`, {
+                        valueAsNumber: true,
+                      })}
+                      className="w-32 px-4 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow"
+                      placeholder="Prix"
                     />
                     {values.length > 1 && (
                       <Button
