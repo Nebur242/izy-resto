@@ -13,7 +13,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { DeliveryZoneSelect } from './DeliveryZoneSelect';
 import { formatCurrency } from '../../utils/currency';
 import { useTranslation } from 'react-i18next';
-import { countryCodes } from '../../data/countryData';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 interface CheckoutFormData {
   name?: string;
@@ -70,7 +71,6 @@ export function CheckoutForm(props: ICheckoutFormProps) {
     watch,
     formState: { errors },
     trigger,
-    setValue,
   } = useForm<CheckoutFormData>({
     mode: 'onChange',
     defaultValues: {
@@ -182,7 +182,7 @@ export function CheckoutForm(props: ICheckoutFormProps) {
         customerData={{
           ...formData,
           diningOption,
-          selectedCode
+          selectedCode,
         }}
         onConfirm={() => handleSubmit(onSubmit)()}
         onBack={() => setStep('form')}
@@ -265,26 +265,18 @@ export function CheckoutForm(props: ICheckoutFormProps) {
               placeholder={t('order-customer-placeholder')}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {t('order-customer-phone')}{' '}
-              {diningOption === 'dine-in' ? '(Optionnel)' : '*'}
-            </label>
-            <div className="relative flex">
-              <select
+          <div className="relative w-full">
+            <div className="relative flex items-center border rounded-lg w-full focus-within:ring-2 focus-within:ring-blue-500 dark:focus-within:ring-blue-400border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
+              <PhoneInput
+                country={'sn'}
                 value={selectedCode}
-                onChange={e => {
-                  setSelectedCode(e.target.value);
-                  setValue('phoneCode', e.target.value);
-                }}
-                className="rounded-l-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
-              >
-                {countryCodes.map(country => (
-                  <option key={country.code} value={country.code}>
-                    {country.label} {country.code}
-                  </option>
-                ))}
-              </select>
+                onChange={setSelectedCode}
+                containerClass="w-[120px] flex items-center border-r border-gray-300 dark:border-gray-600"
+                inputClass="!w-full !border-none bg-transparent pl-2 text-sm text-gray-700 dark:text-gray-300"
+                buttonClass="!bg-transparent !border-none p-0 flex items-center"
+                dropdownClass="absolute top-full z-50 bg-white dark:bg-gray-800 shadow-lg border border-gray-300 dark:border-gray-600"
+                enableSearch
+              />
               <input
                 type="tel"
                 {...register('phone', {
@@ -294,12 +286,15 @@ export function CheckoutForm(props: ICheckoutFormProps) {
                       : false,
                   validate: validatePhone,
                 })}
-                className={`w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2.5 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-shadow pr-10
-                 ${errors.phone ? 'border-red-500 dark:border-red-500' : ''}`}
+                className={`w-full p-2 pr-10 text-sm bg-transparent border-none outline-none focus:ring-0 ${
+                  errors.phone
+                    ? 'text-red-500 placeholder-red-400'
+                    : 'text-gray-900 dark:text-gray-300'
+                }`}
                 placeholder={t('order-customer-phone-placeholder')}
               />
               {errors.phone && (
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500">
+                <div className="absolute right-3 text-red-500">
                   <AlertCircle className="w-5 h-5" />
                 </div>
               )}
