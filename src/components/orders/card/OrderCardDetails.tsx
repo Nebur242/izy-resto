@@ -11,12 +11,12 @@ interface OrderCardDetailsProps {
 
 export function OrderCardDetails({ order }: OrderCardDetailsProps) {
   const { settings } = useSettings();
-  const { t } = useTranslation(['order', 'common']);
+  const { t } = useTranslation('order');
 
   return (
     <>
       <div>
-        <h4 className="font-medium mb-2">Détails client</h4>
+        <h4 className="font-medium mb-2">{t('client-details')}</h4>
         <div className="text-sm opacity-75 space-y-1">
           <p>{order.customerName}</p>
           <p>{order.customerPhone}</p>
